@@ -1,0 +1,1615 @@
+{
+  "name": "Job Scraping",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        0
+      ],
+      "id": "fc100852-28cf-45e3-894c-bff8b12d7021",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2e2d2abd-95e0-4e89-b06b-661d29e99057",
+              "name": "url",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "7c01ece7-1168-49fe-bf94-cc4c0699aa60",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.url }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"experience\": \"2\",\n  \"freshness\": \"30\",\n  \"keyword\": \"Digital Marketing\",\n  \"maxJobs\": 50,\n  \"sortBy\": \"relevance\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "cbed6a61-4ac0-49f5-9a67-35d4d1408e84",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ed6692c5-1353-486a-96f7-4a8a1dde51f7",
+              "name": "Job Title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "0352742f-b573-4476-bfd4-86bf03bee92f",
+              "name": "Company Name",
+              "value": "={{ $json.companyName }}",
+              "type": "string"
+            },
+            {
+              "id": "a2f42095-7d80-4504-8aa7-b6f3329f9a7c",
+              "name": "Job Description",
+              "value": "={{ $json.jobDescription }}",
+              "type": "string"
+            },
+            {
+              "id": "91a6eaef-8482-454a-b854-6ac38dd42c50",
+              "name": "Location",
+              "value": "={{ $json.location }}",
+              "type": "string"
+            },
+            {
+              "id": "4e51b965-6e5c-43c4-847f-7b887279fa9a",
+              "name": "Experience",
+              "value": "={{ $json.experience }}",
+              "type": "string"
+            },
+            {
+              "id": "3ab0e13d-ef64-4015-af91-215b87c67734",
+              "name": "Job Post Url",
+              "value": "={{ $json.companyJobsUrl }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        624,
+        0
+      ],
+      "id": "48910a05-6201-40e2-a1ae-4db024983668",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1BiklMrA05BcpOaUY0ur4czHWT0PAR6iQxpBBIKzaipI",
+          "mode": "list",
+          "cachedResultName": "AI  ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BiklMrA05BcpOaUY0ur4czHWT0PAR6iQxpBBIKzaipI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 595327721,
+          "mode": "list",
+          "cachedResultName": "Job scraping",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BiklMrA05BcpOaUY0ur4czHWT0PAR6iQxpBBIKzaipI/edit#gid=595327721"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Job Title": "={{ $json['Job Title'] }}",
+            "Company Name": "={{ $json['Company Name'] }}",
+            "Job Description": "={{ $json['Job Description'] }}",
+            "Location": "={{ $json.Location }}",
+            "Experience": "={{ $json.Experience }}",
+            "Job Post Url": "={{ $json['Job Post Url'] }}",
+            "Job Keyword": "={{ $json['Job Description'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Job Title",
+              "displayName": "Job Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Job Description",
+              "displayName": "Job Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Experience",
+              "displayName": "Experience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Job Post Url",
+              "displayName": "Job Post Url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Job Keyword",
+              "displayName": "Job Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        832,
+        0
+      ],
+      "id": "29c083a8-b9de-4a7e-ba08-53575cf99357",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lUt4WLbYEcNKFba4",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1BiklMrA05BcpOaUY0ur4czHWT0PAR6iQxpBBIKzaipI",
+          "mode": "list",
+          "cachedResultName": "AI  ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BiklMrA05BcpOaUY0ur4czHWT0PAR6iQxpBBIKzaipI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 595327721,
+          "mode": "list",
+          "cachedResultName": "Job scraping",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BiklMrA05BcpOaUY0ur4czHWT0PAR6iQxpBBIKzaipI/edit#gid=595327721"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "=Job Description",
+              "lookupValue": "={{ $json['Job Description'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -112,
+        256
+      ],
+      "id": "4db08cb1-952c-4f58-886a-0672309e0ad5",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lUt4WLbYEcNKFba4",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nreturn items.map((item, index) => {\n  return {\n    json: {\n      rowIndex: index + 2, // Assuming the first row is the header\n      jobUrl: item.json['Job URL'],\n      jobTitle: item.json['Job Title'],\n      companyName: item.json['Company Name'],\n      jobDescription: item.json['Job Description']\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        256
+      ],
+      "id": "5fd6cad0-6867-46fe-8098-f48a2fff9fa4",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        272,
+        256
+      ],
+      "id": "83281aca-b16e-435e-9873-4dc854739b0e",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1BiklMrA05BcpOaUY0ur4czHWT0PAR6iQxpBBIKzaipI",
+          "mode": "list",
+          "cachedResultName": "AI  ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BiklMrA05BcpOaUY0ur4czHWT0PAR6iQxpBBIKzaipI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 595327721,
+          "mode": "list",
+          "cachedResultName": "Job scraping",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BiklMrA05BcpOaUY0ur4czHWT0PAR6iQxpBBIKzaipI/edit#gid=595327721"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Job Keyword": "={{ $json.message.content }}"
+          },
+          "matchingColumns": [
+            "Job Keyword"
+          ],
+          "schema": [
+            {
+              "id": "Job Title",
+              "displayName": "Job Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Job Description",
+              "displayName": "Job Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Experience",
+              "displayName": "Experience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Job Post Url",
+              "displayName": "Job Post Url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Job Keyword",
+              "displayName": "Job Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        928,
+        272
+      ],
+      "id": "e4e86fb7-b6ed-434b-ab33-4e5ccc2f15fd",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "bgLs83xoXoUIf5fL",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=What are the keywords in the job description? Rank the keyword from the greatest importance to least importance according to this job description: {{ $json.jobDescription }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        576,
+        272
+      ],
+      "id": "d07d0d6d-5c45-489d-a188-49341ee4ad89",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ulQa6ZRdbDpV4Slo",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Get row(s) in sheet": [
+      {
+        "json": {
+          "row_number": 2,
+          "Job Title": "Digital Marketing Executive",
+          "Company Name": "Compusys E Solutions",
+          "Job Description": "<div> Monitoring the creation and execution of online marketing strategies to enhance brand visibility, drive traffic, and increase sales.  </div> <ul> <li> + Create and implement digital marketing strategies to drive brand awareness, lead generation, sales and analytics reporting.  </li> <li> + Plan, execute, and optimize digital marketing campaigns across various platforms  </li> <li> + Checking content creation for digital platforms including websites, blogs, social media, and email marketing.  </li> <li> + Optimizing website content for search engines and managing paid search campaigns to improve traffic.  </li> <li> + Manage and allocate the digital marketing budget effectively to maximize ROI.  </li> <li> + Keeping updated with digital marketing trends, tools, and technologies.  </li> </ul>",
+          "Location": "Jaipur",
+          "Experience": "0-3 Yrs",
+          "Job Post Url": "https://www.naukri.com/compusys-e-solutions-jobs-careers-3551996",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 3,
+          "Job Title": "Digital Marketing Executive",
+          "Company Name": "Swiggy",
+          "Job Description": "This is a Full Time Contractual (FTC) role for a period of 6 months<br><br>Experienced in Google,Facebook,Programmatic,Affiliates,and digital mobile marketing channels.  . 1-3 years of experience with a B2C consumer tech / e-commerce platform,in a digital marketing role. Advanced computer literacy in Microsoft Office applications,especially MS Excel.",
+          "Location": "Remote",
+          "Experience": "0-2 Yrs",
+          "Job Post Url": "https://www.naukri.com/swiggy-jobs-careers-1609908",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 4,
+          "Job Title": "Digital Marketing Executive",
+          "Company Name": "Nyasa Enterprise",
+          "Job Description": "Nyasa Enterprise is looking for Digital Marketing Executive to join our dynamic team and embark on a rewarding career journey <ol> <li> Build, plan and implement the overall digital marketing strategy </li> <li> Manage the strategy </li> <li> Manage and train the rest of the team </li> <li> Stay up to date with the latest technology and best practices </li> <li> Manage all digital marketing channels </li> <li> Measure ROI and KPIs </li> <li> Prepare and manage a digital marketing budget </li> <li> Oversee all the company's social media accounts </li> <li> Manage and improve online content, considering SEO and Google Analytics </li> <li> Build an inbound marketing plan </li> <li> Forecast sales performance trends </li> <li> Motivate the digital marketing team to achieve goals </li> <li> Monitor competition and provide suggestions for improvement </li>  </ol>",
+          "Location": "Ahmedabad",
+          "Experience": "0-3 Yrs",
+          "Job Post Url": "https://www.naukri.com/nyasaenterprise-jobs-careers-3936318",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 5,
+          "Job Title": "Digital Marketing Executive",
+          "Company Name": "Trackdfect Technologies Pvt Ltd",
+          "Job Description": "* Build, plan and implement the overall digital marketing strategy.\n* Manage and improve online content, considering SEO, Google Analytics & Social media marketing.\n*Conduct an SEO optimization including keyword research, content optimization.",
+          "Location": "Chennai",
+          "Experience": "0-2 Yrs",
+          "Job Post Url": "https://www.naukri.com/trackdfect-technologies-jobs-careers-4509302",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 6,
+          "Job Title": "Digital Marketing Executive",
+          "Company Name": "Essence Solusoft",
+          "Job Description": "Develop and execute digital marketing campaigns across multiple channels such as social media, email, SEO, PPC, and display advertisingAnalyze and report on the performance of digital marketing campaigns using tools such as Google Analytics, SEMRush, and HootsuiteIdentify and implement optimization strategies to improve campaign performance and ROIManage and update the company website and other digital propertiesCollaborate with cross-functional teams to ensure brand consistency across all digital touchpoints  <br /> <br /> Strong analytical skills and experience with Google Analytics and other digital marketing toolsExcellent communication and interpersonal skills",
+          "Location": "Ahmedabad",
+          "Experience": "0-3 Yrs",
+          "Job Post Url": "https://www.naukri.com/essence-solusoft-jobs-careers-5539442",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 7,
+          "Job Title": "Digital Marketing Executive",
+          "Company Name": "Globalbees Brands",
+          "Job Description": "Were looking for a sharp,analytical,and ambitious Performance Marketing Specialist to help us drive paid growth across Amazon (AMS) and Google Ads.This is an excellent opportunity for someone with 02 years of hands-on experience (including internships or freelance projects) who is eager to learn,experiment,and grow in the performance marketing space",
+          "Location": "New Delhi",
+          "Experience": "0-3 Yrs",
+          "Job Post Url": "https://www.naukri.com/globalbees-brands-jobs-careers-6468140",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 8,
+          "Job Title": "Business Development Executive (Female) - Digital Marketing",
+          "Company Name": "Digifills",
+          "Job Description": "Job Title: Business Development Executive (Female) - Digital Marketing . <br><br>We are looking for a dynamic and result-oriented Business Development Executive (Female) to join our growing Digital Marketing Agency in Chennai<br><br>Experience: 0 - 4 years . Employment Type: Full-time",
+          "Location": "Chennai(Porur +1)",
+          "Experience": "0-4 Yrs",
+          "Job Post Url": "https://www.naukri.com/digifills-jobs-careers-123849589",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 9,
+          "Job Title": "Digital Marketing Executive / Asst Manager_Yeshwanthpur",
+          "Company Name": "BDO India",
+          "Job Description": "Male candidates only. <br><br>Experience Range : 0-2+ years Freshers with good Digital Marketing. 6 days working . Only immediate joining candidates <br><br>Candidate must have experience in digital marketing,SEO,Google Ads,performance marketing,brand visibility,and online engagement. <br><br>Experience candidate from Real Estate industry.",
+          "Location": "Bengaluru(Yeshwanthpur)",
+          "Experience": "0-5 Yrs",
+          "Job Post Url": "https://www.naukri.com/bdo-india-jobs-careers-498101",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 10,
+          "Job Title": "Digital Marketing Operations Executive",
+          "Company Name": "BTW Visa Services",
+          "Job Description": " . 6 months of internship experience in digital marketing operations preferred . <br><br>Bachelor s degree in Marketing,Digital Media,or a related field",
+          "Location": "Pune",
+          "Experience": "0-2 Yrs",
+          "Job Post Url": "https://www.naukri.com/btw-visa-services-jobs-careers-3825078",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 11,
+          "Job Title": "Digital Marketing Executive",
+          "Company Name": "Datacrux Insights",
+          "Job Description": "<p> </p><p> </p><br /><p>Responsibilities:</p><p>* Collaborate with cross-functional teams on campaigns & strategies for marketing on different platforms and work on automation </p><p>* Manage social media presence & online branding</p><p> Opportunity to grow into a full-time role.</p><br />",
+          "Location": "Pune(Pimpri Chinchwad)",
+          "Experience": "0-2 Yrs",
+          "Job Post Url": "https://www.naukri.com/datacrux-insights-jobs-careers-125004367",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 12,
+          "Job Title": "Executive/ Sr. Executive- Digital Marketing",
+          "Company Name": "Dharampal Satyapal Group (DS Group)",
+          "Job Description": "Solid understanding of content trends,platform algorithms,and digital performance metrics.  . Strong communication,negotiation,and project management skills.  . Proficiency with tools like Meta Business Manager,Google Analytics,and related platforms",
+          "Location": "Noida",
+          "Experience": "2-6 Yrs",
+          "Job Post Url": "https://www.naukri.com/dharampal-satyapal-group-ds-group-jobs-careers-3286",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 13,
+          "Job Title": "Digital Marketing Associate",
+          "Company Name": "Gartner for HR",
+          "Job Description": "Bachelor s degree with 0-2 years of experience in Email Marketing . Great communication skills and experience working with global stakeholders<br><br>Experience using Eloqua or similar Marketing Automation tool is preferred but not mandatory . .",
+          "Location": "Gurugram",
+          "Experience": "0-2 Yrs",
+          "Job Post Url": "https://www.naukri.com/gartner-jobs-careers-73704",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 14,
+          "Job Title": "Digital Marketing Executive",
+          "Company Name": "Satguru Overseas",
+          "Job Description": "Requirements:  . Bachelors degree in Marketing,Communications,Business,or a related field. 2+ years of experience in digital marketing or a related role. Proficiency with digital marketing tools (e.g.,Google Ads,Meta Business Suite,SEO tools,email marketing platforms). Strong knowledge of SEO / SEM,Google Analytics,and CRM software.",
+          "Location": "Ajmer",
+          "Experience": "1-4 Yrs",
+          "Job Post Url": "https://www.naukri.com/satguru-overseas-jobs-careers-1294876",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 15,
+          "Job Title": "Digital Marketing Executive",
+          "Company Name": "Happilus",
+          "Job Description": "must be able to create video with content <br><br>must have the knowledge of advertising <br><br>Preferred candidate profile . <br><br>good at social media marketing Eg- Insta,face book etc",
+          "Location": "Bengaluru",
+          "Experience": "1-4 Yrs",
+          "Job Post Url": "https://www.naukri.com/happilus-jobs-careers-124137782",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 16,
+          "Job Title": "SEO Analyst - Digital Marketing",
+          "Company Name": "Digifills",
+          "Job Description": "Basic knowledge of HTML,CMS (WordPress),and technical SEO.  . Analytical mindset with problem-solving skills.  . Certification in Digital Marketing / SEO (preferred)<br><br>Experience: 0 - 3 years . Age Group: 20 - 25 years. Education: UG / PG ( Marketing or Computer Science background preferred)",
+          "Location": "Chennai(Porur +1)",
+          "Experience": "0-3 Yrs",
+          "Job Post Url": "https://www.naukri.com/digifills-jobs-careers-123849589",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 17,
+          "Job Title": "Digital Marketing Executive || Noida || 0.6-2 years - YES IT Labs LLC",
+          "Company Name": "YES It Labs",
+          "Job Description": "Graduate in Marketing,Business,Mass Communication,or a related field<br><br> . Good written English and document formatting skills<br><br> . Detail-oriented and organized with a willingness to learn. <br><br> Good communication skills. .",
+          "Location": "Noida",
+          "Experience": "0-2 Yrs",
+          "Job Post Url": "https://www.naukri.com/yes-it-labs-jobs-careers-4285226",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 18,
+          "Job Title": "Digital Marketing Executive (0-4 Years)",
+          "Company Name": "Digiversal Consultants",
+          "Job Description": "<p> </p><p><strong>Job Title: Sr Digital Marketing Executive</strong></p><p>Location: Noida</p><p><strong>Company Overview</strong></p><p><strong>Digiversal</strong> is a fast-growing academic venture based out of Noida and having multiple liaison networks across the world. Connect with us to discover brilliance within yourself and to experience a neo-modern ideology of Live, Work, Play and Learn with stellar career growth.</p><p><strong>Digiversal</strong> is a hub for creative and passionate individuals who strive for excellence. We are committed to guiding students across the globe through their learning journey, helping them succeed in academics and in life! We present a unique combination of academic consulting and digital technology solutions. We aim to promote as well as nurture academic learning, professional development, and intellectual excellence while delivering high- quality, authentic, and trustworthy academic content writing services globally. Our vision is to maintain our status of being the most preferred and trusted brand in the industry, which excels in client satisfaction and retention.</p><p><strong>Job Summary:</strong></p><p>We are looking for an ideal candidate who will be supporting the Assistant manager with their strong technical and analytical SEO skills. The mission of a Sr. SEO (Search Engine Optimization) Executive is to maximize the volume of inbound organic traffic from search engines to our business website and to maintain the website health in search engines through regular analysis through technical tools. This will be accomplished through a combination of on-page and off-page techniques, analysis and technical SEO upgradations, including link-building, content strategy, information architecture, and more.</p><p>As Sr. SEO (Search Engine Optimization) Executive, you are responsible to mentor the Off-page members and suggest them the best link building techniques for gaining rankings media and other digital media campaigns. You should grab the attention of customers and market the products and services.</p><p>If you have the ability to utilize the organizational resources optimally for the business promotion activities, we would like to meet you. </p><p><strong>Key Responsibilities:</strong></p><ul><li>Hands on Experience of Off      page activities (must be able to perform all off-page tasks successfully like info graphics submission, PPT submission, Audio/Podcast submission,      Video submission, Image submission, including article insertion /press      release/directory submissions, RSS feeds, forum postings, blog posts, social bookmarking and commenting on social networks.).</li><li>Understanding of On-page & tools, content optimization, Meta tags etc. to boost rankings.</li><li>Understanding of how blogging, press releases, social media, and related strategies go      hand-in-hand with SEO.</li><li>Experience in building inbound organic search traffic and improving SERPS.</li><li>Working knowledge of current, past and projected trend in SEO industry.</li><li>Knowledge of SEO best practices w.r.t Content Marketing.</li><li>Knowledge of White Hat and  Black Hat SEO optimization.</li><li>Ability to manage multiple projects and handle clients.</li><li>Should possess excellent communication skills.</li><li>Good in SEO, SMO work, and Promotional Activities</li><li>Keep pace with SEO industry trends and developments including best practices to handle Google updates.</li><li>Review & analyze website to find areas of improvement.</li><li>Optimize websites to rank higher for relevant keywords in the organic search result.</li><li>Awareness about various content marketing platforms of the Market Research Industry.</li><li>Manage the ORM of the brand and work on creating a positive image of the Brand online along with mitigating the negative reviews.</li><li>Effective in troubleshooting, SEO, and ranking related issues.</li></ul><p><strong>Qualifications:</strong></p><ul><li>Demonstrated SEO experience of at least 3-5 years.</li><li>Experience with Google's Keyword Tool.</li><li>Proven success in link building.</li><li>Experience in building inbound organic search traffic and improving SERPs.</li><li>Basic HTML Knowledge.</li><li>Candidate must also possess good English communication skills (written and oral).</li><li>2+ years of working kowledge of Google Analytics, Google Search Console Tool, Ahrefs & SEMRush.</li><li>2+ Years of working experience in On page SEO and Technical SEO implementations.</li><li>Guest posting experience.</li></ul><p><strong>Why Join Us?</strong></p><ul><li>Opportunity to work with an innovative and growing company.</li><li>A dynamic work environment with learning and career growth opportunities.</li><li>Work with a talented and experienced team.</li><li>Competitive compensation and ample opportunities for growth.</li><li>Exposure to diverse projects in the digital marketing landscape.</li></ul>",
+          "Location": "Noida",
+          "Experience": "0-4 Yrs",
+          "Job Post Url": "https://www.naukri.com/digiversal-consultants-jobs-careers-2232070",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 19,
+          "Job Title": "Digital Marketing Executive",
+          "Company Name": "AM Infoweb",
+          "Job Description": "Freshers who have completed Digital Marketing training from Internshala are encouraged to apply<br><br>Skills Required:  . Digital Marketing training from Internshala (Mandatory). <br><br>Basic knowledge of SEO,SEM,and Social Media Marketing. Creative mindset and good communication skills.",
+          "Location": "Pune(Kalyani Nagar)",
+          "Experience": "0-2 Yrs",
+          "Job Post Url": "https://www.naukri.com/am-infoweb-jobs-careers-1091284",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 20,
+          "Job Title": "Digital Marketing & Content Specialist",
+          "Company Name": "Guwahati Institute Of Technology",
+          "Job Description": "<p>Responsibilities:</p><p>* Develop digital marketing strategies, execute campaigns.</p><p>* Create engaging content, manage social media presence.</p><p>* Analyze results, report findings.</p><p>* Utilize SEO techniques, optimize website performance.</p>",
+          "Location": "Guwahati",
+          "Experience": "0-3 Yrs",
+          "Job Post Url": "https://www.naukri.com/guwahati-institute-of-technology-jobs-careers-124117818",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 21,
+          "Job Title": "Fresher Digital Marketing Analyst",
+          "Company Name": "Ebizon Net Info",
+          "Job Description": "EbizON is looking for Fresher Digital Marketing Analyst to join our team in the Dehradun office<br><br>Excellent Communication . A bachelors degree in marketing,Business,or a quantitative field <br><br>6 months of experience as marketing analyst,or in digital marketing,or a related role . Strong command of written English and excellent communication skills .",
+          "Location": "Dehradun",
+          "Experience": "0-2 Yrs",
+          "Job Post Url": "https://www.naukri.com/ebizon-net-info-jobs-careers-374885",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 22,
+          "Job Title": "Fresher Digital Marketing Analyst",
+          "Company Name": "Ebizon Net Info",
+          "Job Description": "EbizON is looking for Fresher Digital Marketing Analyst to join our team in the Dehradun office<br><br>Excellent Communication . A bachelors degree in marketing,Business,or a quantitative field <br><br>6 months of experience as marketing analyst,or in digital marketing,or a related role . Strong command of written English and excellent communication skills .",
+          "Location": "Dehradun",
+          "Experience": "0-2 Yrs",
+          "Job Post Url": "https://www.naukri.com/ebizon-net-info-jobs-careers-374885",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 21,
+          "Job Title": "Fresher Digital Marketing Analyst",
+          "Company Name": "Ebizon Net Info",
+          "Job Description": "EbizON is looking for Fresher Digital Marketing Analyst to join our team in the Dehradun office<br><br>Excellent Communication . A bachelors degree in marketing,Business,or a quantitative field <br><br>6 months of experience as marketing analyst,or in digital marketing,or a related role . Strong command of written English and excellent communication skills .",
+          "Location": "Dehradun",
+          "Experience": "0-2 Yrs",
+          "Job Post Url": "https://www.naukri.com/ebizon-net-info-jobs-careers-374885",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 22,
+          "Job Title": "Fresher Digital Marketing Analyst",
+          "Company Name": "Ebizon Net Info",
+          "Job Description": "EbizON is looking for Fresher Digital Marketing Analyst to join our team in the Dehradun office<br><br>Excellent Communication . A bachelors degree in marketing,Business,or a quantitative field <br><br>6 months of experience as marketing analyst,or in digital marketing,or a related role . Strong command of written English and excellent communication skills .",
+          "Location": "Dehradun",
+          "Experience": "0-2 Yrs",
+          "Job Post Url": "https://www.naukri.com/ebizon-net-info-jobs-careers-374885",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 23,
+          "Job Title": "Digital Marketing Trainee / Hiring office located in Nungambakkam",
+          "Company Name": "Digihertz Marketing Management",
+          "Job Description": "Passion for digital marketing and willingness to learn.  . Education Qualification:  . Any Graduate (BBA,BCom,BA,BSc,etc.). <br><br>Assist the digital marketing team with additional tasks when required. Key Skills Required:  . <br><br>Basic knowledge of HTML / CSS is a plus.  . Good communication skills written and verbal.",
+          "Location": "Chennai(Nungambakkam)",
+          "Experience": "0-2 Yrs",
+          "Job Post Url": "https://www.naukri.com/digihertz-marketing-management-jobs-careers-124008018",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 24,
+          "Job Title": "Digital Marketing Executive",
+          "Company Name": "Creanovation Technologies",
+          "Job Description": "<p>We're looking for a talented and results-oriented Digital Marketing Specialist to join our growing team. You'll be responsible for managing and optimizing paid advertising campaigns across Google Ads and Facebook Ads, while also collaborating with internal teams to develop effective marketing funnels.</p><br /><p>Responsibilities:</p><br /><p>1. Manage and optimize Google Ads and Facebook Ads campaigns, including keyword research, ad copywriting, landing page optimization, and budget allocation.</p><br /><p>2. Analyze campaign performance data and make data-driven adjustments to improve conversion rates and ROI.</p><br /><p>3. Stay up-to-date on the latest trends and best practices in paid advertising platforms.</p><br /><p>4. Collaborate with the design team to create high-converting landing pages and ad creatives that resonate with the target audience.</p><br /><p>5. Work with the content marketing team to develop marketing funnels that nurture leads and drive conversions.</p><br /><p>6. Track campaign performance against key metrics and report findings to stakeholders.</p><br /><p>7. Identify and implement new strategies to improve overall marketing effectiveness.</p><br /><br />",
+          "Location": "Gurugram(Sector 39)",
+          "Experience": "0-3 Yrs",
+          "Job Post Url": "https://www.naukri.com/creanovation-technologies-jobs-careers-1084776",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 25,
+          "Job Title": "Digital Marketing Executive - WFO",
+          "Company Name": "Brainybuzz Solution",
+          "Job Description": "- Bachelor s degree in Marketing,Communications,or a related field (preferred)<br><br> Proven work experience as a Digital Marketing Executive or similar role<br><br> - Experience with SEO,SEM,PPC campaigns,and social media marketing<br><br> Competitive salary based on experience and skills",
+          "Location": "Ghaziabad",
+          "Experience": "0-2 Yrs",
+          "Job Post Url": "https://www.naukri.com/brainybuzz-solution-jobs-careers-124194702",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 26,
+          "Job Title": "Digital Marketing Executive",
+          "Company Name": "Jobsmill business solutions pvt ltd",
+          "Job Description": "Wanted digital marketing executives\nExp - 0- 5 years\nLocation: Hyderabad, bengaluru\n\nWhatsapp us on 7093357755, we will get back to you.\n\nRam\n7093357755",
+          "Location": "Hyderabad, Bengaluru",
+          "Experience": "0-5 Yrs",
+          "Job Post Url": "https://www.naukri.com/jobsmill-jobs-careers-124215408",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 27,
+          "Job Title": "Digital Marketing Executive",
+          "Company Name": "Viz Travels",
+          "Job Description": "<p>Responsibilities:</p><p>* Manage digital campaigns from ideation to execution</p><p>* Optimize website for search engines, generate leads </p><p>* Analyze performance metrics and provide insights</p><p>* Collaborate with cross-functional teams on strategy development</p>",
+          "Location": "Noida(Sector 2)",
+          "Experience": "0-3 Yrs",
+          "Job Post Url": "https://www.naukri.com/viz-travels-jobs-careers-124491532",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 28,
+          "Job Title": "Digital Marketing & Brand Growth Executive",
+          "Company Name": "Digituala Lab Enterprise Llp",
+          "Job Description": "Preferred Qualifications:  . Bachelors degree in Marketing,Mass Communication,Design,or related fields. <br><br>Proven experience in digital marketing,social media management,or content creation . Strong understanding of branding and audience engagement . Hands-on skills in tools like Canva,Adobe Suite,Meta Business Suite,or similar platforms.",
+          "Location": "Noida, Greater Noida",
+          "Experience": "0-2 Yrs",
+          "Job Post Url": "https://www.naukri.com/digituala-lab-enterprise-jobs-careers-5958228",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 29,
+          "Job Title": "Digital Marketing Executive",
+          "Company Name": "Shri Lakshmi Steel Suppliers",
+          "Job Description": "Preferred candidate profile . .",
+          "Location": "Bengaluru",
+          "Experience": "2-4 Yrs",
+          "Job Post Url": "https://www.naukri.com/shri-lakshmi-steel-suppliers-jobs-careers-518083",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 30,
+          "Job Title": "Digital Marketing Specialist",
+          "Company Name": "Unique Laser",
+          "Job Description": "<p>Responsibilities:</p><ul><li>Develop & execute digital strategies using SEO, social media & Google Analytics.</li><li>Conduct keyword research, on-page/off-page optimization & link building.</li></ul>\n\nOffice cab/shuttle",
+          "Location": "Vadodara(Por)",
+          "Experience": "0-5 Yrs",
+          "Job Post Url": "https://www.naukri.com/unique-laser-jobs-careers-6929143",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 31,
+          "Job Title": "AI Driven Digital Marketing Specialist",
+          "Company Name": "Folksco Technologies",
+          "Job Description": "Bachelors or Masters degree in Marketing,Communications,Business,or related field<br><br>Preferred candidate profile <br><br>Minimum 2 years of hands-on digital marketing experience<br><br>Deliver minimum 300 qualified leads per month<br><br>Data-driven mindset and experience with traffic / lead performance analytics",
+          "Location": "Chennai",
+          "Experience": "2-5 Yrs",
+          "Job Post Url": "https://www.naukri.com/folksco-technologies-jobs-careers-896086",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 32,
+          "Job Title": "Digital Marketing Executive",
+          "Company Name": "Hiringlink Solutions",
+          "Job Description": "Track campaign performance Freshers 1 year of experience in marketing or a related field",
+          "Location": "Ahmedabad",
+          "Experience": "0-4 Yrs",
+          "Job Post Url": "https://www.naukri.com/hiringlink-solutions-jobs-careers-934620",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 33,
+          "Job Title": "Digital Marketing Executive",
+          "Company Name": "Pronteff It Solutions",
+          "Job Description": "<br /><p><strong>Position Title: Digital Marketing Executive</strong></p><br /><p><strong>Location: Madhapur, Hyderabad (Near to Madhapur D-Mart)</strong></p><br /><p><strong>Experience:</strong> <strong>2 to 3 years</strong></p><br /><p><strong>Job Summary:</strong></p><br /><p><strong>We are looking for someone to help plan and run our online marketing efforts. This role involves working from our office and the shift is from 2 PM to 10 PM IST.</strong></p><br /><p><strong>Qualifications: Bachelors degree in Marketing, Business, or related field (any graduation).</strong></p><br /><p><strong>Role & responsibilities:</strong></p><br /><p><strong>Must have:</strong></p><br /><ul><li><strong>Strong written, verbal communication and presentation skills.</strong></li><li><strong>Good understanding of online advertising, digital marketing, email marketing concepts and techniques.</strong></li><li><strong>Knowledge on Using of Hubspot or similar application will be added advantage</strong></li><li><strong>Familiarity with social media platforms and digital marketing tools.</strong></li><li><strong>Analytical mindset with the ability to interpret data and draw actionable insights.</strong></li><li><strong>Creative thinking and problem-solving skills.</strong></li><li><strong>Ability to work independently as well as part of a team.</strong></li><li><strong>Highly organized with excellent attention to detail.</strong></li></ul><br /><p><strong>Good to have:</strong></p><br /><ul><li><strong>SEO/SEM Skills</strong></li><li><strong>Work with our teams to create landing pages and improve the user experience.</strong></li><li><strong>Web Development</strong></li><li><strong>Prior internship or work experience in digital marketing is a big plus for candidates with less experience.</strong></li></ul><br /><p><strong>What We Offer:</strong></p><br /><ul><li><strong>Competitive salary and benefits.</strong></li><li><strong>Opportunity to work with leading technologies.</strong></li><li><strong>Supportive and collaborative work environment.</strong></li><li><strong>Career growth and development opportunities.</strong></li><li><strong>Hands-on experience in digital marketing.</strong></li><li><strong>Exposure to the tech industry.</strong></li><li><strong>Networking opportunities.</strong></li></ul><br /><p><strong>How to Apply: Send your resume and a cover letter to divya.namburi@pronteff.com with the </strong></p><br /><p><strong>subject line Digital Marketing Specialist Application.</strong><br /><br /> </p><br /><br /><br />",
+          "Location": "Hyderabad",
+          "Experience": "2-3 Yrs",
+          "Job Post Url": "https://www.naukri.com/pronteff-it-solutions-jobs-careers-6459472",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 34,
+          "Job Title": "Digital Marketing Executive",
+          "Company Name": "Krish Softwares",
+          "Job Description": "Required Skills:  . <br><br>Collaborate with internal teams to create landing pages and optimize user experience.  <br><br>Proven experience (24 years) in digital marketing or a related field.  . Strong understanding of performance marketing,conversion,and online customer acquisition.",
+          "Location": "Hyderabad",
+          "Experience": "2-4 Yrs",
+          "Job Post Url": "https://www.naukri.com/krish-softwares-jobs-careers-3667852",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 35,
+          "Job Title": "Digital Marketing Manager",
+          "Company Name": "Simplotel",
+          "Job Description": "The Digital Marketing Manager position is based out of our head office in Bangalore, and the specialist will own the devising and implementing of SEO and paid marketing strategies for multiple hotel customers and help them get the maximum return on investment on their spend. <br /> <div> </div> Responsibilities:  <div> The goal of the Digital Marketing Manager will be to ensure that our customers get a good return on investment on their digital spending. The Specialist will: </div> <ul> <li> Project manage and ensure the delivery of high-quality digital marketing services to our customers. </li> <li> Coordinate with customers to understand their business and marketing strategies. </li> <li> Devise a strategy and a plan to help them achieve their goals. Review the plan with the customers and get their buy-in. </li> <li> Implement the plan and work with internal teams to get parts of the plan implemented. </li> <li> Create reports on the success of the campaigns and review the performance with the customer. </li> </ul> <div> </div> Skills Required:  <ul> <li> Graduate degree in Engineering or Business. MBA is a plus. </li> <li> 0-2 years of prior account management and digital marketing experience required. Knowledge of SEO, Google Ads, Display Ads, and social media ads is required. This includes the ability to research keywords, identify the best ones to target. </li> <li> Ability to measure and report the effectiveness of campaigns effectively. </li> <li> Excellent analytical, communication, and presentation skills. Ability to convince both internal and external stakeholders. Ability to create engaging presentations. </li> <li> Ability to create strong business cases for digital marketing. </li> <li> Knowledge of analytics tools (Google Analytics, Google Ads tools, MS Excel, SEMrush, etc.). </li> </ul>",
+          "Location": "Bengaluru",
+          "Experience": "0-2 Yrs",
+          "Job Post Url": "https://www.naukri.com/simplotel-jobs-careers-1896752",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 36,
+          "Job Title": "Digital Marketing Intern",
+          "Company Name": "Plandigi",
+          "Job Description": "<div> <p> <strong> Role:  </strong> Support day-to-day digital marketing tasks across SEO, social media, and paid campaigns.  </p> <p> <strong> Responsibilities:  </strong> </p> <ul> <li> Assist in content creation and scheduling for social media  <br /> </li> <li> Help with keyword research and on-page SEO  <br /> </li> <li> Support paid ad campaign setup and reporting  <br /> </li> <li> Monitor competitors and research marketing trends  <br /> </li> <li> Learn and grow with hands-on digital tools and platforms  </li> </ul> </div>",
+          "Location": "Ghaziabad",
+          "Experience": "0-3 Yrs",
+          "Job Post Url": "https://www.naukri.com/plandigi-jobs-careers-124962045",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 37,
+          "Job Title": "Digital Marketing Executive",
+          "Company Name": "mk Construction",
+          "Job Description": "<p>Responsibilities:</p><ul><li>Collaborate with sales team on lead generation strategies</li><li>Monitor analytics & optimize performance</li><li>Manage social media presence & campaigns</li><li>Develop digital marketing plans & execute SEO tactics</li></ul>\n\nWork from home",
+          "Location": "New Delhi(Lodhi Colony)",
+          "Experience": "0-3 Yrs",
+          "Job Post Url": "https://www.naukri.com/mk-construction-jobs-careers-124260398",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 38,
+          "Job Title": "Digital Marketing Executive",
+          "Company Name": "Lead Height",
+          "Job Description": "Lead Height is looking for Digital Marketing Executive to join our dynamic team and embark on a rewarding career journey <ol> <li> Build, plan and implement the overall digital marketing strategy </li> <li> Manage the strategy </li> <li> Manage and train the rest of the team </li> <li> Stay up to date with the latest technology and best practices </li> <li> Manage all digital marketing channels </li> <li> Measure ROI and KPIs </li> <li> Prepare and manage a digital marketing budget </li> <li> Oversee all the company's social media accounts </li> <li> Manage and improve online content, considering SEO and Google Analytics </li> <li> Build an inbound marketing plan </li> <li> Forecast sales performance trends </li> <li> Motivate the digital marketing team to achieve goals </li> <li> Monitor competition and provide suggestions for improvement </li>  </ol>",
+          "Location": "Kolkata",
+          "Experience": "2-6 Yrs",
+          "Job Post Url": "https://www.naukri.com/lead-height-jobs-careers-6620578",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 39,
+          "Job Title": "Digital Marketing Executive (SEO & Performance Marketing Focus)",
+          "Company Name": "AVG Motors",
+          "Job Description": "AVG MOTORS LTD. is looking for Digital Marketing Executive (SEO & Performance Marketing Focus) to join our dynamic team and embark on a rewarding career journey Develop and execute digital marketing campaigns across multiple channels such as social media, email, SEO, PPC, and display advertisingAnalyze and report on the performance of digital marketing campaigns using tools such as Google Analytics, SEMRush, and HootsuiteIdentify and implement optimization strategies to improve campaign performance and ROIManage and update the company website and other digital propertiesCollaborate with cross-functional teams to ensure brand consistency across all digital touchpoints  <br /> <br /> Strong analytical skills and experience with Google Analytics and other digital marketing toolsExcellent communication and interpersonal skills",
+          "Location": "Kottayam",
+          "Experience": "0-2 Yrs",
+          "Job Post Url": "https://www.naukri.com/avg-motors-jobs-careers-4912522",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 40,
+          "Job Title": "Digital Marketing Manager",
+          "Company Name": "Techno Futurance Corp Services",
+          "Job Description": "We're seeking an experienced Digital Marketing Manager with fresher or Experience in the field, skilled in SEO, Meta Ads, Google Ads, and team leadership. You’ll manage 2–3projects at a time with bonus points if you’ve worked on large-scale campaigns",
+          "Location": "Noida, Delhi / NCR",
+          "Experience": "",
+          "Job Post Url": "https://www.naukri.com/techno-futurance-corp-services-jobs-careers-124047574",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 41,
+          "Job Title": "Digital Marketer",
+          "Company Name": "Avidion Softwares Gurugram",
+          "Job Description": "Develop and execute B2B lead generation campaigns to attract potential clients from IT,SaaS,AI,and software domains.  . Drive outreach via LinkedIn (using LinkedIn Sales Navigator),direct messages,InMails,comments,and engagement posts.  . Identify and connect with prospects via freelance platforms like Upwork,Freelancer,Clutch,Fiverr,and Good Firms .  <br><br>Required Skills & Experience",
+          "Location": "Gurugram(Sector 42)",
+          "Experience": "0-3 Yrs",
+          "Job Post Url": "https://www.naukri.com/avidion-softwares-gurugram-jobs-careers-124557554",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 42,
+          "Job Title": "Digital Marketing Assistant",
+          "Company Name": "Xcademia",
+          "Job Description": "02 years of experience in digital marketing (internships count). <br><br>The ideal candidate should have a strong grasp of current marketing tools and strategies and be able to lead integrated digital marketing campaigns from concept to execution.  . Key Responsibilities:  .",
+          "Location": "Jalandhar",
+          "Experience": "0-3 Yrs",
+          "Job Post Url": "https://www.naukri.com/xcademia-jobs-careers-124958577",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 43,
+          "Job Title": "Digital Marketing-Executive",
+          "Company Name": "Orient Jewellers",
+          "Job Description": "<p> </p><p><strong> Job Title:</strong> Digital Marketing - Executive<br /> <strong> Location:</strong> Kolkata, West Bengal<br /> <strong> Company:</strong> Orient Gems & Ornaments Pvt. Ltd.<br /> <strong> Experience Required:</strong> 2 to 4 Years<br /> <strong> Travel Requirement:</strong> Mandatory (domestic travel to showrooms, exhibitions, and vendor locations)<br /> <strong> Industry:</strong> Retail / Gems & Jewellery</p><p> </p><p><strong>Job Summary:</strong></p><p>We are seeking a dynamic and results-driven <strong>Digital Marketing Executive</strong> to manage and optimize our online presence, campaigns, and brand visibility. The ideal candidate should have hands-on experience in the <strong>Retail/FMCG/Media industry</strong>, with a proven track record in executing performance-based digital strategies. This role demands travel to various retail locations, exhibitions, and industry events to ensure brand consistency across platforms.</p><p> </p><p><strong>Key Responsibilities:</strong></p><p><strong>Digital Strategy & Execution</strong></p><ul><li>Develop, execute, and manage multi-channel digital marketing campaigns across platforms (Google, Meta, YouTube, etc.).</li><li>Oversee the planning and delivery of digital content calendars, promotions, and product launches.</li><li>Handle <strong>SEO/SEM, PPC campaigns, social media marketing</strong>, and <strong>email marketing</strong>.</li><li>Manage and update the companys website and e-commerce platforms (if applicable).</li></ul><p><strong>Social Media Management</strong></p><ul><li>Build and grow brand presence on Instagram, Facebook, LinkedIn, Pinterest, and YouTube.</li><li>Create engaging and visually appealing posts, stories, and reels in coordination with the creative      team.</li><li>Monitor social media trends, hashtags, and competitor activities.</li></ul><p><strong>Performance & Analytics</strong></p><ul><li>Track, report, and analyze campaign performance using tools like Google Analytics, Meta Business Suite, and third-party dashboards.</li><li>Generate weekly/monthly reports on KPIs, ROI, traffic, conversions, and engagement metrics.</li><li>Implement A/B testing and conversion rate optimization strategies.</li></ul><p><strong>Branding & Content</strong></p><ul><li>Coordinate with photographers, designers, and videographers to create product-centric and      lifestyle content.</li><li>Ensure brand tone and aesthetics align across all digital platforms.</li><li>Plan and execute influencer tie-ups and collaborations to enhance brand visibility.</li></ul><p><strong>Travel & Coordination</strong></p><ul><li>Travel to showrooms, events, and exhibitions to gather content, understand customer insights, and ensure marketing alignment.</li><li>Coordinate with store managers and regional teams for campaign rollouts and event promotions.</li></ul><p> </p><p><strong>Requirements:</strong></p><ul><li><strong>MBA preferred</strong>/Bachelors degree in Marketing, Digital Media, Communications, or related field.</li><li><strong>2 - 4 years of digital marketing experience</strong> in the <strong>retail/fmcg/media industry</strong>.</li><li>Strong understanding of SEO, Google Ads, Meta Ads Manager, and e-commerce.</li><li>Hands-on experience with tools like Canva, Photoshop, Meta Business Suite, Mailchimp, Google      Analytics, etc.</li><li>Fluent in English, Hindi, and preferably Bengali.</li><li>Excellent written and verbal communication skills.</li><li>Willingness and ability to travel frequently.</li></ul><p> </p><p><strong>Preferred Skills:</strong></p><ul><li>Knowledge of Jewellery trends, festive season marketing, and regional customer behavior.</li><li>Basic understanding of product photography and visual merchandising.</li><li>Experience in What's App marketing and CRM-based campaigns.</li></ul><br /><p>Interested Candidates Please Drop Your Resume On hr@orientjewellers.co.in or Whats App 8373099937</p><br />",
+          "Location": "Kolkata",
+          "Experience": "2-5 Yrs",
+          "Job Post Url": "https://www.naukri.com/orient-jewellers-jobs-careers-5818904",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 44,
+          "Job Title": "Senior Executive - Digital Marketing",
+          "Company Name": "Jones Lang LaSalle Property Consultants (India) Pv t. Ltd.",
+          "Job Description": "Generate MIS and reports as management requirement . Predictive reporting . Work with finance on budget targets . Cross verification of data as per agreed TOR time to time .",
+          "Location": "Ludhiana",
+          "Experience": "2-5 Yrs",
+          "Job Post Url": "https://www.naukri.com/jones-lang-lasalle-property-consultants-jobs-careers-117358",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 45,
+          "Job Title": "Digital Marketing Specialist",
+          "Company Name": "Spacebyte",
+          "Job Description": "<p>Responsibilities:</p><ul><li>Plan and execute digital campaigns across Google, Meta, and more with maximum ROI</li><li>Manage social media presence & create engaging content</li><li>Grow our online presence through SEO, blog strategy, and email marketing</li></ul>",
+          "Location": "Ahmedabad(Krishnanagar)",
+          "Experience": "0-3 Yrs",
+          "Job Post Url": "https://www.naukri.com/spacebyte-jobs-careers-124997371",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 46,
+          "Job Title": "Digital Marketing Manager",
+          "Company Name": "Inspired Classes",
+          "Job Description": "<p>Create content (reels, posts, blogs), design creatives, and build landing pages. Must know Canva, writing basics, and social media. Internship with real work, certificate, and growth opportunity. Creative minds only!<br /> </p>\n\nAssistive technologies\nFlexi working",
+          "Location": "Gurugram(Sector 74A)",
+          "Experience": "0-3 Yrs",
+          "Job Post Url": "https://www.naukri.com/inspired-classes-jobs-careers-124694586",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 47,
+          "Job Title": "Seo And Digital Marketing Executive",
+          "Company Name": "HR & Pr Media Broadcasting Entertainment",
+          "Job Description": "Preferred Skills: -Experience in email marketing and marketing automation tools<br><br>Experience: 1-3 years preferred<br><br>Proven experience in SEO and digital marketing roles (1-3 years preferred)<br><br>Preferred candidate profile . .",
+          "Location": "Hyderabad(Madhapur)",
+          "Experience": "1-3 Yrs",
+          "Job Post Url": "https://www.naukri.com/hr-pr-media-broadcasting-entertainment-jobs-careers-5551758",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 48,
+          "Job Title": "Digital Marketer (Bangalore candidates only)",
+          "Company Name": "Seven Sands Tourism",
+          "Job Description": "<p>Responsibilities:</p><p>* Manage social media presence</p><p>* Analyze campaign performance</p><p>* Collaborate with sales team on lead generation</p><p>* Optimize website for search engines</p><p>* Develop digital marketing strategies</p>",
+          "Location": "Bengaluru(Vijay Nagar)",
+          "Experience": "0-3 Yrs",
+          "Job Post Url": "https://www.naukri.com/seven-sands-tourism-jobs-careers-124319008",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 49,
+          "Job Title": "Business Development Executive Cold Calling Digital Marketing",
+          "Company Name": "Enewsvault Digital Marketing agency ",
+          "Job Description": "Experience using CRM software and lead generation tools.  . Self-driven,resilient,and target-focused.  . Bachelors degree in Marketing,Business,or a related field is preferred.  . Key Skills:  . <br><br>Sales pitching and objection handling. Digital marketing knowledge. CRM and data entry proficiency.",
+          "Location": "Remote",
+          "Experience": "1-6 Yrs",
+          "Job Post Url": "https://www.naukri.com/acn-adontop-it-jobs-careers-4327724",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 50,
+          "Job Title": "Digital Marketing Manager",
+          "Company Name": "Suchirindia Constructions",
+          "Job Description": "Preferred candidate profile . Real Estate (Residential,Commercial)",
+          "Location": "Hyderabad(Banjara hills)",
+          "Experience": "",
+          "Job Post Url": "https://www.naukri.com/suchirindia-constructions-jobs-careers-84545",
+          "Job Keyword": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 51,
+          "Job Title": "Digital Marketing Executive",
+          "Company Name": "Codershive Ajmer",
+          "Job Description": "Any graduate,fresher / experienced<br><br> Good English & Facebook Ads,Shopify shop skills required<br><br> Should be hardworking,and will to learn fast<br><br> Should do daily homework after job",
+          "Location": "Ajmer(Kotra)",
+          "Experience": "0-2 Yrs",
+          "Job Post Url": "https://www.naukri.com/codershive-ajmer-jobs-careers-124300424",
+          "Job Keyword": ""
+        }
+      }
+    ],
+    "Code": [
+      {
+        "json": {
+          "rowIndex": 2,
+          "jobTitle": "Digital Marketing Executive",
+          "companyName": "Compusys E Solutions",
+          "jobDescription": "<div> Monitoring the creation and execution of online marketing strategies to enhance brand visibility, drive traffic, and increase sales.  </div> <ul> <li> + Create and implement digital marketing strategies to drive brand awareness, lead generation, sales and analytics reporting.  </li> <li> + Plan, execute, and optimize digital marketing campaigns across various platforms  </li> <li> + Checking content creation for digital platforms including websites, blogs, social media, and email marketing.  </li> <li> + Optimizing website content for search engines and managing paid search campaigns to improve traffic.  </li> <li> + Manage and allocate the digital marketing budget effectively to maximize ROI.  </li> <li> + Keeping updated with digital marketing trends, tools, and technologies.  </li> </ul>"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 3,
+          "jobTitle": "Digital Marketing Executive",
+          "companyName": "Swiggy",
+          "jobDescription": "This is a Full Time Contractual (FTC) role for a period of 6 months<br><br>Experienced in Google,Facebook,Programmatic,Affiliates,and digital mobile marketing channels.  . 1-3 years of experience with a B2C consumer tech / e-commerce platform,in a digital marketing role. Advanced computer literacy in Microsoft Office applications,especially MS Excel."
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 4,
+          "jobTitle": "Digital Marketing Executive",
+          "companyName": "Nyasa Enterprise",
+          "jobDescription": "Nyasa Enterprise is looking for Digital Marketing Executive to join our dynamic team and embark on a rewarding career journey <ol> <li> Build, plan and implement the overall digital marketing strategy </li> <li> Manage the strategy </li> <li> Manage and train the rest of the team </li> <li> Stay up to date with the latest technology and best practices </li> <li> Manage all digital marketing channels </li> <li> Measure ROI and KPIs </li> <li> Prepare and manage a digital marketing budget </li> <li> Oversee all the company's social media accounts </li> <li> Manage and improve online content, considering SEO and Google Analytics </li> <li> Build an inbound marketing plan </li> <li> Forecast sales performance trends </li> <li> Motivate the digital marketing team to achieve goals </li> <li> Monitor competition and provide suggestions for improvement </li>  </ol>"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 5,
+          "jobTitle": "Digital Marketing Executive",
+          "companyName": "Trackdfect Technologies Pvt Ltd",
+          "jobDescription": "* Build, plan and implement the overall digital marketing strategy.\n* Manage and improve online content, considering SEO, Google Analytics & Social media marketing.\n*Conduct an SEO optimization including keyword research, content optimization."
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 6,
+          "jobTitle": "Digital Marketing Executive",
+          "companyName": "Essence Solusoft",
+          "jobDescription": "Develop and execute digital marketing campaigns across multiple channels such as social media, email, SEO, PPC, and display advertisingAnalyze and report on the performance of digital marketing campaigns using tools such as Google Analytics, SEMRush, and HootsuiteIdentify and implement optimization strategies to improve campaign performance and ROIManage and update the company website and other digital propertiesCollaborate with cross-functional teams to ensure brand consistency across all digital touchpoints  <br /> <br /> Strong analytical skills and experience with Google Analytics and other digital marketing toolsExcellent communication and interpersonal skills"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 7,
+          "jobTitle": "Digital Marketing Executive",
+          "companyName": "Globalbees Brands",
+          "jobDescription": "Were looking for a sharp,analytical,and ambitious Performance Marketing Specialist to help us drive paid growth across Amazon (AMS) and Google Ads.This is an excellent opportunity for someone with 02 years of hands-on experience (including internships or freelance projects) who is eager to learn,experiment,and grow in the performance marketing space"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 8,
+          "jobTitle": "Business Development Executive (Female) - Digital Marketing",
+          "companyName": "Digifills",
+          "jobDescription": "Job Title: Business Development Executive (Female) - Digital Marketing . <br><br>We are looking for a dynamic and result-oriented Business Development Executive (Female) to join our growing Digital Marketing Agency in Chennai<br><br>Experience: 0 - 4 years . Employment Type: Full-time"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 9,
+          "jobTitle": "Digital Marketing Executive / Asst Manager_Yeshwanthpur",
+          "companyName": "BDO India",
+          "jobDescription": "Male candidates only. <br><br>Experience Range : 0-2+ years Freshers with good Digital Marketing. 6 days working . Only immediate joining candidates <br><br>Candidate must have experience in digital marketing,SEO,Google Ads,performance marketing,brand visibility,and online engagement. <br><br>Experience candidate from Real Estate industry."
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 10,
+          "jobTitle": "Digital Marketing Operations Executive",
+          "companyName": "BTW Visa Services",
+          "jobDescription": " . 6 months of internship experience in digital marketing operations preferred . <br><br>Bachelor s degree in Marketing,Digital Media,or a related field"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 11,
+          "jobTitle": "Digital Marketing Executive",
+          "companyName": "Datacrux Insights",
+          "jobDescription": "<p> </p><p> </p><br /><p>Responsibilities:</p><p>* Collaborate with cross-functional teams on campaigns & strategies for marketing on different platforms and work on automation </p><p>* Manage social media presence & online branding</p><p> Opportunity to grow into a full-time role.</p><br />"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 12,
+          "jobTitle": "Executive/ Sr. Executive- Digital Marketing",
+          "companyName": "Dharampal Satyapal Group (DS Group)",
+          "jobDescription": "Solid understanding of content trends,platform algorithms,and digital performance metrics.  . Strong communication,negotiation,and project management skills.  . Proficiency with tools like Meta Business Manager,Google Analytics,and related platforms"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 13,
+          "jobTitle": "Digital Marketing Associate",
+          "companyName": "Gartner for HR",
+          "jobDescription": "Bachelor s degree with 0-2 years of experience in Email Marketing . Great communication skills and experience working with global stakeholders<br><br>Experience using Eloqua or similar Marketing Automation tool is preferred but not mandatory . ."
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 14,
+          "jobTitle": "Digital Marketing Executive",
+          "companyName": "Satguru Overseas",
+          "jobDescription": "Requirements:  . Bachelors degree in Marketing,Communications,Business,or a related field. 2+ years of experience in digital marketing or a related role. Proficiency with digital marketing tools (e.g.,Google Ads,Meta Business Suite,SEO tools,email marketing platforms). Strong knowledge of SEO / SEM,Google Analytics,and CRM software."
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 15,
+          "jobTitle": "Digital Marketing Executive",
+          "companyName": "Happilus",
+          "jobDescription": "must be able to create video with content <br><br>must have the knowledge of advertising <br><br>Preferred candidate profile . <br><br>good at social media marketing Eg- Insta,face book etc"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 16,
+          "jobTitle": "SEO Analyst - Digital Marketing",
+          "companyName": "Digifills",
+          "jobDescription": "Basic knowledge of HTML,CMS (WordPress),and technical SEO.  . Analytical mindset with problem-solving skills.  . Certification in Digital Marketing / SEO (preferred)<br><br>Experience: 0 - 3 years . Age Group: 20 - 25 years. Education: UG / PG ( Marketing or Computer Science background preferred)"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 17,
+          "jobTitle": "Digital Marketing Executive || Noida || 0.6-2 years - YES IT Labs LLC",
+          "companyName": "YES It Labs",
+          "jobDescription": "Graduate in Marketing,Business,Mass Communication,or a related field<br><br> . Good written English and document formatting skills<br><br> . Detail-oriented and organized with a willingness to learn. <br><br> Good communication skills. ."
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 18,
+          "jobTitle": "Digital Marketing Executive (0-4 Years)",
+          "companyName": "Digiversal Consultants",
+          "jobDescription": "<p> </p><p><strong>Job Title: Sr Digital Marketing Executive</strong></p><p>Location: Noida</p><p><strong>Company Overview</strong></p><p><strong>Digiversal</strong> is a fast-growing academic venture based out of Noida and having multiple liaison networks across the world. Connect with us to discover brilliance within yourself and to experience a neo-modern ideology of Live, Work, Play and Learn with stellar career growth.</p><p><strong>Digiversal</strong> is a hub for creative and passionate individuals who strive for excellence. We are committed to guiding students across the globe through their learning journey, helping them succeed in academics and in life! We present a unique combination of academic consulting and digital technology solutions. We aim to promote as well as nurture academic learning, professional development, and intellectual excellence while delivering high- quality, authentic, and trustworthy academic content writing services globally. Our vision is to maintain our status of being the most preferred and trusted brand in the industry, which excels in client satisfaction and retention.</p><p><strong>Job Summary:</strong></p><p>We are looking for an ideal candidate who will be supporting the Assistant manager with their strong technical and analytical SEO skills. The mission of a Sr. SEO (Search Engine Optimization) Executive is to maximize the volume of inbound organic traffic from search engines to our business website and to maintain the website health in search engines through regular analysis through technical tools. This will be accomplished through a combination of on-page and off-page techniques, analysis and technical SEO upgradations, including link-building, content strategy, information architecture, and more.</p><p>As Sr. SEO (Search Engine Optimization) Executive, you are responsible to mentor the Off-page members and suggest them the best link building techniques for gaining rankings media and other digital media campaigns. You should grab the attention of customers and market the products and services.</p><p>If you have the ability to utilize the organizational resources optimally for the business promotion activities, we would like to meet you. </p><p><strong>Key Responsibilities:</strong></p><ul><li>Hands on Experience of Off      page activities (must be able to perform all off-page tasks successfully like info graphics submission, PPT submission, Audio/Podcast submission,      Video submission, Image submission, including article insertion /press      release/directory submissions, RSS feeds, forum postings, blog posts, social bookmarking and commenting on social networks.).</li><li>Understanding of On-page & tools, content optimization, Meta tags etc. to boost rankings.</li><li>Understanding of how blogging, press releases, social media, and related strategies go      hand-in-hand with SEO.</li><li>Experience in building inbound organic search traffic and improving SERPS.</li><li>Working knowledge of current, past and projected trend in SEO industry.</li><li>Knowledge of SEO best practices w.r.t Content Marketing.</li><li>Knowledge of White Hat and  Black Hat SEO optimization.</li><li>Ability to manage multiple projects and handle clients.</li><li>Should possess excellent communication skills.</li><li>Good in SEO, SMO work, and Promotional Activities</li><li>Keep pace with SEO industry trends and developments including best practices to handle Google updates.</li><li>Review & analyze website to find areas of improvement.</li><li>Optimize websites to rank higher for relevant keywords in the organic search result.</li><li>Awareness about various content marketing platforms of the Market Research Industry.</li><li>Manage the ORM of the brand and work on creating a positive image of the Brand online along with mitigating the negative reviews.</li><li>Effective in troubleshooting, SEO, and ranking related issues.</li></ul><p><strong>Qualifications:</strong></p><ul><li>Demonstrated SEO experience of at least 3-5 years.</li><li>Experience with Google's Keyword Tool.</li><li>Proven success in link building.</li><li>Experience in building inbound organic search traffic and improving SERPs.</li><li>Basic HTML Knowledge.</li><li>Candidate must also possess good English communication skills (written and oral).</li><li>2+ years of working kowledge of Google Analytics, Google Search Console Tool, Ahrefs & SEMRush.</li><li>2+ Years of working experience in On page SEO and Technical SEO implementations.</li><li>Guest posting experience.</li></ul><p><strong>Why Join Us?</strong></p><ul><li>Opportunity to work with an innovative and growing company.</li><li>A dynamic work environment with learning and career growth opportunities.</li><li>Work with a talented and experienced team.</li><li>Competitive compensation and ample opportunities for growth.</li><li>Exposure to diverse projects in the digital marketing landscape.</li></ul>"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 19,
+          "jobTitle": "Digital Marketing Executive",
+          "companyName": "AM Infoweb",
+          "jobDescription": "Freshers who have completed Digital Marketing training from Internshala are encouraged to apply<br><br>Skills Required:  . Digital Marketing training from Internshala (Mandatory). <br><br>Basic knowledge of SEO,SEM,and Social Media Marketing. Creative mindset and good communication skills."
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 20,
+          "jobTitle": "Digital Marketing & Content Specialist",
+          "companyName": "Guwahati Institute Of Technology",
+          "jobDescription": "<p>Responsibilities:</p><p>* Develop digital marketing strategies, execute campaigns.</p><p>* Create engaging content, manage social media presence.</p><p>* Analyze results, report findings.</p><p>* Utilize SEO techniques, optimize website performance.</p>"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 21,
+          "jobTitle": "Fresher Digital Marketing Analyst",
+          "companyName": "Ebizon Net Info",
+          "jobDescription": "EbizON is looking for Fresher Digital Marketing Analyst to join our team in the Dehradun office<br><br>Excellent Communication . A bachelors degree in marketing,Business,or a quantitative field <br><br>6 months of experience as marketing analyst,or in digital marketing,or a related role . Strong command of written English and excellent communication skills ."
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 22,
+          "jobTitle": "Fresher Digital Marketing Analyst",
+          "companyName": "Ebizon Net Info",
+          "jobDescription": "EbizON is looking for Fresher Digital Marketing Analyst to join our team in the Dehradun office<br><br>Excellent Communication . A bachelors degree in marketing,Business,or a quantitative field <br><br>6 months of experience as marketing analyst,or in digital marketing,or a related role . Strong command of written English and excellent communication skills ."
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 23,
+          "jobTitle": "Fresher Digital Marketing Analyst",
+          "companyName": "Ebizon Net Info",
+          "jobDescription": "EbizON is looking for Fresher Digital Marketing Analyst to join our team in the Dehradun office<br><br>Excellent Communication . A bachelors degree in marketing,Business,or a quantitative field <br><br>6 months of experience as marketing analyst,or in digital marketing,or a related role . Strong command of written English and excellent communication skills ."
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 24,
+          "jobTitle": "Fresher Digital Marketing Analyst",
+          "companyName": "Ebizon Net Info",
+          "jobDescription": "EbizON is looking for Fresher Digital Marketing Analyst to join our team in the Dehradun office<br><br>Excellent Communication . A bachelors degree in marketing,Business,or a quantitative field <br><br>6 months of experience as marketing analyst,or in digital marketing,or a related role . Strong command of written English and excellent communication skills ."
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 25,
+          "jobTitle": "Digital Marketing Trainee / Hiring office located in Nungambakkam",
+          "companyName": "Digihertz Marketing Management",
+          "jobDescription": "Passion for digital marketing and willingness to learn.  . Education Qualification:  . Any Graduate (BBA,BCom,BA,BSc,etc.). <br><br>Assist the digital marketing team with additional tasks when required. Key Skills Required:  . <br><br>Basic knowledge of HTML / CSS is a plus.  . Good communication skills written and verbal."
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 26,
+          "jobTitle": "Digital Marketing Executive",
+          "companyName": "Creanovation Technologies",
+          "jobDescription": "<p>We're looking for a talented and results-oriented Digital Marketing Specialist to join our growing team. You'll be responsible for managing and optimizing paid advertising campaigns across Google Ads and Facebook Ads, while also collaborating with internal teams to develop effective marketing funnels.</p><br /><p>Responsibilities:</p><br /><p>1. Manage and optimize Google Ads and Facebook Ads campaigns, including keyword research, ad copywriting, landing page optimization, and budget allocation.</p><br /><p>2. Analyze campaign performance data and make data-driven adjustments to improve conversion rates and ROI.</p><br /><p>3. Stay up-to-date on the latest trends and best practices in paid advertising platforms.</p><br /><p>4. Collaborate with the design team to create high-converting landing pages and ad creatives that resonate with the target audience.</p><br /><p>5. Work with the content marketing team to develop marketing funnels that nurture leads and drive conversions.</p><br /><p>6. Track campaign performance against key metrics and report findings to stakeholders.</p><br /><p>7. Identify and implement new strategies to improve overall marketing effectiveness.</p><br /><br />"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 27,
+          "jobTitle": "Digital Marketing Executive - WFO",
+          "companyName": "Brainybuzz Solution",
+          "jobDescription": "- Bachelor s degree in Marketing,Communications,or a related field (preferred)<br><br> Proven work experience as a Digital Marketing Executive or similar role<br><br> - Experience with SEO,SEM,PPC campaigns,and social media marketing<br><br> Competitive salary based on experience and skills"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 28,
+          "jobTitle": "Digital Marketing Executive",
+          "companyName": "Jobsmill business solutions pvt ltd",
+          "jobDescription": "Wanted digital marketing executives\nExp - 0- 5 years\nLocation: Hyderabad, bengaluru\n\nWhatsapp us on 7093357755, we will get back to you.\n\nRam\n7093357755"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 29,
+          "jobTitle": "Digital Marketing Executive",
+          "companyName": "Viz Travels",
+          "jobDescription": "<p>Responsibilities:</p><p>* Manage digital campaigns from ideation to execution</p><p>* Optimize website for search engines, generate leads </p><p>* Analyze performance metrics and provide insights</p><p>* Collaborate with cross-functional teams on strategy development</p>"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 30,
+          "jobTitle": "Digital Marketing & Brand Growth Executive",
+          "companyName": "Digituala Lab Enterprise Llp",
+          "jobDescription": "Preferred Qualifications:  . Bachelors degree in Marketing,Mass Communication,Design,or related fields. <br><br>Proven experience in digital marketing,social media management,or content creation . Strong understanding of branding and audience engagement . Hands-on skills in tools like Canva,Adobe Suite,Meta Business Suite,or similar platforms."
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 31,
+          "jobTitle": "Digital Marketing Executive",
+          "companyName": "Shri Lakshmi Steel Suppliers",
+          "jobDescription": "Preferred candidate profile . ."
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 32,
+          "jobTitle": "Digital Marketing Specialist",
+          "companyName": "Unique Laser",
+          "jobDescription": "<p>Responsibilities:</p><ul><li>Develop & execute digital strategies using SEO, social media & Google Analytics.</li><li>Conduct keyword research, on-page/off-page optimization & link building.</li></ul>\n\nOffice cab/shuttle"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 33,
+          "jobTitle": "AI Driven Digital Marketing Specialist",
+          "companyName": "Folksco Technologies",
+          "jobDescription": "Bachelors or Masters degree in Marketing,Communications,Business,or related field<br><br>Preferred candidate profile <br><br>Minimum 2 years of hands-on digital marketing experience<br><br>Deliver minimum 300 qualified leads per month<br><br>Data-driven mindset and experience with traffic / lead performance analytics"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 34,
+          "jobTitle": "Digital Marketing Executive",
+          "companyName": "Hiringlink Solutions",
+          "jobDescription": "Track campaign performance Freshers 1 year of experience in marketing or a related field"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 35,
+          "jobTitle": "Digital Marketing Executive",
+          "companyName": "Pronteff It Solutions",
+          "jobDescription": "<br /><p><strong>Position Title: Digital Marketing Executive</strong></p><br /><p><strong>Location: Madhapur, Hyderabad (Near to Madhapur D-Mart)</strong></p><br /><p><strong>Experience:</strong> <strong>2 to 3 years</strong></p><br /><p><strong>Job Summary:</strong></p><br /><p><strong>We are looking for someone to help plan and run our online marketing efforts. This role involves working from our office and the shift is from 2 PM to 10 PM IST.</strong></p><br /><p><strong>Qualifications: Bachelors degree in Marketing, Business, or related field (any graduation).</strong></p><br /><p><strong>Role & responsibilities:</strong></p><br /><p><strong>Must have:</strong></p><br /><ul><li><strong>Strong written, verbal communication and presentation skills.</strong></li><li><strong>Good understanding of online advertising, digital marketing, email marketing concepts and techniques.</strong></li><li><strong>Knowledge on Using of Hubspot or similar application will be added advantage</strong></li><li><strong>Familiarity with social media platforms and digital marketing tools.</strong></li><li><strong>Analytical mindset with the ability to interpret data and draw actionable insights.</strong></li><li><strong>Creative thinking and problem-solving skills.</strong></li><li><strong>Ability to work independently as well as part of a team.</strong></li><li><strong>Highly organized with excellent attention to detail.</strong></li></ul><br /><p><strong>Good to have:</strong></p><br /><ul><li><strong>SEO/SEM Skills</strong></li><li><strong>Work with our teams to create landing pages and improve the user experience.</strong></li><li><strong>Web Development</strong></li><li><strong>Prior internship or work experience in digital marketing is a big plus for candidates with less experience.</strong></li></ul><br /><p><strong>What We Offer:</strong></p><br /><ul><li><strong>Competitive salary and benefits.</strong></li><li><strong>Opportunity to work with leading technologies.</strong></li><li><strong>Supportive and collaborative work environment.</strong></li><li><strong>Career growth and development opportunities.</strong></li><li><strong>Hands-on experience in digital marketing.</strong></li><li><strong>Exposure to the tech industry.</strong></li><li><strong>Networking opportunities.</strong></li></ul><br /><p><strong>How to Apply: Send your resume and a cover letter to divya.namburi@pronteff.com with the </strong></p><br /><p><strong>subject line Digital Marketing Specialist Application.</strong><br /><br /> </p><br /><br /><br />"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 36,
+          "jobTitle": "Digital Marketing Executive",
+          "companyName": "Krish Softwares",
+          "jobDescription": "Required Skills:  . <br><br>Collaborate with internal teams to create landing pages and optimize user experience.  <br><br>Proven experience (24 years) in digital marketing or a related field.  . Strong understanding of performance marketing,conversion,and online customer acquisition."
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 37,
+          "jobTitle": "Digital Marketing Manager",
+          "companyName": "Simplotel",
+          "jobDescription": "The Digital Marketing Manager position is based out of our head office in Bangalore, and the specialist will own the devising and implementing of SEO and paid marketing strategies for multiple hotel customers and help them get the maximum return on investment on their spend. <br /> <div> </div> Responsibilities:  <div> The goal of the Digital Marketing Manager will be to ensure that our customers get a good return on investment on their digital spending. The Specialist will: </div> <ul> <li> Project manage and ensure the delivery of high-quality digital marketing services to our customers. </li> <li> Coordinate with customers to understand their business and marketing strategies. </li> <li> Devise a strategy and a plan to help them achieve their goals. Review the plan with the customers and get their buy-in. </li> <li> Implement the plan and work with internal teams to get parts of the plan implemented. </li> <li> Create reports on the success of the campaigns and review the performance with the customer. </li> </ul> <div> </div> Skills Required:  <ul> <li> Graduate degree in Engineering or Business. MBA is a plus. </li> <li> 0-2 years of prior account management and digital marketing experience required. Knowledge of SEO, Google Ads, Display Ads, and social media ads is required. This includes the ability to research keywords, identify the best ones to target. </li> <li> Ability to measure and report the effectiveness of campaigns effectively. </li> <li> Excellent analytical, communication, and presentation skills. Ability to convince both internal and external stakeholders. Ability to create engaging presentations. </li> <li> Ability to create strong business cases for digital marketing. </li> <li> Knowledge of analytics tools (Google Analytics, Google Ads tools, MS Excel, SEMrush, etc.). </li> </ul>"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 38,
+          "jobTitle": "Digital Marketing Intern",
+          "companyName": "Plandigi",
+          "jobDescription": "<div> <p> <strong> Role:  </strong> Support day-to-day digital marketing tasks across SEO, social media, and paid campaigns.  </p> <p> <strong> Responsibilities:  </strong> </p> <ul> <li> Assist in content creation and scheduling for social media  <br /> </li> <li> Help with keyword research and on-page SEO  <br /> </li> <li> Support paid ad campaign setup and reporting  <br /> </li> <li> Monitor competitors and research marketing trends  <br /> </li> <li> Learn and grow with hands-on digital tools and platforms  </li> </ul> </div>"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 39,
+          "jobTitle": "Digital Marketing Executive",
+          "companyName": "mk Construction",
+          "jobDescription": "<p>Responsibilities:</p><ul><li>Collaborate with sales team on lead generation strategies</li><li>Monitor analytics & optimize performance</li><li>Manage social media presence & campaigns</li><li>Develop digital marketing plans & execute SEO tactics</li></ul>\n\nWork from home"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 40,
+          "jobTitle": "Digital Marketing Executive",
+          "companyName": "Lead Height",
+          "jobDescription": "Lead Height is looking for Digital Marketing Executive to join our dynamic team and embark on a rewarding career journey <ol> <li> Build, plan and implement the overall digital marketing strategy </li> <li> Manage the strategy </li> <li> Manage and train the rest of the team </li> <li> Stay up to date with the latest technology and best practices </li> <li> Manage all digital marketing channels </li> <li> Measure ROI and KPIs </li> <li> Prepare and manage a digital marketing budget </li> <li> Oversee all the company's social media accounts </li> <li> Manage and improve online content, considering SEO and Google Analytics </li> <li> Build an inbound marketing plan </li> <li> Forecast sales performance trends </li> <li> Motivate the digital marketing team to achieve goals </li> <li> Monitor competition and provide suggestions for improvement </li>  </ol>"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 41,
+          "jobTitle": "Digital Marketing Executive (SEO & Performance Marketing Focus)",
+          "companyName": "AVG Motors",
+          "jobDescription": "AVG MOTORS LTD. is looking for Digital Marketing Executive (SEO & Performance Marketing Focus) to join our dynamic team and embark on a rewarding career journey Develop and execute digital marketing campaigns across multiple channels such as social media, email, SEO, PPC, and display advertisingAnalyze and report on the performance of digital marketing campaigns using tools such as Google Analytics, SEMRush, and HootsuiteIdentify and implement optimization strategies to improve campaign performance and ROIManage and update the company website and other digital propertiesCollaborate with cross-functional teams to ensure brand consistency across all digital touchpoints  <br /> <br /> Strong analytical skills and experience with Google Analytics and other digital marketing toolsExcellent communication and interpersonal skills"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 42,
+          "jobTitle": "Digital Marketing Manager",
+          "companyName": "Techno Futurance Corp Services",
+          "jobDescription": "We're seeking an experienced Digital Marketing Manager with fresher or Experience in the field, skilled in SEO, Meta Ads, Google Ads, and team leadership. You’ll manage 2–3projects at a time with bonus points if you’ve worked on large-scale campaigns"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 43,
+          "jobTitle": "Digital Marketer",
+          "companyName": "Avidion Softwares Gurugram",
+          "jobDescription": "Develop and execute B2B lead generation campaigns to attract potential clients from IT,SaaS,AI,and software domains.  . Drive outreach via LinkedIn (using LinkedIn Sales Navigator),direct messages,InMails,comments,and engagement posts.  . Identify and connect with prospects via freelance platforms like Upwork,Freelancer,Clutch,Fiverr,and Good Firms .  <br><br>Required Skills & Experience"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 44,
+          "jobTitle": "Digital Marketing Assistant",
+          "companyName": "Xcademia",
+          "jobDescription": "02 years of experience in digital marketing (internships count). <br><br>The ideal candidate should have a strong grasp of current marketing tools and strategies and be able to lead integrated digital marketing campaigns from concept to execution.  . Key Responsibilities:  ."
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 45,
+          "jobTitle": "Digital Marketing-Executive",
+          "companyName": "Orient Jewellers",
+          "jobDescription": "<p> </p><p><strong> Job Title:</strong> Digital Marketing - Executive<br /> <strong> Location:</strong> Kolkata, West Bengal<br /> <strong> Company:</strong> Orient Gems & Ornaments Pvt. Ltd.<br /> <strong> Experience Required:</strong> 2 to 4 Years<br /> <strong> Travel Requirement:</strong> Mandatory (domestic travel to showrooms, exhibitions, and vendor locations)<br /> <strong> Industry:</strong> Retail / Gems & Jewellery</p><p> </p><p><strong>Job Summary:</strong></p><p>We are seeking a dynamic and results-driven <strong>Digital Marketing Executive</strong> to manage and optimize our online presence, campaigns, and brand visibility. The ideal candidate should have hands-on experience in the <strong>Retail/FMCG/Media industry</strong>, with a proven track record in executing performance-based digital strategies. This role demands travel to various retail locations, exhibitions, and industry events to ensure brand consistency across platforms.</p><p> </p><p><strong>Key Responsibilities:</strong></p><p><strong>Digital Strategy & Execution</strong></p><ul><li>Develop, execute, and manage multi-channel digital marketing campaigns across platforms (Google, Meta, YouTube, etc.).</li><li>Oversee the planning and delivery of digital content calendars, promotions, and product launches.</li><li>Handle <strong>SEO/SEM, PPC campaigns, social media marketing</strong>, and <strong>email marketing</strong>.</li><li>Manage and update the companys website and e-commerce platforms (if applicable).</li></ul><p><strong>Social Media Management</strong></p><ul><li>Build and grow brand presence on Instagram, Facebook, LinkedIn, Pinterest, and YouTube.</li><li>Create engaging and visually appealing posts, stories, and reels in coordination with the creative      team.</li><li>Monitor social media trends, hashtags, and competitor activities.</li></ul><p><strong>Performance & Analytics</strong></p><ul><li>Track, report, and analyze campaign performance using tools like Google Analytics, Meta Business Suite, and third-party dashboards.</li><li>Generate weekly/monthly reports on KPIs, ROI, traffic, conversions, and engagement metrics.</li><li>Implement A/B testing and conversion rate optimization strategies.</li></ul><p><strong>Branding & Content</strong></p><ul><li>Coordinate with photographers, designers, and videographers to create product-centric and      lifestyle content.</li><li>Ensure brand tone and aesthetics align across all digital platforms.</li><li>Plan and execute influencer tie-ups and collaborations to enhance brand visibility.</li></ul><p><strong>Travel & Coordination</strong></p><ul><li>Travel to showrooms, events, and exhibitions to gather content, understand customer insights, and ensure marketing alignment.</li><li>Coordinate with store managers and regional teams for campaign rollouts and event promotions.</li></ul><p> </p><p><strong>Requirements:</strong></p><ul><li><strong>MBA preferred</strong>/Bachelors degree in Marketing, Digital Media, Communications, or related field.</li><li><strong>2 - 4 years of digital marketing experience</strong> in the <strong>retail/fmcg/media industry</strong>.</li><li>Strong understanding of SEO, Google Ads, Meta Ads Manager, and e-commerce.</li><li>Hands-on experience with tools like Canva, Photoshop, Meta Business Suite, Mailchimp, Google      Analytics, etc.</li><li>Fluent in English, Hindi, and preferably Bengali.</li><li>Excellent written and verbal communication skills.</li><li>Willingness and ability to travel frequently.</li></ul><p> </p><p><strong>Preferred Skills:</strong></p><ul><li>Knowledge of Jewellery trends, festive season marketing, and regional customer behavior.</li><li>Basic understanding of product photography and visual merchandising.</li><li>Experience in What's App marketing and CRM-based campaigns.</li></ul><br /><p>Interested Candidates Please Drop Your Resume On hr@orientjewellers.co.in or Whats App 8373099937</p><br />"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 46,
+          "jobTitle": "Senior Executive - Digital Marketing",
+          "companyName": "Jones Lang LaSalle Property Consultants (India) Pv t. Ltd.",
+          "jobDescription": "Generate MIS and reports as management requirement . Predictive reporting . Work with finance on budget targets . Cross verification of data as per agreed TOR time to time ."
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 47,
+          "jobTitle": "Digital Marketing Specialist",
+          "companyName": "Spacebyte",
+          "jobDescription": "<p>Responsibilities:</p><ul><li>Plan and execute digital campaigns across Google, Meta, and more with maximum ROI</li><li>Manage social media presence & create engaging content</li><li>Grow our online presence through SEO, blog strategy, and email marketing</li></ul>"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 48,
+          "jobTitle": "Digital Marketing Manager",
+          "companyName": "Inspired Classes",
+          "jobDescription": "<p>Create content (reels, posts, blogs), design creatives, and build landing pages. Must know Canva, writing basics, and social media. Internship with real work, certificate, and growth opportunity. Creative minds only!<br /> </p>\n\nAssistive technologies\nFlexi working"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 49,
+          "jobTitle": "Seo And Digital Marketing Executive",
+          "companyName": "HR & Pr Media Broadcasting Entertainment",
+          "jobDescription": "Preferred Skills: -Experience in email marketing and marketing automation tools<br><br>Experience: 1-3 years preferred<br><br>Proven experience in SEO and digital marketing roles (1-3 years preferred)<br><br>Preferred candidate profile . ."
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 50,
+          "jobTitle": "Digital Marketer (Bangalore candidates only)",
+          "companyName": "Seven Sands Tourism",
+          "jobDescription": "<p>Responsibilities:</p><p>* Manage social media presence</p><p>* Analyze campaign performance</p><p>* Collaborate with sales team on lead generation</p><p>* Optimize website for search engines</p><p>* Develop digital marketing strategies</p>"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 51,
+          "jobTitle": "Business Development Executive Cold Calling Digital Marketing",
+          "companyName": "Enewsvault Digital Marketing agency ",
+          "jobDescription": "Experience using CRM software and lead generation tools.  . Self-driven,resilient,and target-focused.  . Bachelors degree in Marketing,Business,or a related field is preferred.  . Key Skills:  . <br><br>Sales pitching and objection handling. Digital marketing knowledge. CRM and data entry proficiency."
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 52,
+          "jobTitle": "Digital Marketing Manager",
+          "companyName": "Suchirindia Constructions",
+          "jobDescription": "Preferred candidate profile . Real Estate (Residential,Commercial)"
+        }
+      },
+      {
+        "json": {
+          "rowIndex": 53,
+          "jobTitle": "Digital Marketing Executive",
+          "companyName": "Codershive Ajmer",
+          "jobDescription": "Any graduate,fresher / experienced<br><br> Good English & Facebook Ads,Shopify shop skills required<br><br> Should be hardworking,and will to learn fast<br><br> Should do daily homework after job"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4cc92f10-3180-4f9e-b3b8-5b0ad903b481",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3acfd83747b23463e29b4731178a780545ac2a704288c04a8b6d09e07a59559f"
+  },
+  "id": "m2h85jKEFxeptm67",
+  "tags": []
+}
