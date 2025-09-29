@@ -1,0 +1,151 @@
+{
+  "name": "PDF TO SUMMARY",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {
+          "download": true
+        }
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        672,
+        -416
+      ],
+      "id": "eec8f6ed-393e-41ff-8032-7e04728d2265",
+      "name": "Telegram Trigger",
+      "webhookId": "2d7aaabd-320a-4ec0-a6c4-b9a6ae7e6954",
+      "credentials": {
+        "telegramApi": {
+          "id": "MeNO6dfrFkn8uvS3",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        880,
+        -416
+      ],
+      "id": "47a6dfe7-cb51-4c5f-aa76-36bfa4342566",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=SUMMARIZE THE BELOW INPUT {{ $json.text }}"
+            },
+            {
+              "content": "YOU ARE AN EXPERT IN SUMMARIZING THE PDF AND YOU SHOULD GIVE KEY HIGHLIGHTED POINTS AND KEY POINTERS ON A SINGLE PAGE IN AN UNDERSTABLE AND EASY TO READ AND UNDERSTANDING THE OVERALL CONCEPT",
+              "role": "system"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1088,
+        -416
+      ],
+      "id": "c251d61d-564e-4582-a77f-3e36128af835",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ulQa6ZRdbDpV4Slo",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "={{ $json.message.content }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1440,
+        -416
+      ],
+      "id": "a79ecb67-5e36-432c-92bd-608b4d12210d",
+      "name": "Send a text message",
+      "webhookId": "409531c8-0f31-41ab-80aa-6e67fc750ad6",
+      "credentials": {
+        "telegramApi": {
+          "id": "MeNO6dfrFkn8uvS3",
+          "name": "Telegram account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "93b2e172-30d9-43f6-880d-aaaee2613580",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3acfd83747b23463e29b4731178a780545ac2a704288c04a8b6d09e07a59559f"
+  },
+  "id": "hpqRKjLDoXF2LKV6",
+  "tags": []
+}
