@@ -1,0 +1,431 @@
+{
+  "name": "Meeting Summary to Task",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "sender": "Karthikeyanm650@gmail.com"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -384,
+        144
+      ],
+      "id": "b67f0e26-91b0-411e-97eb-892606823384",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "p4FFUbGLOQINqOec",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bd47bb35-a401-41c0-897a-6d216f07c7b4",
+              "name": "summaryText",
+              "value": "={{ $json.text }}\n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -176,
+        144
+      ],
+      "id": "e624674b-d5dd-448a-91b0-983dd68bd5b8",
+      "name": "Extract Summary from Email Body"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Extract the tasks from the summary below and return ONLY a valid JSON array.\n\nSummary:\n{{ $json.summaryText }}\n",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are an assistant that extracts structured tasks from meeting summaries.\n\nReturn a JSON array. Each task should have:\n- task\n- owner\n- category\n- deadline (YYYY-MM-DD)\n- status (default: \"not completed\")\n- file (if mentioned, else null)\n"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        32,
+        144
+      ],
+      "id": "6d90ec56-fc33-4997-a279-7e766c2d803d",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        32,
+        352
+      ],
+      "id": "7624470d-f2db-4ea4-9e69-1345557ee4f3",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ulQa6ZRdbDpV4Slo",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1BiklMrA05BcpOaUY0ur4czHWT0PAR6iQxpBBIKzaipI",
+          "mode": "list",
+          "cachedResultName": "AI  ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BiklMrA05BcpOaUY0ur4czHWT0PAR6iQxpBBIKzaipI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1779524410,
+          "mode": "list",
+          "cachedResultName": "Week 5  -n8n",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BiklMrA05BcpOaUY0ur4czHWT0PAR6iQxpBBIKzaipI/edit#gid=1779524410"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Task": "={{ $json.Task }}",
+            "Owner": "={{ $json.Owner }}",
+            "Category": "={{ $json.Category }}",
+            "Deadline": "={{ $json.Deadline }}",
+            "Status": "={{ $json.Status }}",
+            "File": "={{ $json.File }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Task",
+              "displayName": "Task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Owner",
+              "displayName": "Owner",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Deadline",
+              "displayName": "Deadline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "File",
+              "displayName": "File",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        592,
+        144
+      ],
+      "id": "d676ebc1-1caa-4419-8477-4c35bddbf45d",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "bgLs83xoXoUIf5fL",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "karthikeyanmdigitalgrowth@gmail.com",
+        "subject": "New Tasks Added to Project Sheet",
+        "emailType": "text",
+        "message": "=Hello,\n\nNew tasks have been added to the project tracker.\n\nYou can view the sheet here:\nhttps://docs.google.com/spreadsheets/d/1BiklMrA05BcpOaUY0ur4czHWT0PAR6iQxpBBIKzaipI/edit?gid=1779524410#gid=1779524410\n\nRegards,  \nYour AI Project Assistant\n",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1008,
+        144
+      ],
+      "id": "e22459ee-8d74-4fd1-b7b7-fcdb81d8b473",
+      "name": "Send a message",
+      "webhookId": "70f39f6a-dcd8-47e6-a507-fceb9c53d14a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "p4FFUbGLOQINqOec",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse the raw LLM string output (stored in $json.text)\nconst rawText = $json.text;\n\n// Extract only the JSON string part (if it includes \"json[...]\" or any wrapper)\nconst jsonStart = rawText.indexOf('[');\nconst jsonEnd = rawText.lastIndexOf(']');\nconst jsonString = rawText.slice(jsonStart, jsonEnd + 1);\n\n// Parse the array\nlet tasks;\ntry {\n  tasks = JSON.parse(jsonString);\n} catch (err) {\n  throw new Error(\"Failed to parse JSON array from LLM output: \" + err.message);\n}\n\n// Map it to the desired Google Sheets format\nreturn tasks.map(task => {\n  return {\n    json: {\n      Task: task.task,\n      Owner: task.owner,\n      Category: task.category,\n      Deadline: task.deadline,\n      Status: task.status,\n      File: task.file || ''\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        384,
+        144
+      ],
+      "id": "2d786102-12bb-4959-a21f-c94db7a53631",
+      "name": "Task Creator"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Combine all task rows into one message string\nconst tasks = $input.all();\n\nconst sheetUrl = 'https://docs.google.com/spreadsheets/d/1BiKlMrA05BCpOaUYOur4czHWT0PAR6iQxpBBIKzaipl/edit#gid=1779524410'; // replace with your actual sheet URL\n\nlet message = `Hello,\\n\\nThe following tasks were added to the project tracker:\\n\\n`;\n\nmessage += tasks.map(item => {\n  const t = item.json;\n  return `• ${t.Task} (Owner: ${t.Owner}, Category: ${t.Category}, Deadline: ${t.Deadline}, Status: ${t.Status})`;\n}).join('\\n');\n\nmessage += `\\n\\nYou can view the full sheet here:\\n${sheetUrl}\\n\\nRegards,\\nn8n Automation`;\n\nreturn [\n  {\n    json: {\n      emailBody: message\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        144
+      ],
+      "id": "92eab4f3-2317-4439-bff4-1ab0d961b477",
+      "name": "Task Update"
+    }
+  ],
+  "pinData": {
+    "Gmail Trigger": [
+      {
+        "json": {
+          "id": "19874fc2ea9af650",
+          "threadId": "19874fc2ea9af650",
+          "labelIds": [
+            "UNREAD",
+            "CATEGORY_PERSONAL",
+            "INBOX"
+          ],
+          "sizeEstimate": 11747,
+          "headers": {
+            "delivered-to": "Delivered-To: karthikeyanmdigitalgrowth@gmail.com",
+            "received": "Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])\r\n        by mx.google.com with SMTPS id d9443c01a7336-24197b662b0sor50112055ad.1.2025.08.04.05.09.00\r\n        for <karthikeyanmdigitalgrowth@gmail.com>\r\n        (Google Transport Security);\r\n        Mon, 04 Aug 2025 05:09:00 -0700 (PDT)",
+            "x-received": "X-Received: by 2002:a17:903:1246:b0:233:d3e7:6fd6 with SMTP id\r\n d9443c01a7336-24200d2f3edmr238491935ad.19.1754309339829; Mon, 04 Aug 2025\r\n 05:08:59 -0700 (PDT)",
+            "arc-seal": "ARC-Seal: i=1; a=rsa-sha256; t=1754309340; cv=none;\r\n        d=google.com; s=arc-20240605;\r\n        b=JiTROL0sGk54igxJHaFUgR2irj9mkE1VKvAZ/vofahnHicJfUNhEVPpJLvxW9V1LQ7\r\n         uf8rJg5j2HLWzjlIkzSJqhOp9arr3JjbRywhUqyAd3oX2BaXwW3/rW4rVgqoAUpf3VjG\r\n         I5jqKi+HNhFYhTfOvFxN140tRoFTFxtdccP6suemk5MAM6ZwrOLFWUOqksXtqtyCm2U7\r\n         /GKjDxWWOpqjlrdFIUPmyb91A2y7kVntmS+8uz61gKlMcqUZantEI8W4ZLpB+kDOhLN7\r\n         Tlpiv6hX13FUD3ELaDRnKMI8pTc5ba7ROzExtBiVh4+CFtSrJ93YBBAVnrEn9LYjozC8\r\n         yTwg==",
+            "arc-message-signature": "ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;\r\n        h=to:subject:message-id:date:from:mime-version:dkim-signature;\r\n        bh=qprrBuiRaNXtM8tII874uqZxWt/6FMK4zfaMqlFt0P0=;\r\n        fh=7JShIa6dq9mXBTXc79FjwnqSomf50FRibYlc5YZWZfU=;\r\n        b=PfjORfJNtI5xKaSCEm0fUSISNTX1p8HlpNi8ryCwoZDQyG69mZ8tZav0e1Epk2u20G\r\n         aTKIhuuQiN7vUdcx+KhjY6D+eqlJptwZkuawaWL569KlFdmF9jkB3qFOKlqU1N3zdM54\r\n         qJqVex4dvFf9KTFNndMm6LKK8KDAcp1CoszJLzx3zHQQohmavyxCwzhq7iZ4PcCBza4V\r\n         vIQ4iOu4qgsxISEtR3TnzQTVmVE97TYUJHV4scR17rPPk4H3NCobow4GLuU5FUpfQmwp\r\n         4iEZHrXYO8ikXDOw5qUylqfVr4CZp/wxBWsjd84WDJPii2U/uywZW6C2V11HPzdT1JH6\r\n         Dt3A==;\r\n        dara=google.com",
+            "arc-authentication-results": "ARC-Authentication-Results: i=1; mx.google.com;\r\n       dkim=pass header.i=@gmail.com header.s=20230601 header.b=jE3cczDw;\r\n       spf=pass (google.com: domain of karthikeyanm650@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=karthikeyanm650@gmail.com;\r\n       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com;\r\n       dara=pass header.i=@gmail.com",
+            "return-path": "Return-Path: <karthikeyanm650@gmail.com>",
+            "received-spf": "Received-SPF: pass (google.com: domain of karthikeyanm650@gmail.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;",
+            "authentication-results": "Authentication-Results: mx.google.com;\r\n       dkim=pass header.i=@gmail.com header.s=20230601 header.b=jE3cczDw;\r\n       spf=pass (google.com: domain of karthikeyanm650@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=karthikeyanm650@gmail.com;\r\n       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com;\r\n       dara=pass header.i=@gmail.com",
+            "dkim-signature": "DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;\r\n        d=gmail.com; s=20230601; t=1754309340; x=1754914140; dara=google.com;\r\n        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject\r\n         :date:message-id:reply-to;\r\n        bh=qprrBuiRaNXtM8tII874uqZxWt/6FMK4zfaMqlFt0P0=;\r\n        b=jE3cczDwzDLGaBAZ4dxC4cmZe4Z4xjSDYg9DzW7omV1LM2OIKynH99HqOjkeWjnZSr\r\n         yf8qgWMXPtYlr4EDpFy1okrk5bdg9DiwmMkATdhK5ukef6Y5Hbl3Dxe8gPWeY1EwVwdL\r\n         xCSDU5aUcOOLBKKZqcFD/D1Wei90k5tBce7GqI3fCln0KqTX+z0xoWvZNo9ZJt+Mu6H4\r\n         W9e2nzbAOZv5exR+Y9IhM3eERt7NO90k5yeB+xwbO+ME78diUXqNzVdgk10/dFj6G8s7\r\n         zvQWRQa6xZhtrCBrEhRgm6FBel3PooW4iPg9WSgQutY3ms+gKgzW6RPIZQYFx+SUoCm6\r\n         He+w==",
+            "x-google-dkim-signature": "X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;\r\n        d=1e100.net; s=20230601; t=1754309340; x=1754914140;\r\n        h=to:subject:message-id:date:from:mime-version:x-gm-message-state\r\n         :from:to:cc:subject:date:message-id:reply-to;\r\n        bh=qprrBuiRaNXtM8tII874uqZxWt/6FMK4zfaMqlFt0P0=;\r\n        b=mSE33IFaEw46Grii0Rxa+EsLb5N4IWUThD21vHxhvuuv7ravM4+kwcUAsvgqh4OSNd\r\n         sFwYeAxXsFcJCQIz3znAkmjkDXbLTztmS4Giku1g6Rh5QRargnL2nwi4FpNxCOBdRn7U\r\n         yegSx7dIJ2DGH4JOsET2fuqB8OhLkNTjDVwGdgKJacUUPlo6ABBqBQAxdo+OOJzV3aN1\r\n         lG9i95Vb/J/CJyWFh2zHpHk4s5l9HIu5Hra2XaCAEb4xsLvUdzs/knwWox+Md4A/vr2s\r\n         OuUgwk7fyZrF8ECKg3tlndpabVCGn0KueQ//+VBTYsQVKtNOSIBtb4NkQXCkgxc/vraQ\r\n         BqUQ==",
+            "x-gm-message-state": "X-Gm-Message-State: AOJu0YyZZnSxBsV/HB0vcp5kwOB7sdMaMrECBFYHHW4rNE0w0CPcoqek\r\n\tY2nCoxoBM+HvIP4FvgbTzv9/tnjOybZMjAHJyICTWc+J96PHLWOwZSftr+MnKJrP+UhWVX+lZ6z\r\n\tB0yJu4lkbPEkCNMTeAGi2Ygzpy6owoYRyggOJ9aE=",
+            "x-gm-gg": "X-Gm-Gg: ASbGncuYGWtNPNXjb7T0S9B5FJkY8Yyaz4oFBi3cOQCrDyXhfBdj3AuEkbNxzWtMp6+\r\n\tV6ZZGGy4ulJ3YP+/MPR02pq8Ka9bJ/otWHD79loZu+CL5jo3tSTuo6Xyt1PVJkqczVdsIVpX63w\r\n\tSSLM+M7n/TuNZW+Tk8S4msAoTb//ehfyV3uHyXXRypURf2eIeGFunVKzNBB61KLNefa2whA8JQc\r\n\ttbSSg==",
+            "x-google-smtp-source": "X-Google-Smtp-Source: AGHT+IHffBARwRnLCqgKRAtqOzGmuD3pFaaP/vF9fViuzqTcJm7frWtarVEZ7B93fHE1ZvPW6RzBLqTelNP5RYrRlec=",
+            "mime-version": "MIME-Version: 1.0",
+            "from": "From: Karthikeyan M <karthikeyanm650@gmail.com>",
+            "date": "Date: Mon, 4 Aug 2025 17:38:47 +0530",
+            "x-gm-features": "X-Gm-Features: Ac12FXzvbw4TVVPQg6CcdSMmtIp6PkaGT409HQhrsQOhaPCphZojZiUP8daSI0s",
+            "message-id": "Message-ID: <CAN1SUNvkrpA+F7Koe8wGr7UHu0eyX1VufHcO7fUq3krn0RgTMg@mail.gmail.com>",
+            "subject": "Subject: Meeting Summary",
+            "to": "To: karthikeyanmdigitalgrowth@gmail.com",
+            "content-type": "Content-Type: multipart/alternative; boundary=\"00000000000006dd78063b88f956\""
+          },
+          "html": "<div dir=\"ltr\"><div dir=\"auto\">Meeting Purpose</div><div dir=\"auto\">Align on content strategy for real estate webinars, press releases, and marketing efforts.</div><div dir=\"auto\"><br></div><div dir=\"auto\">Key Takeaways</div><div dir=\"auto\">Team preparing ERP features presentation for real estate, tailored to business types (leasing, sales, rentals)</div><div dir=\"auto\">Webinars planned for vetted potential clients; concerns raised about content protection</div><div dir=\"auto\">PR/articles to focus on industry trends, not specific webinars; real estate client collaborations can be highlighted</div><div dir=\"auto\">Monthly content planning cycle established: journalist trends by 21st, team alignment by month-end</div><div dir=\"auto\">Topics</div><div dir=\"auto\">ERP Features Presentation</div><div dir=\"auto\">Team developing presentation on ERP features for real estate management</div><div dir=\"auto\">Covers multiple business types: leasing, sales/purchase, rentals, niche markets</div><div dir=\"auto\">Separate from webinar content; focuses on offered features and solutions</div><div dir=\"auto\">Webinar Strategy</div><div dir=\"auto\">Aimed at actual clients/customers interested in the solution</div><div dir=\"auto\">Content protection concerns raised; need for attendee vetting process</div><div dir=\"auto\">Challenge: balancing openness (e.g., LinkedIn webinar) with protecting proprietary info</div><div dir=\"auto\">Internal demo planned for late July; live session targeted for early August</div><div dir=\"auto\">Press Release and Article Approach</div><div dir=\"auto\">Avoid mentioning specific webinars in press releases</div><div dir=\"auto\">Focus on industry-specific content, avoiding direct company promotion</div><div dir=\"auto\">Highlight features and achievements in real estate industry</div><div dir=\"auto\">Collaborate with real estate clients for press releases when applicable</div><div dir=\"auto\">Include impactful numbers and data to attract media attention</div><div dir=\"auto\">Content Alignment Process</div><div dir=\"auto\">Rupa&#39;s team to provide journalist story trends by 21st-22nd of each month</div><div dir=\"auto\">Pradeep&#39;s team to adjust content calendar based on these trends</div><div dir=\"auto\">Salman to share topic information and webinar session plans</div><div dir=\"auto\">Team to shape webinar and podcast content to match overall strategy</div><div dir=\"auto\">Timeline and Action Items</div><div dir=\"auto\">Rupa: Share journalist trends by 21st-22nd monthly</div><div dir=\"auto\">Pradeep: Prepare August plan for social media, blogs, and webinars</div><div dir=\"auto\">Team: Internal webinar demo in late July</div><div dir=\"auto\">Team: Live webinar session planned for early August</div><div dir=\"auto\">Aadil: Schedule recurring meeting for last Friday of each month</div><div dir=\"auto\">Next Steps</div><div dir=\"auto\">Salman to share topic details and webinar plans with the team</div><div dir=\"auto\">Rupa to provide journalist trends by July 21st-22nd</div><div dir=\"auto\">Pradeep to develop content calendar for August, including social media, blogs, and webinars</div><div dir=\"auto\">Team to conduct internal webinar demo in late July</div><div dir=\"auto\">Aadil to send calendar invite for recurring monthly alignment meeting (last Friday)</div><div dir=\"auto\">Plan first live webinar session for early August,</div></div>\n",
+          "text": "Meeting Purpose\nAlign on content strategy for real estate webinars, press releases, and\nmarketing efforts.\n\nKey Takeaways\nTeam preparing ERP features presentation for real estate, tailored to\nbusiness types (leasing, sales, rentals)\nWebinars planned for vetted potential clients; concerns raised about\ncontent protection\nPR/articles to focus on industry trends, not specific webinars; real estate\nclient collaborations can be highlighted\nMonthly content planning cycle established: journalist trends by 21st, team\nalignment by month-end\nTopics\nERP Features Presentation\nTeam developing presentation on ERP features for real estate management\nCovers multiple business types: leasing, sales/purchase, rentals, niche\nmarkets\nSeparate from webinar content; focuses on offered features and solutions\nWebinar Strategy\nAimed at actual clients/customers interested in the solution\nContent protection concerns raised; need for attendee vetting process\nChallenge: balancing openness (e.g., LinkedIn webinar) with protecting\nproprietary info\nInternal demo planned for late July; live session targeted for early August\nPress Release and Article Approach\nAvoid mentioning specific webinars in press releases\nFocus on industry-specific content, avoiding direct company promotion\nHighlight features and achievements in real estate industry\nCollaborate with real estate clients for press releases when applicable\nInclude impactful numbers and data to attract media attention\nContent Alignment Process\nRupa's team to provide journalist story trends by 21st-22nd of each month\nPradeep's team to adjust content calendar based on these trends\nSalman to share topic information and webinar session plans\nTeam to shape webinar and podcast content to match overall strategy\nTimeline and Action Items\nRupa: Share journalist trends by 21st-22nd monthly\nPradeep: Prepare August plan for social media, blogs, and webinars\nTeam: Internal webinar demo in late July\nTeam: Live webinar session planned for early August\nAadil: Schedule recurring meeting for last Friday of each month\nNext Steps\nSalman to share topic details and webinar plans with the team\nRupa to provide journalist trends by July 21st-22nd\nPradeep to develop content calendar for August, including social media,\nblogs, and webinars\nTeam to conduct internal webinar demo in late July\nAadil to send calendar invite for recurring monthly alignment meeting (last\nFriday)\nPlan first live webinar session for early August,\n",
+          "textAsHtml": "<p>Meeting Purpose<br/>Align on content strategy for real estate webinars, press releases, and<br/>marketing efforts.</p><p>Key Takeaways<br/>Team preparing ERP features presentation for real estate, tailored to<br/>business types (leasing, sales, rentals)<br/>Webinars planned for vetted potential clients; concerns raised about<br/>content protection<br/>PR/articles to focus on industry trends, not specific webinars; real estate<br/>client collaborations can be highlighted<br/>Monthly content planning cycle established: journalist trends by 21st, team<br/>alignment by month-end<br/>Topics<br/>ERP Features Presentation<br/>Team developing presentation on ERP features for real estate management<br/>Covers multiple business types: leasing, sales/purchase, rentals, niche<br/>markets<br/>Separate from webinar content; focuses on offered features and solutions<br/>Webinar Strategy<br/>Aimed at actual clients/customers interested in the solution<br/>Content protection concerns raised; need for attendee vetting process<br/>Challenge: balancing openness (e.g., LinkedIn webinar) with protecting<br/>proprietary info<br/>Internal demo planned for late July; live session targeted for early August<br/>Press Release and Article Approach<br/>Avoid mentioning specific webinars in press releases<br/>Focus on industry-specific content, avoiding direct company promotion<br/>Highlight features and achievements in real estate industry<br/>Collaborate with real estate clients for press releases when applicable<br/>Include impactful numbers and data to attract media attention<br/>Content Alignment Process<br/>Rupa&apos;s team to provide journalist story trends by 21st-22nd of each month<br/>Pradeep&apos;s team to adjust content calendar based on these trends<br/>Salman to share topic information and webinar session plans<br/>Team to shape webinar and podcast content to match overall strategy<br/>Timeline and Action Items<br/>Rupa: Share journalist trends by 21st-22nd monthly<br/>Pradeep: Prepare August plan for social media, blogs, and webinars<br/>Team: Internal webinar demo in late July<br/>Team: Live webinar session planned for early August<br/>Aadil: Schedule recurring meeting for last Friday of each month<br/>Next Steps<br/>Salman to share topic details and webinar plans with the team<br/>Rupa to provide journalist trends by July 21st-22nd<br/>Pradeep to develop content calendar for August, including social media,<br/>blogs, and webinars<br/>Team to conduct internal webinar demo in late July<br/>Aadil to send calendar invite for recurring monthly alignment meeting (last<br/>Friday)<br/>Plan first live webinar session for early August,</p>",
+          "subject": "Meeting Summary",
+          "date": "2025-08-04T12:08:47.000Z",
+          "to": {
+            "value": [
+              {
+                "address": "karthikeyanmdigitalgrowth@gmail.com",
+                "name": ""
+              }
+            ],
+            "html": "<span class=\"mp_address_group\"><a href=\"mailto:karthikeyanmdigitalgrowth@gmail.com\" class=\"mp_address_email\">karthikeyanmdigitalgrowth@gmail.com</a></span>",
+            "text": "karthikeyanmdigitalgrowth@gmail.com"
+          },
+          "from": {
+            "value": [
+              {
+                "address": "karthikeyanm650@gmail.com",
+                "name": "Karthikeyan M"
+              }
+            ],
+            "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Karthikeyan M</span> &lt;<a href=\"mailto:karthikeyanm650@gmail.com\" class=\"mp_address_email\">karthikeyanm650@gmail.com</a>&gt;</span>",
+            "text": "\"Karthikeyan M\" <karthikeyanm650@gmail.com>"
+          },
+          "messageId": "<CAN1SUNvkrpA+F7Koe8wGr7UHu0eyX1VufHcO7fUq3krn0RgTMg@mail.gmail.com>"
+        }
+      }
+    ],
+    "Extract Summary from Email Body": [
+      {
+        "json": {
+          "summaryText": "Meeting Purpose\nAlign on content strategy for real estate webinars, press releases, and\nmarketing efforts.\n\nKey Takeaways\nTeam preparing ERP features presentation for real estate, tailored to\nbusiness types (leasing, sales, rentals)\nWebinars planned for vetted potential clients; concerns raised about\ncontent protection\nPR/articles to focus on industry trends, not specific webinars; real estate\nclient collaborations can be highlighted\nMonthly content planning cycle established: journalist trends by 21st, team\nalignment by month-end\nTopics\nERP Features Presentation\nTeam developing presentation on ERP features for real estate management\nCovers multiple business types: leasing, sales/purchase, rentals, niche\nmarkets\nSeparate from webinar content; focuses on offered features and solutions\nWebinar Strategy\nAimed at actual clients/customers interested in the solution\nContent protection concerns raised; need for attendee vetting process\nChallenge: balancing openness (e.g., LinkedIn webinar) with protecting\nproprietary info\nInternal demo planned for late July; live session targeted for early August\nPress Release and Article Approach\nAvoid mentioning specific webinars in press releases\nFocus on industry-specific content, avoiding direct company promotion\nHighlight features and achievements in real estate industry\nCollaborate with real estate clients for press releases when applicable\nInclude impactful numbers and data to attract media attention\nContent Alignment Process\nRupa's team to provide journalist story trends by 21st-22nd of each month\nPradeep's team to adjust content calendar based on these trends\nSalman to share topic information and webinar session plans\nTeam to shape webinar and podcast content to match overall strategy\nTimeline and Action Items\nRupa: Share journalist trends by 21st-22nd monthly\nPradeep: Prepare August plan for social media, blogs, and webinars\nTeam: Internal webinar demo in late July\nTeam: Live webinar session planned for early August\nAadil: Schedule recurring meeting for last Friday of each month\nNext Steps\nSalman to share topic details and webinar plans with the team\nRupa to provide journalist trends by July 21st-22nd\nPradeep to develop content calendar for August, including social media,\nblogs, and webinars\nTeam to conduct internal webinar demo in late July\nAadil to send calendar invite for recurring monthly alignment meeting (last\nFriday)\nPlan first live webinar session for early August,\n\n"
+        }
+      }
+    ],
+    "Basic LLM Chain": [
+      {
+        "json": {
+          "text": "```json\n[\n    {\n        \"task\": \"Share journalist trends by 21st-22nd monthly\",\n        \"owner\": \"Rupa\",\n        \"category\": \"Content Planning\",\n        \"deadline\": \"2023-07-21\",\n        \"status\": \"not completed\",\n        \"file\": null\n    },\n    {\n        \"task\": \"Prepare August plan for social media, blogs, and webinars\",\n        \"owner\": \"Pradeep\",\n        \"category\": \"Content Planning\",\n        \"deadline\": \"2023-08-01\",\n        \"status\": \"not completed\",\n        \"file\": null\n    },\n    {\n        \"task\": \"Conduct internal webinar demo\",\n        \"owner\": \"Team\",\n        \"category\": \"Webinar\",\n        \"deadline\": \"2023-07-31\",\n        \"status\": \"not completed\",\n        \"file\": null\n    },\n    {\n        \"task\": \"Plan first live webinar session\",\n        \"owner\": \"Team\",\n        \"category\": \"Webinar\",\n        \"deadline\": \"2023-08-01\",\n        \"status\": \"not completed\",\n        \"file\": null\n    },\n    {\n        \"task\": \"Schedule recurring meeting for last Friday of each month\",\n        \"owner\": \"Aadil\",\n        \"category\": \"Meeting Management\",\n        \"deadline\": \"2023-07-28\",\n        \"status\": \"not completed\",\n        \"file\": null\n    },\n    {\n        \"task\": \"Share topic details and webinar plans with the team\",\n        \"owner\": \"Salman\",\n        \"category\": \"Webinar\",\n        \"deadline\": \"2023-08-01\",\n        \"status\": \"not completed\",\n        \"file\": null\n    }\n]\n```"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Extract Summary from Email Body",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Summary from Email Body": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Task Creator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Task Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Task Creator": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Task Update": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d993ca2a-11a5-469b-b89a-d9118f9b828a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3acfd83747b23463e29b4731178a780545ac2a704288c04a8b6d09e07a59559f"
+  },
+  "id": "XRflpIHhzyHmBLPN",
+  "tags": []
+}
