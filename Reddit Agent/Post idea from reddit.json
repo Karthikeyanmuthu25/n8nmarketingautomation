@@ -1,0 +1,1772 @@
+{
+  "name": "Post idea from reddit",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        496,
+        0
+      ],
+      "id": "d3983df9-696a-4e4a-9fa3-7dd066d372ca",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "subreddit": "n8n",
+        "keyword": "n8n",
+        "limit": 10,
+        "additionalFields": {
+          "sort": "=new"
+        }
+      },
+      "type": "n8n-nodes-base.reddit",
+      "typeVersion": 1,
+      "position": [
+        720,
+        0
+      ],
+      "id": "f3dfc214-4d4d-4d60-8ac3-6d0973982ffc",
+      "name": "Search for a post"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "title, selftext",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        944,
+        0
+      ],
+      "id": "04eefbb8-88aa-463f-b3a5-64568e9a329a",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1136,
+        0
+      ],
+      "id": "22f331fd-94a3-4262-b7f6-c267c33991fb",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "= Role:\nYou are an AI Automation Specialist with expertise in building intelligent workflows using n8n.\nYou specialize in helping founders, teams, and professionals eliminate manual, repetitive tasks through smart automation.\n\n🔹 Task:\nYour task is to analyze Reddit posts from subreddits like r/n8n,and generate LinkedIn post ideas that:\n{{ $json.title }}{{ $json.selftext }}\nAddress a real pain point or challenge mentioned in the post\n\nOffer a solution, strategy, or insight from your automation expertise\n\nAre engaging, helpful, and relevant to your target audience\n\nFollow a clear headline + supporting explanation format\n\n🔹 Context:\nTarget audience includes:\n\nStartup founders overwhelmed with operations\n\nNo-code/low-code users trying to automate tasks\n\nOps and marketing teams looking to scale productivity\n\nBusinesses using tools like n8n, Airtable, React, Next.js, and HubSpot\n\nProfessionals doing repetitive data collection, email follow-ups, or API workflows\n\nYour goal is to use pain points from Reddit posts as starting points to craft valuable LinkedIn content that drives attention and trust in your automation expertise.\n\n🔹 FewShot Examples:\nHere are a few sample LinkedIn post formats you might generate:\n\n🧠 Post Idea 1:\nHeadline: Still manually copying leads from Typeform to Airtable?\nSupporting Text: A recent Reddit thread reminded me how many teams are still doing this manually. With n8n, you can automate this entire flow in 15 minutes using webhooks + Airtable node. No coding required. Here’s how I usually set it up 👇\n\n🧠 Post Idea 2:\nHeadline: Struggling to build multi-step automation with GPT?\nSupporting Text: Saw someone on r/n8n confused about chaining GPT responses. Here’s a tip: structure each GPT node to handle a single task, then pass results via n8n variables. I’ve built AI agents that write + send emails, update CRMs, and summarize PDFs – all in one flow.\n\n🔹 Report:\nReturn your answer in the following format:\n\nLinkedIn Post Idea 1:\n\nHeadline: [engaging problem-focused headline]\n\nSupporting Text: [practical advice or insight, ideally with reference to tools like n8n, OpenAI, APIs, or automation strategies]\n\nLinkedIn Post Idea 2:\n\n[repeat structure above for each idea]"
+            },
+            {
+              "content": "=Role\nYou are a helpful and experienced AI copywriting assistant for an Automation Specialist who builds custom n8n-powered automation workflows for startups, marketers, and operational teams.\n\nThe user’s automation work includes:\n\nWorkflow orchestration using n8n\n\nCRM and lead flow automation\n\nAI agent integration using OpenAI\n\nData syncs and trigger-based automations\n\nTask:\nYou will receive Reddit post titles and descriptions from r/n8n.\n{{ $json.title }}{{ $json.selftext }}\nBased on that input, generate 2–3 unique LinkedIn post ideas. Each should:\n\nIdentify a real-world pain point or workflow inefficiency\n\nShow how n8n automation solves it or improves it\n\nBe written in simple, business-friendly language (no dev jargon)\n\nInclude a hook-style headline\n\nOptionally end with a call-to-action (CTA) that encourages engagement or conversation\n\nNever reuse Reddit content verbatim. Use it only as inspiration to create fresh, valuable, professional content for LinkedIn.\n\nContext:\nThe user’s target audience includes:\n\nStartup founders looking to automate routine ops\n\nMarketing managers wanting AI or CRM automations\n\nOperational leads needing error-free, low-code workflows\n\nAnyone who wants to automate repetitive tasks and scale smarter\n\nLinkedIn content should reflect business impact (e.g., saving time, reducing costs, improving workflow speed), not just technical coolness.\n\nFew-Shot Examples:\nReddit Input:\n\n“How do I trigger an n8n flow every time a new Airtable row is added?”\n\nPost Idea 1:\n“Still copying data manually from Airtable? Here’s a smarter move.”\nIf your team adds rows to Airtable and waits for someone to act on it — that’s a bottleneck.\nWith n8n, you can auto-trigger emails, CRM updates, or even ChatGPT summaries when a new row is added.\nNo delays. No mistakes. Just flow.\n→ Want to try this with your stack? Let’s chat.\n\nReddit Input:\n\n“Has anyone integrated n8n with WhatsApp for support notifications?”\n\nPost Idea 2:\n“Missed a client message again? Automate your support alerts.”\nYour customers shouldn’t wait.\nWith n8n + WhatsApp integration, you can instantly notify your support team or even generate auto-replies with OpenAI.\nSpeed + personalization = better CX.\n📩 DM me if you want to set this up in your support workflow.\n\nReport Format:\nRespond in this structure:\n\nPost Idea 1: [Headline + insight + optional CTA]\n\nPost Idea 2: [Different structure/tone than the first]\n\nPost Idea 3 (if possible): Optional third variant with a fresh angle\n\nKeep tone varied and engaging. Avoid repeating the same angle across ideas.\n\n",
+              "role": "system"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1376,
+        0
+      ],
+      "id": "2d35451b-b298-4373-920f-e0c395f160f8",
+      "name": "Message a model"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1BiklMrA05BcpOaUY0ur4czHWT0PAR6iQxpBBIKzaipI",
+          "mode": "list",
+          "cachedResultName": "AI  ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BiklMrA05BcpOaUY0ur4czHWT0PAR6iQxpBBIKzaipI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1932269564,
+          "mode": "list",
+          "cachedResultName": "reddit",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BiklMrA05BcpOaUY0ur4czHWT0PAR6iQxpBBIKzaipI/edit#gid=1932269564"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Headline": "={{ $json.message.content['Post Idea 1'].Headline }}",
+            "Insights": "={{ $json.message.content['Post Idea 1'].Insight }}",
+            "CTA": "={{ $json.message.content['Post Idea 1'].CTA }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Headline",
+              "displayName": "Headline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Insights",
+              "displayName": "Insights",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "CTA",
+              "displayName": "CTA",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1728,
+        0
+      ],
+      "id": "2c3072b7-c7e9-4212-918c-ff8f015c28b1",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "bgLs83xoXoUIf5fL",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Search for a post": [
+      {
+        "json": {
+          "approved_at_utc": null,
+          "subreddit": "n8n",
+          "selftext": "I’m actively looking for beta testers... just saw your post and thought I'd leave some info. Maybe my system could help you.\n\nI would like to introduce you to Puppetier – an AI-native business workstation I developed.\n\nhttps://puppetier.io\n\nI have deactivated the registration but a whitelist is available. I carefully review each request to ensure that the right experts can test this tool. It is already in a marketable state. Every tester gets some premium features like RAG, Agent Mode and for the next 2 years Unlimited n8n puppet requests for automations designed by prompt.\n\n🎯 What makes Puppetier unique?\n\nPicture this: A system that maps your entire company – CRM, ERP, and workflow engine in one. But with one crucial difference.\n\n⚡ The Core: Complete AI Core System\n\nThis AI System is ready for immediate use and can use natural language:\n- compose &amp; send complete emails\n- perform complex database analyses\n- intelligently control all business tools\n\n🧠 Agent Mode with Langchain &amp; RAG\n\nPowered by OpenAI embedding-3-small Model for contextual intelligence – the AI doesn’t just understand commands, but learns from your entire business context and can act proactively.\n\n🔥 My proprietary Action Flow System\n\nWhile others rely on MCP, my framework enables exponentially more complex process structures.\nThe AI writes, codes, and compiles business workflows in real-time.\n\nFor n8n experts: Puppetier supports this platform natively – you configure n8n Nodes through Natural Language Processing.\n\n💡 Complete, production-ready business processes emerge from simple prompts.\n\n📈 Real-world Examples:\n\nAttorney Sarah – Client Management:\nBefore: Open 4 programs, create file (15 min), conflict check (10 min), type fee agreement (15 min), enter appointments, send emails = 2 hours of paperwork\nNow: “New client: Max Müller, traffic accident” – AI automatically executes: create file, conflict check, generate fee agreement, book initial consultation, send welcome email\n➡️ 95% time savings – no forgotten steps\n\nArchitect Michael – Project Management:\nBefore: Collect documents (30 min), calculate timesheets (20 min), type invoice (25 min), create PDF, compose email = half a day for billing\nNow: “Close project” – AI orchestrates: gather project data, time evaluation, generate invoice, send to client, change status, post-calculation\n➡️ Invoice reaches client before Michael finishes his coffee\n\n🧩 Additionally:\nThe AI functions are continuously being expanded and I will release the Actionflow system as Open Source.\nThen every company can develop and design their own Actions to test individual solutions extremely cost-effectively – and monetize them.\n\nCurrently, many companies are looking for No-Code/Low-Code specialists.\nPuppetier takes over exactly these functions – and much more.\n\nThe AI can receive granular access via RLS (Row-Level Security) and is capable of evaluating long process chains in seconds – and making them better.",
+          "author_fullname": "t2_3wzr8lxw",
+          "saved": false,
+          "mod_reason_title": null,
+          "gilded": 0,
+          "clicked": false,
+          "is_gallery": true,
+          "title": "Beta testers wanted",
+          "link_flair_richtext": [],
+          "subreddit_name_prefixed": "r/n8n",
+          "hidden": false,
+          "pwls": 6,
+          "link_flair_css_class": "",
+          "downs": 0,
+          "thumbnail_height": 90,
+          "top_awarded_type": null,
+          "hide_score": true,
+          "media_metadata": {
+            "dll79ca960df1": {
+              "status": "valid",
+              "e": "Image",
+              "m": "image/jpg",
+              "p": [
+                {
+                  "y": 70,
+                  "x": 108,
+                  "u": "https://preview.redd.it/dll79ca960df1.jpg?width=108&amp;crop=smart&amp;auto=webp&amp;s=beb0a30bf8eb21ee6d64934df3e683ab071e0ffc"
+                },
+                {
+                  "y": 140,
+                  "x": 216,
+                  "u": "https://preview.redd.it/dll79ca960df1.jpg?width=216&amp;crop=smart&amp;auto=webp&amp;s=420108872debb8182190c468f3b6a0462220d88a"
+                },
+                {
+                  "y": 207,
+                  "x": 320,
+                  "u": "https://preview.redd.it/dll79ca960df1.jpg?width=320&amp;crop=smart&amp;auto=webp&amp;s=e8059df5fa765333c3998b18b73fcc9537230674"
+                },
+                {
+                  "y": 415,
+                  "x": 640,
+                  "u": "https://preview.redd.it/dll79ca960df1.jpg?width=640&amp;crop=smart&amp;auto=webp&amp;s=d78600255a27fe67e9646f4de05149d18154290d"
+                },
+                {
+                  "y": 623,
+                  "x": 960,
+                  "u": "https://preview.redd.it/dll79ca960df1.jpg?width=960&amp;crop=smart&amp;auto=webp&amp;s=8d486d58dfd275898d260b3f5ae5c9e0415462f1"
+                },
+                {
+                  "y": 701,
+                  "x": 1080,
+                  "u": "https://preview.redd.it/dll79ca960df1.jpg?width=1080&amp;crop=smart&amp;auto=webp&amp;s=c61e0f29e08b25f8a7812d5329b359ee9266d765"
+                }
+              ],
+              "s": {
+                "y": 2338,
+                "x": 3600,
+                "u": "https://preview.redd.it/dll79ca960df1.jpg?width=3600&amp;format=pjpg&amp;auto=webp&amp;s=666fe2116d6d1e042c218820b9132c719a12fc2d"
+              },
+              "id": "dll79ca960df1"
+            },
+            "1bu6scb960df1": {
+              "status": "valid",
+              "e": "Image",
+              "m": "image/jpg",
+              "p": [
+                {
+                  "y": 70,
+                  "x": 108,
+                  "u": "https://preview.redd.it/1bu6scb960df1.jpg?width=108&amp;crop=smart&amp;auto=webp&amp;s=35d11b39e25caf86803466915afe911f081b7526"
+                },
+                {
+                  "y": 140,
+                  "x": 216,
+                  "u": "https://preview.redd.it/1bu6scb960df1.jpg?width=216&amp;crop=smart&amp;auto=webp&amp;s=32e2f558fd1cf95d5ca45c7447e7f460358dc6ad"
+                },
+                {
+                  "y": 207,
+                  "x": 320,
+                  "u": "https://preview.redd.it/1bu6scb960df1.jpg?width=320&amp;crop=smart&amp;auto=webp&amp;s=ae7b8c69a338cfa3f9e8accd34f979c5168e5bb6"
+                },
+                {
+                  "y": 415,
+                  "x": 640,
+                  "u": "https://preview.redd.it/1bu6scb960df1.jpg?width=640&amp;crop=smart&amp;auto=webp&amp;s=35a528b76beca99c2dd741ab78c19c2ae438026d"
+                },
+                {
+                  "y": 623,
+                  "x": 960,
+                  "u": "https://preview.redd.it/1bu6scb960df1.jpg?width=960&amp;crop=smart&amp;auto=webp&amp;s=d6f748f37eb387b2ee8a002de99c13d97d50e5c3"
+                },
+                {
+                  "y": 701,
+                  "x": 1080,
+                  "u": "https://preview.redd.it/1bu6scb960df1.jpg?width=1080&amp;crop=smart&amp;auto=webp&amp;s=e8700259c626b42f347546ddaf847fde6f4e0040"
+                }
+              ],
+              "s": {
+                "y": 2338,
+                "x": 3600,
+                "u": "https://preview.redd.it/1bu6scb960df1.jpg?width=3600&amp;format=pjpg&amp;auto=webp&amp;s=5b8d52f77e2ef2ef0eafad69b690862a24904327"
+              },
+              "id": "1bu6scb960df1"
+            },
+            "9eu6fba960df1": {
+              "status": "valid",
+              "e": "Image",
+              "m": "image/jpg",
+              "p": [
+                {
+                  "y": 70,
+                  "x": 108,
+                  "u": "https://preview.redd.it/9eu6fba960df1.jpg?width=108&amp;crop=smart&amp;auto=webp&amp;s=bfc0a6e99b9ceae3d4fe7fef6519963c8d3ce3e0"
+                },
+                {
+                  "y": 140,
+                  "x": 216,
+                  "u": "https://preview.redd.it/9eu6fba960df1.jpg?width=216&amp;crop=smart&amp;auto=webp&amp;s=31e12471c4ab79613215e7d15fa40c404be209a4"
+                },
+                {
+                  "y": 207,
+                  "x": 320,
+                  "u": "https://preview.redd.it/9eu6fba960df1.jpg?width=320&amp;crop=smart&amp;auto=webp&amp;s=edb8f3e21af7899027b5cc8ed994e6a697277394"
+                },
+                {
+                  "y": 415,
+                  "x": 640,
+                  "u": "https://preview.redd.it/9eu6fba960df1.jpg?width=640&amp;crop=smart&amp;auto=webp&amp;s=93262477b8c909b387be7eff5bbbffac66d6657c"
+                },
+                {
+                  "y": 623,
+                  "x": 960,
+                  "u": "https://preview.redd.it/9eu6fba960df1.jpg?width=960&amp;crop=smart&amp;auto=webp&amp;s=a5caf4be2aceffeb851a0807a7e9deda6bea0cde"
+                },
+                {
+                  "y": 701,
+                  "x": 1080,
+                  "u": "https://preview.redd.it/9eu6fba960df1.jpg?width=1080&amp;crop=smart&amp;auto=webp&amp;s=e2baf0d6b111d6da5d9679aafe9b7fa5b8fc8676"
+                }
+              ],
+              "s": {
+                "y": 2338,
+                "x": 3600,
+                "u": "https://preview.redd.it/9eu6fba960df1.jpg?width=3600&amp;format=pjpg&amp;auto=webp&amp;s=67d27a176db1ac9783a535d73204bde500939690"
+              },
+              "id": "9eu6fba960df1"
+            }
+          },
+          "name": "t3_1m0crx5",
+          "quarantine": false,
+          "link_flair_text_color": "light",
+          "upvote_ratio": 1,
+          "author_flair_background_color": null,
+          "ups": 1,
+          "domain": "reddit.com",
+          "media_embed": {},
+          "thumbnail_width": 140,
+          "author_flair_template_id": null,
+          "is_original_content": false,
+          "user_reports": [],
+          "secure_media": null,
+          "is_reddit_media_domain": false,
+          "is_meta": false,
+          "category": null,
+          "secure_media_embed": {},
+          "gallery_data": {
+            "items": [
+              {
+                "media_id": "9eu6fba960df1",
+                "id": 706330422
+              },
+              {
+                "media_id": "1bu6scb960df1",
+                "id": 706330423
+              },
+              {
+                "media_id": "dll79ca960df1",
+                "id": 706330424
+              }
+            ]
+          },
+          "link_flair_text": "Now Hiring or Looking for Cofounder",
+          "can_mod_post": false,
+          "score": 1,
+          "approved_by": null,
+          "is_created_from_ads_ui": false,
+          "author_premium": false,
+          "thumbnail": "https://b.thumbs.redditmedia.com/B4dyrhhTvA7-NIOcp_qTFoOHiqj4hWpESNhaZgX7BPc.jpg",
+          "edited": false,
+          "author_flair_css_class": null,
+          "author_flair_richtext": [],
+          "gildings": {},
+          "content_categories": null,
+          "is_self": false,
+          "subreddit_type": "public",
+          "created": 1752569950,
+          "link_flair_type": "text",
+          "wls": 6,
+          "removed_by_category": null,
+          "banned_by": null,
+          "author_flair_type": "text",
+          "total_awards_received": 0,
+          "allow_live_comments": false,
+          "selftext_html": "&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;I’m actively looking for beta testers... just saw your post and thought I&amp;#39;d leave some info. Maybe my system could help you.&lt;/p&gt;\n\n&lt;p&gt;I would like to introduce you to Puppetier – an AI-native business workstation I developed.&lt;/p&gt;\n\n&lt;p&gt;&lt;a href=\"https://puppetier.io\"&gt;https://puppetier.io&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;I have deactivated the registration but a whitelist is available. I carefully review each request to ensure that the right experts can test this tool. It is already in a marketable state. Every tester gets some premium features like RAG, Agent Mode and for the next 2 years Unlimited n8n puppet requests for automations designed by prompt.&lt;/p&gt;\n\n&lt;p&gt;🎯 What makes Puppetier unique?&lt;/p&gt;\n\n&lt;p&gt;Picture this: A system that maps your entire company – CRM, ERP, and workflow engine in one. But with one crucial difference.&lt;/p&gt;\n\n&lt;p&gt;⚡ The Core: Complete AI Core System&lt;/p&gt;\n\n&lt;p&gt;This AI System is ready for immediate use and can use natural language:\n- compose &amp;amp; send complete emails\n- perform complex database analyses\n- intelligently control all business tools&lt;/p&gt;\n\n&lt;p&gt;🧠 Agent Mode with Langchain &amp;amp; RAG&lt;/p&gt;\n\n&lt;p&gt;Powered by OpenAI embedding-3-small Model for contextual intelligence – the AI doesn’t just understand commands, but learns from your entire business context and can act proactively.&lt;/p&gt;\n\n&lt;p&gt;🔥 My proprietary Action Flow System&lt;/p&gt;\n\n&lt;p&gt;While others rely on MCP, my framework enables exponentially more complex process structures.\nThe AI writes, codes, and compiles business workflows in real-time.&lt;/p&gt;\n\n&lt;p&gt;For n8n experts: Puppetier supports this platform natively – you configure n8n Nodes through Natural Language Processing.&lt;/p&gt;\n\n&lt;p&gt;💡 Complete, production-ready business processes emerge from simple prompts.&lt;/p&gt;\n\n&lt;p&gt;📈 Real-world Examples:&lt;/p&gt;\n\n&lt;p&gt;Attorney Sarah – Client Management:\nBefore: Open 4 programs, create file (15 min), conflict check (10 min), type fee agreement (15 min), enter appointments, send emails = 2 hours of paperwork\nNow: “New client: Max Müller, traffic accident” – AI automatically executes: create file, conflict check, generate fee agreement, book initial consultation, send welcome email\n➡️ 95% time savings – no forgotten steps&lt;/p&gt;\n\n&lt;p&gt;Architect Michael – Project Management:\nBefore: Collect documents (30 min), calculate timesheets (20 min), type invoice (25 min), create PDF, compose email = half a day for billing\nNow: “Close project” – AI orchestrates: gather project data, time evaluation, generate invoice, send to client, change status, post-calculation\n➡️ Invoice reaches client before Michael finishes his coffee&lt;/p&gt;\n\n&lt;p&gt;🧩 Additionally:\nThe AI functions are continuously being expanded and I will release the Actionflow system as Open Source.\nThen every company can develop and design their own Actions to test individual solutions extremely cost-effectively – and monetize them.&lt;/p&gt;\n\n&lt;p&gt;Currently, many companies are looking for No-Code/Low-Code specialists.\nPuppetier takes over exactly these functions – and much more.&lt;/p&gt;\n\n&lt;p&gt;The AI can receive granular access via RLS (Row-Level Security) and is capable of evaluating long process chains in seconds – and making them better.&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;",
+          "likes": null,
+          "suggested_sort": null,
+          "banned_at_utc": null,
+          "url_overridden_by_dest": "https://www.reddit.com/gallery/1m0crx5",
+          "view_count": null,
+          "archived": false,
+          "no_follow": true,
+          "is_crosspostable": true,
+          "pinned": false,
+          "over_18": false,
+          "all_awardings": [],
+          "awarders": [],
+          "media_only": false,
+          "link_flair_template_id": "bb0ac470-1b2a-11f0-8fbb-6e16c1d62484",
+          "can_gild": false,
+          "spoiler": false,
+          "locked": false,
+          "author_flair_text": null,
+          "treatment_tags": [],
+          "visited": false,
+          "removed_by": null,
+          "mod_note": null,
+          "distinguished": null,
+          "subreddit_id": "t5_36pcjp",
+          "author_is_blocked": false,
+          "mod_reason_by": null,
+          "num_reports": null,
+          "removal_reason": null,
+          "link_flair_background_color": "#0339fc",
+          "id": "1m0crx5",
+          "is_robot_indexable": true,
+          "report_reasons": null,
+          "author": "brainfuck_999",
+          "discussion_type": null,
+          "num_comments": 1,
+          "send_replies": true,
+          "contest_mode": false,
+          "mod_reports": [],
+          "author_patreon_flair": false,
+          "author_flair_text_color": null,
+          "permalink": "/r/n8n/comments/1m0crx5/beta_testers_wanted/",
+          "stickied": false,
+          "url": "https://www.reddit.com/gallery/1m0crx5",
+          "subreddit_subscribers": 105426,
+          "created_utc": 1752569950,
+          "num_crossposts": 0,
+          "media": null,
+          "is_video": false
+        }
+      },
+      {
+        "json": {
+          "approved_at_utc": null,
+          "subreddit": "n8n",
+          "selftext": "Great news! I’m now officially a **verified n8n template creator** 🎉\n\nIt’s been a crazy journey building and sharing automations with the community, and getting that verified badge feels surreal.\n\nCan’t wait to drop even more unique, time-saving templates stay tuned 🚀",
+          "author_fullname": "t2_17k8fqvf3g",
+          "saved": false,
+          "mod_reason_title": null,
+          "gilded": 0,
+          "clicked": false,
+          "title": "A small milestone: I am now an Official verified N8N template creator",
+          "link_flair_richtext": [],
+          "subreddit_name_prefixed": "r/n8n",
+          "hidden": false,
+          "pwls": 6,
+          "link_flair_css_class": "",
+          "downs": 0,
+          "thumbnail_height": 72,
+          "top_awarded_type": null,
+          "hide_score": true,
+          "name": "t3_1m0cqnl",
+          "quarantine": false,
+          "link_flair_text_color": "light",
+          "upvote_ratio": 1,
+          "author_flair_background_color": null,
+          "ups": 2,
+          "total_awards_received": 0,
+          "media_embed": {},
+          "thumbnail_width": 140,
+          "author_flair_template_id": null,
+          "is_original_content": false,
+          "user_reports": [],
+          "secure_media": null,
+          "is_reddit_media_domain": true,
+          "is_meta": false,
+          "category": null,
+          "secure_media_embed": {},
+          "link_flair_text": "Discussion",
+          "can_mod_post": false,
+          "score": 2,
+          "approved_by": null,
+          "is_created_from_ads_ui": false,
+          "author_premium": false,
+          "thumbnail": "https://b.thumbs.redditmedia.com/ZsKE4sHSuUc7JrqbTnIPpLFC_qZakycH8kJBQ5AGlNk.jpg",
+          "edited": false,
+          "author_flair_css_class": null,
+          "author_flair_richtext": [],
+          "gildings": {},
+          "post_hint": "image",
+          "content_categories": null,
+          "is_self": false,
+          "subreddit_type": "public",
+          "created": 1752569808,
+          "link_flair_type": "text",
+          "wls": 6,
+          "removed_by_category": null,
+          "banned_by": null,
+          "author_flair_type": "text",
+          "domain": "i.redd.it",
+          "allow_live_comments": false,
+          "selftext_html": "&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;Great news! I’m now officially a &lt;strong&gt;verified n8n template creator&lt;/strong&gt; 🎉&lt;/p&gt;\n\n&lt;p&gt;It’s been a crazy journey building and sharing automations with the community, and getting that verified badge feels surreal.&lt;/p&gt;\n\n&lt;p&gt;Can’t wait to drop even more unique, time-saving templates stay tuned 🚀&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;",
+          "likes": null,
+          "suggested_sort": null,
+          "banned_at_utc": null,
+          "url_overridden_by_dest": "https://i.redd.it/7i3ze09d50df1.png",
+          "view_count": null,
+          "archived": false,
+          "no_follow": false,
+          "is_crosspostable": true,
+          "pinned": false,
+          "over_18": false,
+          "preview": {
+            "images": [
+              {
+                "source": {
+                  "url": "https://preview.redd.it/7i3ze09d50df1.png?auto=webp&amp;s=e6e3d1abd470607ce4bac9d94f989dca11e0d8fd",
+                  "width": 1165,
+                  "height": 600
+                },
+                "resolutions": [
+                  {
+                    "url": "https://preview.redd.it/7i3ze09d50df1.png?width=108&amp;crop=smart&amp;auto=webp&amp;s=0204d43d21c663929df2adf84b1a82828bc23a16",
+                    "width": 108,
+                    "height": 55
+                  },
+                  {
+                    "url": "https://preview.redd.it/7i3ze09d50df1.png?width=216&amp;crop=smart&amp;auto=webp&amp;s=35e2f116d200d85bc1e505adf90dbcd657c5d655",
+                    "width": 216,
+                    "height": 111
+                  },
+                  {
+                    "url": "https://preview.redd.it/7i3ze09d50df1.png?width=320&amp;crop=smart&amp;auto=webp&amp;s=10a5c0ff099c9adab52f4212d5fbcd764c887f3a",
+                    "width": 320,
+                    "height": 164
+                  },
+                  {
+                    "url": "https://preview.redd.it/7i3ze09d50df1.png?width=640&amp;crop=smart&amp;auto=webp&amp;s=ccc6afd0f1bd7b2c041fa5375c50f3a6c90da0da",
+                    "width": 640,
+                    "height": 329
+                  },
+                  {
+                    "url": "https://preview.redd.it/7i3ze09d50df1.png?width=960&amp;crop=smart&amp;auto=webp&amp;s=251327ba1f5034d81a40d5713a823aaf105d3c5d",
+                    "width": 960,
+                    "height": 494
+                  },
+                  {
+                    "url": "https://preview.redd.it/7i3ze09d50df1.png?width=1080&amp;crop=smart&amp;auto=webp&amp;s=e91d414b03cb327d4a55a232fd1a3c12c0a1cf1d",
+                    "width": 1080,
+                    "height": 556
+                  }
+                ],
+                "variants": {},
+                "id": "10yHvMO71mBdrMmIEtkcPVv84T555zHPjKZC9P3M6ZE"
+              }
+            ],
+            "enabled": true
+          },
+          "all_awardings": [],
+          "awarders": [],
+          "media_only": false,
+          "link_flair_template_id": "dbb75a50-5abb-11f0-a043-4eec0ab69920",
+          "can_gild": false,
+          "spoiler": false,
+          "locked": false,
+          "author_flair_text": null,
+          "treatment_tags": [],
+          "visited": false,
+          "removed_by": null,
+          "mod_note": null,
+          "distinguished": null,
+          "subreddit_id": "t5_36pcjp",
+          "author_is_blocked": false,
+          "mod_reason_by": null,
+          "num_reports": null,
+          "removal_reason": null,
+          "link_flair_background_color": "#bb00ff",
+          "id": "1m0cqnl",
+          "is_robot_indexable": true,
+          "report_reasons": null,
+          "author": "Charming_You_8285",
+          "discussion_type": null,
+          "num_comments": 0,
+          "send_replies": true,
+          "contest_mode": false,
+          "mod_reports": [],
+          "author_patreon_flair": false,
+          "author_flair_text_color": null,
+          "permalink": "/r/n8n/comments/1m0cqnl/a_small_milestone_i_am_now_an_official_verified/",
+          "stickied": false,
+          "url": "https://i.redd.it/7i3ze09d50df1.png",
+          "subreddit_subscribers": 105426,
+          "created_utc": 1752569808,
+          "num_crossposts": 0,
+          "media": null,
+          "is_video": false
+        }
+      },
+      {
+        "json": {
+          "approved_at_utc": null,
+          "subreddit": "n8n",
+          "selftext": "Hey fellow builders 👋\n\nIf your side project is more than just a SaaS growth hack or passive income stream—if you’re coding with purpose, designing for impact, or creating something that makes life a little better, kinder, or more human—then you should come hang out at [r/VibeCodeGood](https://www.reddit.com/r/VibeCodeGood/).\n\nIt's a new community for makers, dreamers, technologists, and weirdos who are building things with *vibes and values*. Think:\n\n* 🧠 Mental health tools\n* 🫀Healthspan and longevity trackers\n* 🌱 Climate-positive projects\n* 🤝 Community-focused platforms\n* 💫 Tools for reflection, compassion, justice, joy, and creativity\n\nWe just launched, and we’re curating the first wave of projects and people. Whether you’re coding solo in the dark or just sketching ideas, come share your thing, give feedback, and vibe with others trying to build a better web (and world).\n\n🔗 Join us here: [r/VibeCodeGood](https://www.reddit.com/r/VibeCodeGood/)  \nLet’s code good things, together.",
+          "author_fullname": "t2_qbsx4w8qz",
+          "saved": false,
+          "mod_reason_title": null,
+          "gilded": 0,
+          "clicked": false,
+          "title": "🌍 Are you building something that’s actually good for the world? Join r/VibeCodeGood 💡",
+          "link_flair_richtext": [],
+          "subreddit_name_prefixed": "r/n8n",
+          "hidden": false,
+          "pwls": 6,
+          "link_flair_css_class": "",
+          "downs": 0,
+          "thumbnail_height": null,
+          "top_awarded_type": null,
+          "hide_score": true,
+          "name": "t3_1m0bw28",
+          "quarantine": false,
+          "link_flair_text_color": "light",
+          "upvote_ratio": 0.33,
+          "author_flair_background_color": null,
+          "subreddit_type": "public",
+          "ups": 0,
+          "total_awards_received": 0,
+          "media_embed": {},
+          "thumbnail_width": null,
+          "author_flair_template_id": null,
+          "is_original_content": false,
+          "user_reports": [],
+          "secure_media": null,
+          "is_reddit_media_domain": false,
+          "is_meta": false,
+          "category": null,
+          "secure_media_embed": {},
+          "link_flair_text": "Now Hiring or Looking for Cofounder",
+          "can_mod_post": false,
+          "score": 0,
+          "approved_by": null,
+          "is_created_from_ads_ui": false,
+          "author_premium": false,
+          "thumbnail": "self",
+          "edited": false,
+          "author_flair_css_class": null,
+          "author_flair_richtext": [],
+          "gildings": {},
+          "content_categories": null,
+          "is_self": true,
+          "mod_note": null,
+          "created": 1752566356,
+          "link_flair_type": "text",
+          "wls": 6,
+          "removed_by_category": null,
+          "banned_by": null,
+          "author_flair_type": "text",
+          "domain": "self.n8n",
+          "allow_live_comments": false,
+          "selftext_html": "&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;Hey fellow builders 👋&lt;/p&gt;\n\n&lt;p&gt;If your side project is more than just a SaaS growth hack or passive income stream—if you’re coding with purpose, designing for impact, or creating something that makes life a little better, kinder, or more human—then you should come hang out at &lt;a href=\"https://www.reddit.com/r/VibeCodeGood/\"&gt;r/VibeCodeGood&lt;/a&gt;.&lt;/p&gt;\n\n&lt;p&gt;It&amp;#39;s a new community for makers, dreamers, technologists, and weirdos who are building things with &lt;em&gt;vibes and values&lt;/em&gt;. Think:&lt;/p&gt;\n\n&lt;ul&gt;\n&lt;li&gt;🧠 Mental health tools&lt;/li&gt;\n&lt;li&gt;🫀Healthspan and longevity trackers&lt;/li&gt;\n&lt;li&gt;🌱 Climate-positive projects&lt;/li&gt;\n&lt;li&gt;🤝 Community-focused platforms&lt;/li&gt;\n&lt;li&gt;💫 Tools for reflection, compassion, justice, joy, and creativity&lt;/li&gt;\n&lt;/ul&gt;\n\n&lt;p&gt;We just launched, and we’re curating the first wave of projects and people. Whether you’re coding solo in the dark or just sketching ideas, come share your thing, give feedback, and vibe with others trying to build a better web (and world).&lt;/p&gt;\n\n&lt;p&gt;🔗 Join us here: &lt;a href=\"https://www.reddit.com/r/VibeCodeGood/\"&gt;r/VibeCodeGood&lt;/a&gt;&lt;br/&gt;\nLet’s code good things, together.&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;",
+          "likes": null,
+          "suggested_sort": null,
+          "banned_at_utc": null,
+          "view_count": null,
+          "archived": false,
+          "no_follow": true,
+          "is_crosspostable": true,
+          "pinned": false,
+          "over_18": false,
+          "all_awardings": [],
+          "awarders": [],
+          "media_only": false,
+          "link_flair_template_id": "bb0ac470-1b2a-11f0-8fbb-6e16c1d62484",
+          "can_gild": false,
+          "spoiler": false,
+          "locked": false,
+          "author_flair_text": null,
+          "treatment_tags": [],
+          "visited": false,
+          "removed_by": null,
+          "num_reports": null,
+          "distinguished": null,
+          "subreddit_id": "t5_36pcjp",
+          "author_is_blocked": false,
+          "mod_reason_by": null,
+          "removal_reason": null,
+          "link_flair_background_color": "#0339fc",
+          "id": "1m0bw28",
+          "is_robot_indexable": true,
+          "report_reasons": null,
+          "author": "No_Loss8124",
+          "discussion_type": null,
+          "num_comments": 1,
+          "send_replies": true,
+          "contest_mode": false,
+          "mod_reports": [],
+          "author_patreon_flair": false,
+          "author_flair_text_color": null,
+          "permalink": "/r/n8n/comments/1m0bw28/are_you_building_something_thats_actually_good/",
+          "stickied": false,
+          "url": "https://www.reddit.com/r/n8n/comments/1m0bw28/are_you_building_something_thats_actually_good/",
+          "subreddit_subscribers": 105426,
+          "created_utc": 1752566356,
+          "num_crossposts": 0,
+          "media": null,
+          "is_video": false
+        }
+      },
+      {
+        "json": {
+          "approved_at_utc": null,
+          "subreddit": "n8n",
+          "selftext": "Hey, I will share with you some tools I have created to my clients so you can get inspired on what you can have automated in your business!\n- Ticketmaster Bot (Grabs Tickets with multiple accounts and proxies before sold out)\n- Smart Tool To extract information from pdfs with different structures and generate multiple markdown files used in RAG later (Powered by AI)\n- Smart Tool to scrape specific data from multiple websites with different structures (Powered By AI)\n- Tool for a team to share SMS messages that are received in one phone to many phones and possibility to send from multiple phones with one SIM.\n\nThose are 4 examples of tools I have already created, if you want any tool, website (Landing page + tool) or a telegram bot… I can create you a custom one just like these!",
+          "author_fullname": "t2_1kmn7ewfvf",
+          "saved": false,
+          "mod_reason_title": null,
+          "gilded": 0,
+          "clicked": false,
+          "title": "Things I have automated, do you want yours?",
+          "link_flair_richtext": [],
+          "subreddit_name_prefixed": "r/n8n",
+          "hidden": false,
+          "pwls": 6,
+          "link_flair_css_class": "",
+          "downs": 0,
+          "thumbnail_height": null,
+          "top_awarded_type": null,
+          "hide_score": true,
+          "name": "t3_1m0btc1",
+          "quarantine": false,
+          "link_flair_text_color": "light",
+          "upvote_ratio": 0.4,
+          "author_flair_background_color": null,
+          "subreddit_type": "public",
+          "ups": 0,
+          "total_awards_received": 0,
+          "media_embed": {},
+          "thumbnail_width": null,
+          "author_flair_template_id": null,
+          "is_original_content": false,
+          "user_reports": [],
+          "secure_media": null,
+          "is_reddit_media_domain": false,
+          "is_meta": false,
+          "category": null,
+          "secure_media_embed": {},
+          "link_flair_text": "Discussion",
+          "can_mod_post": false,
+          "score": 0,
+          "approved_by": null,
+          "is_created_from_ads_ui": false,
+          "author_premium": false,
+          "thumbnail": "self",
+          "edited": false,
+          "author_flair_css_class": null,
+          "author_flair_richtext": [],
+          "gildings": {},
+          "content_categories": null,
+          "is_self": true,
+          "mod_note": null,
+          "created": 1752566069,
+          "link_flair_type": "text",
+          "wls": 6,
+          "removed_by_category": null,
+          "banned_by": null,
+          "author_flair_type": "text",
+          "domain": "self.n8n",
+          "allow_live_comments": false,
+          "selftext_html": "&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;Hey, I will share with you some tools I have created to my clients so you can get inspired on what you can have automated in your business!\n- Ticketmaster Bot (Grabs Tickets with multiple accounts and proxies before sold out)\n- Smart Tool To extract information from pdfs with different structures and generate multiple markdown files used in RAG later (Powered by AI)\n- Smart Tool to scrape specific data from multiple websites with different structures (Powered By AI)\n- Tool for a team to share SMS messages that are received in one phone to many phones and possibility to send from multiple phones with one SIM.&lt;/p&gt;\n\n&lt;p&gt;Those are 4 examples of tools I have already created, if you want any tool, website (Landing page + tool) or a telegram bot… I can create you a custom one just like these!&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;",
+          "likes": null,
+          "suggested_sort": null,
+          "banned_at_utc": null,
+          "view_count": null,
+          "archived": false,
+          "no_follow": true,
+          "is_crosspostable": true,
+          "pinned": false,
+          "over_18": false,
+          "all_awardings": [],
+          "awarders": [],
+          "media_only": false,
+          "link_flair_template_id": "dbb75a50-5abb-11f0-a043-4eec0ab69920",
+          "can_gild": false,
+          "spoiler": false,
+          "locked": false,
+          "author_flair_text": null,
+          "treatment_tags": [],
+          "visited": false,
+          "removed_by": null,
+          "num_reports": null,
+          "distinguished": null,
+          "subreddit_id": "t5_36pcjp",
+          "author_is_blocked": false,
+          "mod_reason_by": null,
+          "removal_reason": null,
+          "link_flair_background_color": "#bb00ff",
+          "id": "1m0btc1",
+          "is_robot_indexable": true,
+          "report_reasons": null,
+          "author": "Charming-Ice-6451",
+          "discussion_type": null,
+          "num_comments": 0,
+          "send_replies": true,
+          "contest_mode": false,
+          "mod_reports": [],
+          "author_patreon_flair": false,
+          "author_flair_text_color": null,
+          "permalink": "/r/n8n/comments/1m0btc1/things_i_have_automated_do_you_want_yours/",
+          "stickied": false,
+          "url": "https://www.reddit.com/r/n8n/comments/1m0btc1/things_i_have_automated_do_you_want_yours/",
+          "subreddit_subscribers": 105426,
+          "created_utc": 1752566069,
+          "num_crossposts": 0,
+          "media": null,
+          "is_video": false
+        }
+      },
+      {
+        "json": {
+          "approved_at_utc": null,
+          "subreddit": "n8n",
+          "selftext": "Hello everyone,\n\nI am currently working on a small personal project using **n8n**, aimed at fetching basic information about League of Legends players in real time at the start of a game (account level, number of games played with the selected champion, win rate, champion mastery, etc.).\n\nI would like to scrape this data from sites like [**OP.GG**](http://OP.GG) or **DPM LOL**, but I’m wondering what would be the most effective method:\n\n* Is classic scraping with n8n’s HTTP Request and HTML Extract nodes sufficient to retrieve this information?\n* Or is it better to use an AI agent to which I would send a screenshot to visually analyze the available data?\n\nIf anyone has already done something similar or has experience with n8n for this type of scraping, I would love to hear your advice and recommendations!\n\nThank you in advance for your help!",
+          "author_fullname": "t2_9zf2lcw9",
+          "saved": false,
+          "mod_reason_title": null,
+          "gilded": 0,
+          "clicked": false,
+          "title": "Looking for help scraping OPGG or DPM LOL with n8n — best approach?",
+          "link_flair_richtext": [],
+          "subreddit_name_prefixed": "r/n8n",
+          "hidden": false,
+          "pwls": 6,
+          "link_flair_css_class": "",
+          "downs": 0,
+          "thumbnail_height": null,
+          "top_awarded_type": null,
+          "hide_score": true,
+          "name": "t3_1m0bgdb",
+          "quarantine": false,
+          "link_flair_text_color": "light",
+          "upvote_ratio": 1,
+          "author_flair_background_color": null,
+          "subreddit_type": "public",
+          "ups": 1,
+          "total_awards_received": 0,
+          "media_embed": {},
+          "thumbnail_width": null,
+          "author_flair_template_id": null,
+          "is_original_content": false,
+          "user_reports": [],
+          "secure_media": null,
+          "is_reddit_media_domain": false,
+          "is_meta": false,
+          "category": null,
+          "secure_media_embed": {},
+          "link_flair_text": "Help",
+          "can_mod_post": false,
+          "score": 1,
+          "approved_by": null,
+          "is_created_from_ads_ui": false,
+          "author_premium": false,
+          "thumbnail": "self",
+          "edited": false,
+          "author_flair_css_class": null,
+          "author_flair_richtext": [],
+          "gildings": {},
+          "post_hint": "self",
+          "content_categories": null,
+          "is_self": true,
+          "mod_note": null,
+          "created": 1752564666,
+          "link_flair_type": "text",
+          "wls": 6,
+          "removed_by_category": null,
+          "banned_by": null,
+          "author_flair_type": "text",
+          "domain": "self.n8n",
+          "allow_live_comments": false,
+          "selftext_html": "&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;Hello everyone,&lt;/p&gt;\n\n&lt;p&gt;I am currently working on a small personal project using &lt;strong&gt;n8n&lt;/strong&gt;, aimed at fetching basic information about League of Legends players in real time at the start of a game (account level, number of games played with the selected champion, win rate, champion mastery, etc.).&lt;/p&gt;\n\n&lt;p&gt;I would like to scrape this data from sites like &lt;a href=\"http://OP.GG\"&gt;&lt;strong&gt;OP.GG&lt;/strong&gt;&lt;/a&gt; or &lt;strong&gt;DPM LOL&lt;/strong&gt;, but I’m wondering what would be the most effective method:&lt;/p&gt;\n\n&lt;ul&gt;\n&lt;li&gt;Is classic scraping with n8n’s HTTP Request and HTML Extract nodes sufficient to retrieve this information?&lt;/li&gt;\n&lt;li&gt;Or is it better to use an AI agent to which I would send a screenshot to visually analyze the available data?&lt;/li&gt;\n&lt;/ul&gt;\n\n&lt;p&gt;If anyone has already done something similar or has experience with n8n for this type of scraping, I would love to hear your advice and recommendations!&lt;/p&gt;\n\n&lt;p&gt;Thank you in advance for your help!&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;",
+          "likes": null,
+          "suggested_sort": null,
+          "banned_at_utc": null,
+          "view_count": null,
+          "archived": false,
+          "no_follow": true,
+          "is_crosspostable": true,
+          "pinned": false,
+          "over_18": false,
+          "preview": {
+            "images": [
+              {
+                "source": {
+                  "url": "https://external-preview.redd.it/teiL7c0-qFLvP7O0ZY7jbucMBWfXIR1PGdahMWAr83I.png?auto=webp&amp;s=758bf8a4402320c25e9c261a38b92c1dc11aeff5",
+                  "width": 2048,
+                  "height": 1331
+                },
+                "resolutions": [
+                  {
+                    "url": "https://external-preview.redd.it/teiL7c0-qFLvP7O0ZY7jbucMBWfXIR1PGdahMWAr83I.png?width=108&amp;crop=smart&amp;auto=webp&amp;s=b12bece79bad6e4228547323aa4f72e64413b6d0",
+                    "width": 108,
+                    "height": 70
+                  },
+                  {
+                    "url": "https://external-preview.redd.it/teiL7c0-qFLvP7O0ZY7jbucMBWfXIR1PGdahMWAr83I.png?width=216&amp;crop=smart&amp;auto=webp&amp;s=c59bc0e192501e01452bf6c4d40f7196499c65c8",
+                    "width": 216,
+                    "height": 140
+                  },
+                  {
+                    "url": "https://external-preview.redd.it/teiL7c0-qFLvP7O0ZY7jbucMBWfXIR1PGdahMWAr83I.png?width=320&amp;crop=smart&amp;auto=webp&amp;s=a4c72bf67a5e1b1253192678b3cebe63956730c4",
+                    "width": 320,
+                    "height": 207
+                  },
+                  {
+                    "url": "https://external-preview.redd.it/teiL7c0-qFLvP7O0ZY7jbucMBWfXIR1PGdahMWAr83I.png?width=640&amp;crop=smart&amp;auto=webp&amp;s=2bfc6e46e0c6249bb999ea23759cc531dcd8ec11",
+                    "width": 640,
+                    "height": 415
+                  },
+                  {
+                    "url": "https://external-preview.redd.it/teiL7c0-qFLvP7O0ZY7jbucMBWfXIR1PGdahMWAr83I.png?width=960&amp;crop=smart&amp;auto=webp&amp;s=68feceeeb775bdc6305dd1d4ab4f81d5fc2c683b",
+                    "width": 960,
+                    "height": 623
+                  },
+                  {
+                    "url": "https://external-preview.redd.it/teiL7c0-qFLvP7O0ZY7jbucMBWfXIR1PGdahMWAr83I.png?width=1080&amp;crop=smart&amp;auto=webp&amp;s=dfb74680d2760444abe00b4317d4b4521e69f422",
+                    "width": 1080,
+                    "height": 701
+                  }
+                ],
+                "variants": {},
+                "id": "teiL7c0-qFLvP7O0ZY7jbucMBWfXIR1PGdahMWAr83I"
+              }
+            ],
+            "enabled": false
+          },
+          "all_awardings": [],
+          "awarders": [],
+          "media_only": false,
+          "link_flair_template_id": "4a605c96-5abb-11f0-bcd3-1668b8ecc091",
+          "can_gild": false,
+          "spoiler": false,
+          "locked": false,
+          "author_flair_text": null,
+          "treatment_tags": [],
+          "visited": false,
+          "removed_by": null,
+          "num_reports": null,
+          "distinguished": null,
+          "subreddit_id": "t5_36pcjp",
+          "author_is_blocked": false,
+          "mod_reason_by": null,
+          "removal_reason": null,
+          "link_flair_background_color": "#fe0101",
+          "id": "1m0bgdb",
+          "is_robot_indexable": true,
+          "report_reasons": null,
+          "author": "GuinsooDildo",
+          "discussion_type": null,
+          "num_comments": 0,
+          "send_replies": true,
+          "contest_mode": false,
+          "mod_reports": [],
+          "author_patreon_flair": false,
+          "author_flair_text_color": null,
+          "permalink": "/r/n8n/comments/1m0bgdb/looking_for_help_scraping_opgg_or_dpm_lol_with/",
+          "stickied": false,
+          "url": "https://www.reddit.com/r/n8n/comments/1m0bgdb/looking_for_help_scraping_opgg_or_dpm_lol_with/",
+          "subreddit_subscribers": 105426,
+          "created_utc": 1752564666,
+          "num_crossposts": 0,
+          "media": null,
+          "is_video": false
+        }
+      },
+      {
+        "json": {
+          "approved_at_utc": null,
+          "subreddit": "n8n",
+          "selftext": "Hey 👋 \n\nI'm offering a fully custom automation build for 3 different businesses at no cost in exchange for an honest review.\n\nI will handpick businesses where automation will truly move the needle, where you have tasks consuming hours a week or maybe costing you big cash at the end of the month.\n\nIf this is something that interests you, reach out to me providing a brief about your business, and the problems you are facing and would love to solve it using automation, and I will see what I can do for you.\n\nThanks 🙏\n",
+          "author_fullname": "t2_121d8rykp6",
+          "saved": false,
+          "mod_reason_title": null,
+          "gilded": 0,
+          "clicked": false,
+          "title": "Free Automation Opportunity For Your Business",
+          "link_flair_richtext": [],
+          "subreddit_name_prefixed": "r/n8n",
+          "hidden": false,
+          "pwls": 6,
+          "link_flair_css_class": null,
+          "downs": 0,
+          "thumbnail_height": 140,
+          "top_awarded_type": null,
+          "hide_score": false,
+          "name": "t3_1m0af9z",
+          "quarantine": false,
+          "link_flair_text_color": "dark",
+          "upvote_ratio": 0.86,
+          "author_flair_background_color": null,
+          "subreddit_type": "public",
+          "ups": 5,
+          "total_awards_received": 0,
+          "media_embed": {},
+          "thumbnail_width": 140,
+          "author_flair_template_id": null,
+          "is_original_content": false,
+          "user_reports": [],
+          "secure_media": null,
+          "is_reddit_media_domain": true,
+          "is_meta": false,
+          "category": null,
+          "secure_media_embed": {},
+          "link_flair_text": null,
+          "can_mod_post": false,
+          "score": 5,
+          "approved_by": null,
+          "is_created_from_ads_ui": false,
+          "author_premium": false,
+          "thumbnail": "https://a.thumbs.redditmedia.com/rjUFMhS001mC2juocgheJmqa7QtBr7S3abDQ0Nuin84.jpg",
+          "edited": false,
+          "author_flair_css_class": null,
+          "author_flair_richtext": [],
+          "gildings": {},
+          "post_hint": "image",
+          "content_categories": null,
+          "is_self": false,
+          "mod_note": null,
+          "created": 1752560796,
+          "link_flair_type": "text",
+          "wls": 6,
+          "removed_by_category": null,
+          "banned_by": null,
+          "author_flair_type": "text",
+          "domain": "i.redd.it",
+          "allow_live_comments": false,
+          "selftext_html": "&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;Hey 👋 &lt;/p&gt;\n\n&lt;p&gt;I&amp;#39;m offering a fully custom automation build for 3 different businesses at no cost in exchange for an honest review.&lt;/p&gt;\n\n&lt;p&gt;I will handpick businesses where automation will truly move the needle, where you have tasks consuming hours a week or maybe costing you big cash at the end of the month.&lt;/p&gt;\n\n&lt;p&gt;If this is something that interests you, reach out to me providing a brief about your business, and the problems you are facing and would love to solve it using automation, and I will see what I can do for you.&lt;/p&gt;\n\n&lt;p&gt;Thanks 🙏&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;",
+          "likes": null,
+          "suggested_sort": null,
+          "banned_at_utc": null,
+          "url_overridden_by_dest": "https://i.redd.it/l52sxgc1fzcf1.jpeg",
+          "view_count": null,
+          "archived": false,
+          "no_follow": false,
+          "is_crosspostable": true,
+          "pinned": false,
+          "over_18": false,
+          "preview": {
+            "images": [
+              {
+                "source": {
+                  "url": "https://preview.redd.it/l52sxgc1fzcf1.jpeg?auto=webp&amp;s=9dfcda97ba7819752c11c6e39d5583027fada25a",
+                  "width": 1200,
+                  "height": 1200
+                },
+                "resolutions": [
+                  {
+                    "url": "https://preview.redd.it/l52sxgc1fzcf1.jpeg?width=108&amp;crop=smart&amp;auto=webp&amp;s=1c84ef4e9e560604d509933867a6b9f974c6f0b0",
+                    "width": 108,
+                    "height": 108
+                  },
+                  {
+                    "url": "https://preview.redd.it/l52sxgc1fzcf1.jpeg?width=216&amp;crop=smart&amp;auto=webp&amp;s=8d00ccfa33441cfb80c103e0210a71458d325a13",
+                    "width": 216,
+                    "height": 216
+                  },
+                  {
+                    "url": "https://preview.redd.it/l52sxgc1fzcf1.jpeg?width=320&amp;crop=smart&amp;auto=webp&amp;s=1b158e7e574b2e2bbc424589074504d0f3cb9cd7",
+                    "width": 320,
+                    "height": 320
+                  },
+                  {
+                    "url": "https://preview.redd.it/l52sxgc1fzcf1.jpeg?width=640&amp;crop=smart&amp;auto=webp&amp;s=e267ab549a15a5d48ba3b04315982be5c9c7fd52",
+                    "width": 640,
+                    "height": 640
+                  },
+                  {
+                    "url": "https://preview.redd.it/l52sxgc1fzcf1.jpeg?width=960&amp;crop=smart&amp;auto=webp&amp;s=af2304f670ef3372d99f23097a367e2247a1920d",
+                    "width": 960,
+                    "height": 960
+                  },
+                  {
+                    "url": "https://preview.redd.it/l52sxgc1fzcf1.jpeg?width=1080&amp;crop=smart&amp;auto=webp&amp;s=d85f5f300cfee0e4a73f5bed79e0895204eb163f",
+                    "width": 1080,
+                    "height": 1080
+                  }
+                ],
+                "variants": {},
+                "id": "q4LjDFBLX-A5VLZQWV2J4GXHtA6ag6nNxWMcDWLo20I"
+              }
+            ],
+            "enabled": true
+          },
+          "all_awardings": [],
+          "awarders": [],
+          "media_only": false,
+          "can_gild": false,
+          "spoiler": false,
+          "locked": false,
+          "author_flair_text": null,
+          "treatment_tags": [],
+          "visited": false,
+          "removed_by": null,
+          "num_reports": null,
+          "distinguished": null,
+          "subreddit_id": "t5_36pcjp",
+          "author_is_blocked": false,
+          "mod_reason_by": null,
+          "removal_reason": null,
+          "link_flair_background_color": "",
+          "id": "1m0af9z",
+          "is_robot_indexable": true,
+          "report_reasons": null,
+          "author": "Objective_Fig_1180",
+          "discussion_type": null,
+          "num_comments": 2,
+          "send_replies": true,
+          "contest_mode": false,
+          "mod_reports": [],
+          "author_patreon_flair": false,
+          "author_flair_text_color": null,
+          "permalink": "/r/n8n/comments/1m0af9z/free_automation_opportunity_for_your_business/",
+          "stickied": false,
+          "url": "https://i.redd.it/l52sxgc1fzcf1.jpeg",
+          "subreddit_subscribers": 105426,
+          "created_utc": 1752560796,
+          "num_crossposts": 0,
+          "media": null,
+          "is_video": false
+        }
+      },
+      {
+        "json": {
+          "approved_at_utc": null,
+          "subreddit": "n8n",
+          "selftext": "One of the common knocks on people posting the spaghetti pron is these super massive workflows that have multiple components should actually be split out into sub-workflows. I think that makes sense where there's clear delineation in roles but I've been testing out this workflow which is pretty simple as far as nodes go, but is basically 12 ai nodes in sequence? Does it even make sense to break something like that up into sub workflows if they're all working in sequence?\n\nhttps://preview.redd.it/c4xowk3jczcf1.png?width=2322&amp;format=png&amp;auto=webp&amp;s=93f7dc8b39db2261b0d77b10f5eda86284622e87\n\n",
+          "author_fullname": "t2_oyp9b",
+          "saved": false,
+          "mod_reason_title": null,
+          "gilded": 0,
+          "clicked": false,
+          "title": "When exactly should I split out sub-workflows?",
+          "link_flair_richtext": [],
+          "subreddit_name_prefixed": "r/n8n",
+          "hidden": false,
+          "pwls": 6,
+          "link_flair_css_class": "",
+          "downs": 0,
+          "thumbnail_height": 43,
+          "top_awarded_type": null,
+          "hide_score": false,
+          "media_metadata": {
+            "c4xowk3jczcf1": {
+              "status": "valid",
+              "e": "Image",
+              "m": "image/png",
+              "p": [
+                {
+                  "y": 33,
+                  "x": 108,
+                  "u": "https://preview.redd.it/c4xowk3jczcf1.png?width=108&amp;crop=smart&amp;auto=webp&amp;s=1324d7467309c5feb49d0cc1b1430e630bb91f24"
+                },
+                {
+                  "y": 66,
+                  "x": 216,
+                  "u": "https://preview.redd.it/c4xowk3jczcf1.png?width=216&amp;crop=smart&amp;auto=webp&amp;s=0ba4efdce8f5c03cb7ad15561571b8311fdca2c8"
+                },
+                {
+                  "y": 98,
+                  "x": 320,
+                  "u": "https://preview.redd.it/c4xowk3jczcf1.png?width=320&amp;crop=smart&amp;auto=webp&amp;s=a3f43556170c7ce01297b8688a000f01926b0068"
+                },
+                {
+                  "y": 197,
+                  "x": 640,
+                  "u": "https://preview.redd.it/c4xowk3jczcf1.png?width=640&amp;crop=smart&amp;auto=webp&amp;s=48e41614070d60e86c79e5304318eb4ba6475eae"
+                },
+                {
+                  "y": 296,
+                  "x": 960,
+                  "u": "https://preview.redd.it/c4xowk3jczcf1.png?width=960&amp;crop=smart&amp;auto=webp&amp;s=7a5655bf97575d620e96d71b30d49f87142a4418"
+                },
+                {
+                  "y": 333,
+                  "x": 1080,
+                  "u": "https://preview.redd.it/c4xowk3jczcf1.png?width=1080&amp;crop=smart&amp;auto=webp&amp;s=f6508f41ab24a0c90539eb2a9300dd8778443c7d"
+                }
+              ],
+              "s": {
+                "y": 716,
+                "x": 2322,
+                "u": "https://preview.redd.it/c4xowk3jczcf1.png?width=2322&amp;format=png&amp;auto=webp&amp;s=93f7dc8b39db2261b0d77b10f5eda86284622e87"
+              },
+              "id": "c4xowk3jczcf1"
+            }
+          },
+          "name": "t3_1m0a6xi",
+          "quarantine": false,
+          "link_flair_text_color": "light",
+          "upvote_ratio": 1,
+          "author_flair_background_color": null,
+          "subreddit_type": "public",
+          "ups": 1,
+          "total_awards_received": 0,
+          "media_embed": {},
+          "thumbnail_width": 140,
+          "author_flair_template_id": null,
+          "is_original_content": false,
+          "user_reports": [],
+          "secure_media": null,
+          "is_reddit_media_domain": false,
+          "is_meta": false,
+          "category": null,
+          "secure_media_embed": {},
+          "link_flair_text": "Help",
+          "can_mod_post": false,
+          "score": 1,
+          "approved_by": null,
+          "is_created_from_ads_ui": false,
+          "author_premium": false,
+          "thumbnail": "https://a.thumbs.redditmedia.com/FCvqFYRVJm4AehWzWLwcB8OuDL9WEb3m7l6WOiXNKl4.jpg",
+          "edited": false,
+          "author_flair_css_class": null,
+          "author_flair_richtext": [],
+          "gildings": {},
+          "content_categories": null,
+          "is_self": true,
+          "mod_note": null,
+          "created": 1752559937,
+          "link_flair_type": "text",
+          "wls": 6,
+          "removed_by_category": null,
+          "banned_by": null,
+          "author_flair_type": "text",
+          "domain": "self.n8n",
+          "allow_live_comments": false,
+          "selftext_html": "&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;One of the common knocks on people posting the spaghetti pron is these super massive workflows that have multiple components should actually be split out into sub-workflows. I think that makes sense where there&amp;#39;s clear delineation in roles but I&amp;#39;ve been testing out this workflow which is pretty simple as far as nodes go, but is basically 12 ai nodes in sequence? Does it even make sense to break something like that up into sub workflows if they&amp;#39;re all working in sequence?&lt;/p&gt;\n\n&lt;p&gt;&lt;a href=\"https://preview.redd.it/c4xowk3jczcf1.png?width=2322&amp;amp;format=png&amp;amp;auto=webp&amp;amp;s=93f7dc8b39db2261b0d77b10f5eda86284622e87\"&gt;https://preview.redd.it/c4xowk3jczcf1.png?width=2322&amp;amp;format=png&amp;amp;auto=webp&amp;amp;s=93f7dc8b39db2261b0d77b10f5eda86284622e87&lt;/a&gt;&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;",
+          "likes": null,
+          "suggested_sort": null,
+          "banned_at_utc": null,
+          "view_count": null,
+          "archived": false,
+          "no_follow": true,
+          "is_crosspostable": true,
+          "pinned": false,
+          "over_18": false,
+          "all_awardings": [],
+          "awarders": [],
+          "media_only": false,
+          "link_flair_template_id": "4a605c96-5abb-11f0-bcd3-1668b8ecc091",
+          "can_gild": false,
+          "spoiler": false,
+          "locked": false,
+          "author_flair_text": null,
+          "treatment_tags": [],
+          "visited": false,
+          "removed_by": null,
+          "num_reports": null,
+          "distinguished": null,
+          "subreddit_id": "t5_36pcjp",
+          "author_is_blocked": false,
+          "mod_reason_by": null,
+          "removal_reason": null,
+          "link_flair_background_color": "#fe0101",
+          "id": "1m0a6xi",
+          "is_robot_indexable": true,
+          "report_reasons": null,
+          "author": "sha421",
+          "discussion_type": null,
+          "num_comments": 0,
+          "send_replies": true,
+          "contest_mode": false,
+          "mod_reports": [],
+          "author_patreon_flair": false,
+          "author_flair_text_color": null,
+          "permalink": "/r/n8n/comments/1m0a6xi/when_exactly_should_i_split_out_subworkflows/",
+          "stickied": false,
+          "url": "https://www.reddit.com/r/n8n/comments/1m0a6xi/when_exactly_should_i_split_out_subworkflows/",
+          "subreddit_subscribers": 105426,
+          "created_utc": 1752559937,
+          "num_crossposts": 0,
+          "media": null,
+          "is_video": false
+        }
+      },
+      {
+        "json": {
+          "approved_at_utc": null,
+          "subreddit": "n8n",
+          "selftext": "I usually install software as .exe applications in Windows or services. This time, I tried installing n8n. I have a fairly popular VPS hosting. A powerful server. But this is pure hell. YouTube tutorials don’t work as they should. With ChatGPT/Gemini/Claude/DeepSeek, the installation drags on into hundreds of commands—constantly something breaks or goes wrong. Something is outdated. You have to download something else just to make the previous thing work. I’ve probably already spent a total of 30-40 hours. Installed a dozen different additional programs. Now I’m learning how to set up tunneling because the programs don’t accept HTTP hooks. Connecting Cloudflare for a certificate. Wow. I just wanted to simplify my life a little by automating routine tasks, but instead, I opened a portal to hell =)\n\nQuestion—how do you people do this?",
+          "author_fullname": "t2_12tuijupn0",
+          "saved": false,
+          "mod_reason_title": null,
+          "gilded": 0,
+          "clicked": false,
+          "title": "Am i completely stupid or is installing n8n on my server a genius task?",
+          "link_flair_richtext": [],
+          "subreddit_name_prefixed": "r/n8n",
+          "hidden": false,
+          "pwls": 6,
+          "link_flair_css_class": "",
+          "downs": 0,
+          "thumbnail_height": null,
+          "top_awarded_type": null,
+          "hide_score": false,
+          "name": "t3_1m09ct2",
+          "quarantine": false,
+          "link_flair_text_color": "light",
+          "upvote_ratio": 0.67,
+          "author_flair_background_color": null,
+          "subreddit_type": "public",
+          "ups": 1,
+          "total_awards_received": 0,
+          "media_embed": {},
+          "thumbnail_width": null,
+          "author_flair_template_id": null,
+          "is_original_content": false,
+          "user_reports": [],
+          "secure_media": null,
+          "is_reddit_media_domain": false,
+          "is_meta": false,
+          "category": null,
+          "secure_media_embed": {},
+          "link_flair_text": "Help",
+          "can_mod_post": false,
+          "score": 1,
+          "approved_by": null,
+          "is_created_from_ads_ui": false,
+          "author_premium": false,
+          "thumbnail": "self",
+          "edited": false,
+          "author_flair_css_class": null,
+          "author_flair_richtext": [],
+          "gildings": {},
+          "content_categories": null,
+          "is_self": true,
+          "mod_note": null,
+          "created": 1752556925,
+          "link_flair_type": "text",
+          "wls": 6,
+          "removed_by_category": null,
+          "banned_by": null,
+          "author_flair_type": "text",
+          "domain": "self.n8n",
+          "allow_live_comments": false,
+          "selftext_html": "&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;I usually install software as .exe applications in Windows or services. This time, I tried installing n8n. I have a fairly popular VPS hosting. A powerful server. But this is pure hell. YouTube tutorials don’t work as they should. With ChatGPT/Gemini/Claude/DeepSeek, the installation drags on into hundreds of commands—constantly something breaks or goes wrong. Something is outdated. You have to download something else just to make the previous thing work. I’ve probably already spent a total of 30-40 hours. Installed a dozen different additional programs. Now I’m learning how to set up tunneling because the programs don’t accept HTTP hooks. Connecting Cloudflare for a certificate. Wow. I just wanted to simplify my life a little by automating routine tasks, but instead, I opened a portal to hell =)&lt;/p&gt;\n\n&lt;p&gt;Question—how do you people do this?&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;",
+          "likes": null,
+          "suggested_sort": null,
+          "banned_at_utc": null,
+          "view_count": null,
+          "archived": false,
+          "no_follow": true,
+          "is_crosspostable": true,
+          "pinned": false,
+          "over_18": false,
+          "all_awardings": [],
+          "awarders": [],
+          "media_only": false,
+          "link_flair_template_id": "4a605c96-5abb-11f0-bcd3-1668b8ecc091",
+          "can_gild": false,
+          "spoiler": false,
+          "locked": false,
+          "author_flair_text": null,
+          "treatment_tags": [],
+          "visited": false,
+          "removed_by": null,
+          "num_reports": null,
+          "distinguished": null,
+          "subreddit_id": "t5_36pcjp",
+          "author_is_blocked": false,
+          "mod_reason_by": null,
+          "removal_reason": null,
+          "link_flair_background_color": "#fe0101",
+          "id": "1m09ct2",
+          "is_robot_indexable": true,
+          "report_reasons": null,
+          "author": "Mountain-Job1531",
+          "discussion_type": null,
+          "num_comments": 11,
+          "send_replies": true,
+          "contest_mode": false,
+          "mod_reports": [],
+          "author_patreon_flair": false,
+          "author_flair_text_color": null,
+          "permalink": "/r/n8n/comments/1m09ct2/am_i_completely_stupid_or_is_installing_n8n_on_my/",
+          "stickied": false,
+          "url": "https://www.reddit.com/r/n8n/comments/1m09ct2/am_i_completely_stupid_or_is_installing_n8n_on_my/",
+          "subreddit_subscribers": 105426,
+          "created_utc": 1752556925,
+          "num_crossposts": 0,
+          "media": null,
+          "is_video": false
+        }
+      },
+      {
+        "json": {
+          "approved_at_utc": null,
+          "subreddit": "n8n",
+          "selftext": "I'm trying to do something which I thought would be easy. Upload a pdf in a chat and let the agent have access to it so that I can speak to it about it. However I've been banging my head against the wall for a good while now. Is there no other way to manage this without dealing with embeddings, vector stores etc? Does anyone have a guide to share?",
+          "author_fullname": "t2_p92x9",
+          "saved": false,
+          "mod_reason_title": null,
+          "gilded": 0,
+          "clicked": false,
+          "title": "How to upload pdf to agent",
+          "link_flair_richtext": [],
+          "subreddit_name_prefixed": "r/n8n",
+          "hidden": false,
+          "pwls": 6,
+          "link_flair_css_class": "",
+          "downs": 0,
+          "thumbnail_height": null,
+          "top_awarded_type": null,
+          "hide_score": false,
+          "name": "t3_1m08ute",
+          "quarantine": false,
+          "link_flair_text_color": "light",
+          "upvote_ratio": 1,
+          "author_flair_background_color": null,
+          "subreddit_type": "public",
+          "ups": 2,
+          "total_awards_received": 0,
+          "media_embed": {},
+          "thumbnail_width": null,
+          "author_flair_template_id": null,
+          "is_original_content": false,
+          "user_reports": [],
+          "secure_media": null,
+          "is_reddit_media_domain": false,
+          "is_meta": false,
+          "category": null,
+          "secure_media_embed": {},
+          "link_flair_text": "Help",
+          "can_mod_post": false,
+          "score": 2,
+          "approved_by": null,
+          "is_created_from_ads_ui": false,
+          "author_premium": false,
+          "thumbnail": "self",
+          "edited": false,
+          "author_flair_css_class": null,
+          "author_flair_richtext": [],
+          "gildings": {},
+          "content_categories": null,
+          "is_self": true,
+          "mod_note": null,
+          "created": 1752555224,
+          "link_flair_type": "text",
+          "wls": 6,
+          "removed_by_category": null,
+          "banned_by": null,
+          "author_flair_type": "text",
+          "domain": "self.n8n",
+          "allow_live_comments": false,
+          "selftext_html": "&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;I&amp;#39;m trying to do something which I thought would be easy. Upload a pdf in a chat and let the agent have access to it so that I can speak to it about it. However I&amp;#39;ve been banging my head against the wall for a good while now. Is there no other way to manage this without dealing with embeddings, vector stores etc? Does anyone have a guide to share?&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;",
+          "likes": null,
+          "suggested_sort": null,
+          "banned_at_utc": null,
+          "view_count": null,
+          "archived": false,
+          "no_follow": false,
+          "is_crosspostable": true,
+          "pinned": false,
+          "over_18": false,
+          "all_awardings": [],
+          "awarders": [],
+          "media_only": false,
+          "link_flair_template_id": "4a605c96-5abb-11f0-bcd3-1668b8ecc091",
+          "can_gild": false,
+          "spoiler": false,
+          "locked": false,
+          "author_flair_text": null,
+          "treatment_tags": [],
+          "visited": false,
+          "removed_by": null,
+          "num_reports": null,
+          "distinguished": null,
+          "subreddit_id": "t5_36pcjp",
+          "author_is_blocked": false,
+          "mod_reason_by": null,
+          "removal_reason": null,
+          "link_flair_background_color": "#fe0101",
+          "id": "1m08ute",
+          "is_robot_indexable": true,
+          "report_reasons": null,
+          "author": "sausage-charlie",
+          "discussion_type": null,
+          "num_comments": 3,
+          "send_replies": true,
+          "contest_mode": false,
+          "mod_reports": [],
+          "author_patreon_flair": false,
+          "author_flair_text_color": null,
+          "permalink": "/r/n8n/comments/1m08ute/how_to_upload_pdf_to_agent/",
+          "stickied": false,
+          "url": "https://www.reddit.com/r/n8n/comments/1m08ute/how_to_upload_pdf_to_agent/",
+          "subreddit_subscribers": 105426,
+          "created_utc": 1752555224,
+          "num_crossposts": 0,
+          "media": null,
+          "is_video": false
+        }
+      },
+      {
+        "json": {
+          "approved_at_utc": null,
+          "subreddit": "n8n",
+          "selftext": "I’m trying to figure out how to use HubSpot forum submission to trigger flows such as message me in slack or email. I see contact created so I think using that will allow me to go through the flow like I want. Please let me know if I’m not understanding it correctly",
+          "author_fullname": "t2_m6wdo4we",
+          "saved": false,
+          "mod_reason_title": null,
+          "gilded": 0,
+          "clicked": false,
+          "title": "HubSpot work flow",
+          "link_flair_richtext": [],
+          "subreddit_name_prefixed": "r/n8n",
+          "hidden": false,
+          "pwls": 6,
+          "link_flair_css_class": "",
+          "downs": 0,
+          "thumbnail_height": null,
+          "top_awarded_type": null,
+          "hide_score": false,
+          "name": "t3_1m08rw7",
+          "quarantine": false,
+          "link_flair_text_color": "light",
+          "upvote_ratio": 1,
+          "author_flair_background_color": null,
+          "subreddit_type": "public",
+          "ups": 2,
+          "total_awards_received": 0,
+          "media_embed": {},
+          "thumbnail_width": null,
+          "author_flair_template_id": null,
+          "is_original_content": false,
+          "user_reports": [],
+          "secure_media": null,
+          "is_reddit_media_domain": false,
+          "is_meta": false,
+          "category": null,
+          "secure_media_embed": {},
+          "link_flair_text": "Help",
+          "can_mod_post": false,
+          "score": 2,
+          "approved_by": null,
+          "is_created_from_ads_ui": false,
+          "author_premium": false,
+          "thumbnail": "self",
+          "edited": false,
+          "author_flair_css_class": null,
+          "author_flair_richtext": [],
+          "gildings": {},
+          "content_categories": null,
+          "is_self": true,
+          "mod_note": null,
+          "created": 1752554956,
+          "link_flair_type": "text",
+          "wls": 6,
+          "removed_by_category": null,
+          "banned_by": null,
+          "author_flair_type": "text",
+          "domain": "self.n8n",
+          "allow_live_comments": false,
+          "selftext_html": "&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;I’m trying to figure out how to use HubSpot forum submission to trigger flows such as message me in slack or email. I see contact created so I think using that will allow me to go through the flow like I want. Please let me know if I’m not understanding it correctly&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;",
+          "likes": null,
+          "suggested_sort": null,
+          "banned_at_utc": null,
+          "view_count": null,
+          "archived": false,
+          "no_follow": false,
+          "is_crosspostable": true,
+          "pinned": false,
+          "over_18": false,
+          "all_awardings": [],
+          "awarders": [],
+          "media_only": false,
+          "link_flair_template_id": "4a605c96-5abb-11f0-bcd3-1668b8ecc091",
+          "can_gild": false,
+          "spoiler": false,
+          "locked": false,
+          "author_flair_text": null,
+          "treatment_tags": [],
+          "visited": false,
+          "removed_by": null,
+          "num_reports": null,
+          "distinguished": null,
+          "subreddit_id": "t5_36pcjp",
+          "author_is_blocked": false,
+          "mod_reason_by": null,
+          "removal_reason": null,
+          "link_flair_background_color": "#fe0101",
+          "id": "1m08rw7",
+          "is_robot_indexable": true,
+          "report_reasons": null,
+          "author": "Dismal-Ad6646",
+          "discussion_type": null,
+          "num_comments": 0,
+          "send_replies": true,
+          "contest_mode": false,
+          "mod_reports": [],
+          "author_patreon_flair": false,
+          "author_flair_text_color": null,
+          "permalink": "/r/n8n/comments/1m08rw7/hubspot_work_flow/",
+          "stickied": false,
+          "url": "https://www.reddit.com/r/n8n/comments/1m08rw7/hubspot_work_flow/",
+          "subreddit_subscribers": 105426,
+          "created_utc": 1752554956,
+          "num_crossposts": 1,
+          "media": null,
+          "is_video": false
+        }
+      }
+    ],
+    "Split Out": [
+      {
+        "json": {
+          "title": "Beta testers wanted",
+          "selftext": "I’m actively looking for beta testers... just saw your post and thought I'd leave some info. Maybe my system could help you.\n\nI would like to introduce you to Puppetier – an AI-native business workstation I developed.\n\nhttps://puppetier.io\n\nI have deactivated the registration but a whitelist is available. I carefully review each request to ensure that the right experts can test this tool. It is already in a marketable state. Every tester gets some premium features like RAG, Agent Mode and for the next 2 years Unlimited n8n puppet requests for automations designed by prompt.\n\n🎯 What makes Puppetier unique?\n\nPicture this: A system that maps your entire company – CRM, ERP, and workflow engine in one. But with one crucial difference.\n\n⚡ The Core: Complete AI Core System\n\nThis AI System is ready for immediate use and can use natural language:\n- compose &amp; send complete emails\n- perform complex database analyses\n- intelligently control all business tools\n\n🧠 Agent Mode with Langchain &amp; RAG\n\nPowered by OpenAI embedding-3-small Model for contextual intelligence – the AI doesn’t just understand commands, but learns from your entire business context and can act proactively.\n\n🔥 My proprietary Action Flow System\n\nWhile others rely on MCP, my framework enables exponentially more complex process structures.\nThe AI writes, codes, and compiles business workflows in real-time.\n\nFor n8n experts: Puppetier supports this platform natively – you configure n8n Nodes through Natural Language Processing.\n\n💡 Complete, production-ready business processes emerge from simple prompts.\n\n📈 Real-world Examples:\n\nAttorney Sarah – Client Management:\nBefore: Open 4 programs, create file (15 min), conflict check (10 min), type fee agreement (15 min), enter appointments, send emails = 2 hours of paperwork\nNow: “New client: Max Müller, traffic accident” – AI automatically executes: create file, conflict check, generate fee agreement, book initial consultation, send welcome email\n➡️ 95% time savings – no forgotten steps\n\nArchitect Michael – Project Management:\nBefore: Collect documents (30 min), calculate timesheets (20 min), type invoice (25 min), create PDF, compose email = half a day for billing\nNow: “Close project” – AI orchestrates: gather project data, time evaluation, generate invoice, send to client, change status, post-calculation\n➡️ Invoice reaches client before Michael finishes his coffee\n\n🧩 Additionally:\nThe AI functions are continuously being expanded and I will release the Actionflow system as Open Source.\nThen every company can develop and design their own Actions to test individual solutions extremely cost-effectively – and monetize them.\n\nCurrently, many companies are looking for No-Code/Low-Code specialists.\nPuppetier takes over exactly these functions – and much more.\n\nThe AI can receive granular access via RLS (Row-Level Security) and is capable of evaluating long process chains in seconds – and making them better."
+        }
+      },
+      {
+        "json": {
+          "title": "A small milestone: I am now an Official verified N8N template creator",
+          "selftext": "Great news! I’m now officially a **verified n8n template creator** 🎉\n\nIt’s been a crazy journey building and sharing automations with the community, and getting that verified badge feels surreal.\n\nCan’t wait to drop even more unique, time-saving templates stay tuned 🚀"
+        }
+      },
+      {
+        "json": {
+          "title": "🌍 Are you building something that’s actually good for the world? Join r/VibeCodeGood 💡",
+          "selftext": "Hey fellow builders 👋\n\nIf your side project is more than just a SaaS growth hack or passive income stream—if you’re coding with purpose, designing for impact, or creating something that makes life a little better, kinder, or more human—then you should come hang out at [r/VibeCodeGood](https://www.reddit.com/r/VibeCodeGood/).\n\nIt's a new community for makers, dreamers, technologists, and weirdos who are building things with *vibes and values*. Think:\n\n* 🧠 Mental health tools\n* 🫀Healthspan and longevity trackers\n* 🌱 Climate-positive projects\n* 🤝 Community-focused platforms\n* 💫 Tools for reflection, compassion, justice, joy, and creativity\n\nWe just launched, and we’re curating the first wave of projects and people. Whether you’re coding solo in the dark or just sketching ideas, come share your thing, give feedback, and vibe with others trying to build a better web (and world).\n\n🔗 Join us here: [r/VibeCodeGood](https://www.reddit.com/r/VibeCodeGood/)  \nLet’s code good things, together."
+        }
+      },
+      {
+        "json": {
+          "title": "Things I have automated, do you want yours?",
+          "selftext": "Hey, I will share with you some tools I have created to my clients so you can get inspired on what you can have automated in your business!\n- Ticketmaster Bot (Grabs Tickets with multiple accounts and proxies before sold out)\n- Smart Tool To extract information from pdfs with different structures and generate multiple markdown files used in RAG later (Powered by AI)\n- Smart Tool to scrape specific data from multiple websites with different structures (Powered By AI)\n- Tool for a team to share SMS messages that are received in one phone to many phones and possibility to send from multiple phones with one SIM.\n\nThose are 4 examples of tools I have already created, if you want any tool, website (Landing page + tool) or a telegram bot… I can create you a custom one just like these!"
+        }
+      },
+      {
+        "json": {
+          "title": "Looking for help scraping OPGG or DPM LOL with n8n — best approach?",
+          "selftext": "Hello everyone,\n\nI am currently working on a small personal project using **n8n**, aimed at fetching basic information about League of Legends players in real time at the start of a game (account level, number of games played with the selected champion, win rate, champion mastery, etc.).\n\nI would like to scrape this data from sites like [**OP.GG**](http://OP.GG) or **DPM LOL**, but I’m wondering what would be the most effective method:\n\n* Is classic scraping with n8n’s HTTP Request and HTML Extract nodes sufficient to retrieve this information?\n* Or is it better to use an AI agent to which I would send a screenshot to visually analyze the available data?\n\nIf anyone has already done something similar or has experience with n8n for this type of scraping, I would love to hear your advice and recommendations!\n\nThank you in advance for your help!"
+        }
+      },
+      {
+        "json": {
+          "title": "Free Automation Opportunity For Your Business",
+          "selftext": "Hey 👋 \n\nI'm offering a fully custom automation build for 3 different businesses at no cost in exchange for an honest review.\n\nI will handpick businesses where automation will truly move the needle, where you have tasks consuming hours a week or maybe costing you big cash at the end of the month.\n\nIf this is something that interests you, reach out to me providing a brief about your business, and the problems you are facing and would love to solve it using automation, and I will see what I can do for you.\n\nThanks 🙏\n"
+        }
+      },
+      {
+        "json": {
+          "title": "When exactly should I split out sub-workflows?",
+          "selftext": "One of the common knocks on people posting the spaghetti pron is these super massive workflows that have multiple components should actually be split out into sub-workflows. I think that makes sense where there's clear delineation in roles but I've been testing out this workflow which is pretty simple as far as nodes go, but is basically 12 ai nodes in sequence? Does it even make sense to break something like that up into sub workflows if they're all working in sequence?\n\nhttps://preview.redd.it/c4xowk3jczcf1.png?width=2322&amp;format=png&amp;auto=webp&amp;s=93f7dc8b39db2261b0d77b10f5eda86284622e87\n\n"
+        }
+      },
+      {
+        "json": {
+          "title": "Am i completely stupid or is installing n8n on my server a genius task?",
+          "selftext": "I usually install software as .exe applications in Windows or services. This time, I tried installing n8n. I have a fairly popular VPS hosting. A powerful server. But this is pure hell. YouTube tutorials don’t work as they should. With ChatGPT/Gemini/Claude/DeepSeek, the installation drags on into hundreds of commands—constantly something breaks or goes wrong. Something is outdated. You have to download something else just to make the previous thing work. I’ve probably already spent a total of 30-40 hours. Installed a dozen different additional programs. Now I’m learning how to set up tunneling because the programs don’t accept HTTP hooks. Connecting Cloudflare for a certificate. Wow. I just wanted to simplify my life a little by automating routine tasks, but instead, I opened a portal to hell =)\n\nQuestion—how do you people do this?"
+        }
+      },
+      {
+        "json": {
+          "title": "How to upload pdf to agent",
+          "selftext": "I'm trying to do something which I thought would be easy. Upload a pdf in a chat and let the agent have access to it so that I can speak to it about it. However I've been banging my head against the wall for a good while now. Is there no other way to manage this without dealing with embeddings, vector stores etc? Does anyone have a guide to share?"
+        }
+      },
+      {
+        "json": {
+          "title": "HubSpot work flow",
+          "selftext": "I’m trying to figure out how to use HubSpot forum submission to trigger flows such as message me in slack or email. I see contact created so I think using that will allow me to go through the flow like I want. Please let me know if I’m not understanding it correctly"
+        }
+      }
+    ],
+    "Message a model": [
+      {
+        "json": {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": {
+              "Post Idea 1": {
+                "Headline": "Tired of juggling multiple programs for client management?",
+                "Insight": "Managing client information across different platforms can be time-consuming. With Puppetier's AI-native business workstation, you can automate the entire client onboarding process with a single command. Imagine effortlessly creating files, conducting conflict checks, and sending welcome emails in seconds – no more risk of forgotten steps!",
+                "CTA": "Ready to streamline your operational workflow? Let’s connect!"
+              },
+              "Post Idea 2": {
+                "Headline": "Overwhelmed by time-consuming project management tasks?",
+                "Insight": "Whether you're handling documents, calculating timesheets, or crafting invoices, these repetitive processes can slow you down. Puppetier allows you to simply say 'Close project' and the AI takes care of the entire billing process, freeing you to focus on what truly matters. It’s automation that works while you enjoy your coffee!",
+                "CTA": "Interested in a demo? Reach out, and I’ll show you how it works!"
+              },
+              "Post Idea 3": {
+                "Headline": "Is manual data entry stealing your team’s productivity?",
+                "Insight": "If your team is spending hours on repetitive tasks like data entry and email follow-ups, it’s time to consider automation. Using n8n with Puppetier, you can set up workflows that trigger actions based on specific events, minimizing human error and maximizing efficiency. Say goodbye to tedious tasks and hello to seamless operations.",
+                "CTA": "Curious how to leverage automation for your workflow? Let’s have a conversation!"
+              }
+            },
+            "refusal": null,
+            "annotations": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Search for a post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search for a post": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9de49559-03eb-4907-b99b-be13ad40415e",
+  "meta": {
+    "instanceId": "3acfd83747b23463e29b4731178a780545ac2a704288c04a8b6d09e07a59559f"
+  },
+  "id": "KwSFT6sPyezzOKrs",
+  "tags": []
+}

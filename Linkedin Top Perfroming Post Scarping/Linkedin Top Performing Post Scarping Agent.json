@@ -1,0 +1,361 @@
+{
+  "name": "Linkedin Top Performing Post Scarping Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1fcdHK_NLI3Nyf1cQPf3GP3yf43COW1ln2csE3waqii8",
+          "mode": "list",
+          "cachedResultName": "Linkedin Top Creators Post - AI AGENT",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1fcdHK_NLI3Nyf1cQPf3GP3yf43COW1ln2csE3waqii8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1fcdHK_NLI3Nyf1cQPf3GP3yf43COW1ln2csE3waqii8/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        944,
+        -192
+      ],
+      "id": "44ba4ffa-2233-4e1d-ae9f-9af30ecaf756",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lUt4WLbYEcNKFba4",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/r4oNX7IHlW4RQAjKP/run-sync-get-dataset-items",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer apify_api_Your api key"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n \"usernames\":[\"{{ $json['Linkedin URL'] }}\"]\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1536,
+        -176
+      ],
+      "id": "56463deb-7e49-4686-9f0f-59be2f613fe6",
+      "name": "Run Actor"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1232,
+        -192
+      ],
+      "id": "11bce85c-4090-4b2f-a1d6-d1d26f493fa2",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e89f700b-7b5c-4559-be36-41102f292bc5",
+              "leftValue": "={{ $json.stats.total_reactions }}",
+              "rightValue": 300,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1792,
+        -176
+      ],
+      "id": "d179db07-8ebf-4660-ac82-3cb862ea77a9",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appja5FtV7D6pf0G6",
+          "mode": "list",
+          "cachedResultName": "Linkedin Top Creators Post - AI AGENT",
+          "cachedResultUrl": "https://airtable.com/appja5FtV7D6pf0G6"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblumeSUf16PFbNBR",
+          "mode": "list",
+          "cachedResultName": "Table 2",
+          "cachedResultUrl": "https://airtable.com/appja5FtV7D6pf0G6/tblumeSUf16PFbNBR"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Reactions": "={{ $json.stats.total_reactions }}",
+            "Comments": "={{ $json.stats.comments }}",
+            "Reposts": "={{ $json.stats.reposts }}",
+            "Linkedin post URL": "={{ $json.url }}",
+            "Creator name": "={{ $json.author.first_name }} {{ $json.author.last_name }}",
+            "Caption/ Text / Copy": "={{ $json.text }}",
+            "Date and Time published": "={{ $json.posted_at.date }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Linkedin post URL",
+              "displayName": "Linkedin post URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Creator name",
+              "displayName": "Creator name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Caption/ Text / Copy",
+              "displayName": "Caption/ Text / Copy",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Reactions",
+              "displayName": "Reactions",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Comments",
+              "displayName": "Comments",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Reposts",
+              "displayName": "Reposts",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date and Time published",
+              "displayName": "Date and Time published",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": "={\n  \"fields\": {\n    \"Date and Time published\": \"2025-06-13T09:00:24.000Z\"\n  },\n  \"typecast\": true\n}\n"
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2080,
+        -192
+      ],
+      "id": "4846011f-67b9-430b-911d-9a35d11748cf",
+      "name": "Airtable"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        720,
+        -192
+      ],
+      "id": "1ab61cec-0f4a-4cab-ac89-c5d5f4eef1e7",
+      "name": "Telegram Trigger",
+      "webhookId": "a4d83c15-a4ba-4f1d-a7ea-eb1636f61516",
+      "credentials": {
+        "telegramApi": {
+          "id": "adClV2Bdyk4cSaXi",
+          "name": "Telegram account -Zeno"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## LINKEDIN TOP PERFORMING POST SCRAPING ",
+        "height": 80,
+        "width": 608
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        416,
+        -288
+      ],
+      "typeVersion": 1,
+      "id": "013a8896-3142-445c-8963-0336cf26588b",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Run Actor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Actor": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e4a80b96-0834-4a78-ac40-bfe44c9e3acc",
+  "meta": {
+    "instanceId": "3acfd83747b23463e29b4731178a780545ac2a704288c04a8b6d09e07a59559f"
+  },
+  "id": "y2iUbOUoxse2Kinl",
+  "tags": []
+}
