@@ -1,0 +1,388 @@
+{
+  "name": "Webiste analysis agent",
+  "nodes": [
+    {
+      "parameters": {
+        "events": [
+          "BOOKING_CREATED"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.calTrigger",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "72175a2b-35b2-4fd0-952b-9e68c304396c",
+      "name": "Cal.com Trigger",
+      "webhookId": "7a91e03c-3314-4c54-8f7c-b26f955917bf"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=## Role\nYou are an intelligent assistant designed to analyze meeting participant information and enrich their data based on their email address. Using the provided full name and email address, perform the following tasks:\n\n- Email domain extraction:\nIdentify and extract the domain name from the email address (everything that follows the @ symbol).\nExample: for jdoe@example.com, the extracted domain is example.com.\n\n- Company identification:\nDeduce the company name from the email domain.\nIf the domain belongs to a generic email provider (examples: gmail.com, yahoo.com, outlook.com), indicate \"Not identifiable\".\nOtherwise, format the company name correctly (example: example.com → Example).\n\n## Expected response format:\n{\n  \"Full Name\": \"John Doe\",\n  \"email\": \"jdoe@example.com\",\n  \"domain\": \"example.com\",\n  \"entreprise\": \"Example\",\n}\n\n\nImportant: the output must be in JSON format without \"\\n\". Do not put quotation marks in the boolean search.\n\n## Data to analyze:\nGuest email: {{ $json.attendees[0].email }}\nGuest name: {{ $json.attendees[0].name }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        208,
+        0
+      ],
+      "id": "693ce18d-1f0c-41e5-9d4e-f4e6d897613d",
+      "name": "OpenAI"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        496
+      ],
+      "id": "9e32570f-f0d5-411a-b899-82d3da53c4f1",
+      "name": "OpenAI Chat Model"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to analyze specific website URL. Send it the URL needed to analyze only.",
+        "workflowId": {
+          "__rl": true,
+          "value": "Ph3pzDEA1NubAkXp",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/Ph3pzDEA1NubAkXp",
+          "cachedResultName": "webiste analysis subflow"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        848,
+        448
+      ],
+      "id": "13dfb9b9-1793-4aed-a09e-1a11ffe8a2da",
+      "name": "Analyse Website"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Full Name : {{ $json.message.content.nom_complet }}\nEmail : {{ $json.message.content.email }}\nDomain : {{ $json.message.content.domaine }}\nEntreprise : {{ $json.message.content.entreprise }}\n",
+        "options": {
+          "systemMessage": "=# Agent Role:\nYou are an agent specialized in lead enrichment to optimize appointments scheduled in the calendar. Your objective is to collect and structure valuable information about each lead from the provided data and tools at your disposal.\n\n## Received Data:\n- Lead's full name\n- Lead's email\n- Company domain name\n- Company name\n\n## Tools at Your Disposal:\n1. **Website Analysis**: Allows extraction of key information from the prospect's website (activity, services, positioning, news, etc.).\n   - Usage: Send the company's domain name to this tool and retrieve the results.\n\n2. **LinkedIn Research**: Helps identify the prospect's LinkedIn profile using the person's name and company.\n   - Usage: Input the person's full name and company name into this tool.\n\n3. **Perplexity**: Retrieves the latest news and insights about the lead's company.\n   - Usage: Search for relevant news and select the most recent and significant ones. You must create the prompt yourself to find the latest news, for example \"latest news (company domain name)\"\n\n## Report Format to Generate:\nThe agent must write a structured and concise report, ready to be sent by email, containing the following information:\n\n🔹 **General Information**\n- Lead name: [Full name]\n- Email: [Email]\n- Company: [Company name]\n- Website: [Domain name]\n- LinkedIn profile: [Profile link] (if found)\n\n🔹 **Company Information**\n- Industry sector: [Domain]\n- Main services: [Summary of services offered]\n- Positioning & differentiation: [What distinguishes the company]\n- Key figures (if available): [Company size, revenue, employees]\n\n🔹 **Latest News**\n- News 1: [Title + summary] + source\n- News 2: [Title + summary] + source\n- News 3: [Title + summary] + source\n\n## Specific Instructions:\n- Ensure you have accurate and current information.\n- Avoid redundancy and prioritize clarity.\n- Write in a fluid and natural manner, with a professional yet accessible tone.\n- If information is not found, simply state \"Not available\".\n- The report should be readable in 30 seconds and contain only the most relevant information.\n\nThe goal is to provide a **useful and actionable report** that will better prepare for the meeting and maximize the impact of the first exchange."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        576,
+        0
+      ],
+      "id": "2b7bdfea-2878-413f-9948-dc976f1e3d82",
+      "name": "Lead Enrichment Agent"
+    },
+    {
+      "parameters": {
+        "sendTo": "karthikeyanmdigitalgrowth@gmail.com",
+        "subject": "Meeting Preparation Report",
+        "emailType": "text",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        944,
+        0
+      ],
+      "id": "445ef4f6-fb81-4d10-9a94-7fee3c4b1cf6",
+      "name": "Gmail",
+      "webhookId": "e36f1875-b4a4-4617-9ddd-0a4c0527b2df"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        688,
+        384
+      ],
+      "id": "eec9a7de-6dd2-4e30-8f55-4fdba95354b0",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {
+    "Cal.com Trigger": [
+      {
+        "json": {
+          "triggerEvent": "BOOKING_CREATED",
+          "createdAt": "2025-06-21T10:53:44.264Z",
+          "bookerUrl": "https://cal.com",
+          "title": "30 Min Meeting between Karthikeyan Muthu and Karthikeyan Muthu",
+          "startTime": "2025-06-24T04:30:00Z",
+          "endTime": "2025-06-24T05:00:00Z",
+          "additionalNotes": "",
+          "type": "30min",
+          "description": "",
+          "eventTypeId": 2670562,
+          "hideCalendarNotes": false,
+          "hideCalendarEventDetails": false,
+          "hideOrganizerEmail": false,
+          "schedulingType": null,
+          "seatsPerTimeSlot": null,
+          "seatsShowAttendees": true,
+          "seatsShowAvailabilityCount": true,
+          "customReplyToEmail": null,
+          "organizer": {
+            "id": 1585335,
+            "name": "Karthikeyan Muthu",
+            "email": "karthikeyanmdigitalgrowth@gmail.com",
+            "username": "karthikeyan-muthu-b2b-marketing",
+            "timeZone": "Asia/Calcutta",
+            "language": {
+              "locale": "en"
+            },
+            "timeFormat": "h:mma",
+            "utcOffset": 330
+          },
+          "attendees": [
+            {
+              "email": "karthikeyan@eideacs.com",
+              "name": "Karthikeyan Muthu",
+              "firstName": "",
+              "lastName": "",
+              "timeZone": "Asia/Calcutta",
+              "language": {
+                "locale": "en"
+              },
+              "utcOffset": 330
+            }
+          ],
+          "customInputs": {},
+          "responses": {
+            "name": {
+              "label": "your_name",
+              "value": "Karthikeyan Muthu",
+              "isHidden": false
+            },
+            "email": {
+              "label": "email_address",
+              "value": "karthikeyan@eideacs.com",
+              "isHidden": false
+            },
+            "location": {
+              "label": "location",
+              "value": {
+                "optionValue": "",
+                "value": "integrations:daily"
+              },
+              "isHidden": false
+            },
+            "title": {
+              "label": "what_is_this_meeting_about",
+              "isHidden": true
+            },
+            "notes": {
+              "label": "additional_notes",
+              "isHidden": false
+            },
+            "guests": {
+              "label": "additional_guests",
+              "value": [],
+              "isHidden": false
+            },
+            "rescheduleReason": {
+              "label": "reason_for_reschedule",
+              "isHidden": false
+            }
+          },
+          "userFieldsResponses": {},
+          "location": "integrations:daily",
+          "destinationCalendar": [
+            {
+              "id": 655859,
+              "integration": "google_calendar",
+              "externalId": "karthikeyanmdigitalgrowth@gmail.com",
+              "primaryEmail": "karthikeyanmdigitalgrowth@gmail.com",
+              "userId": 1585335,
+              "eventTypeId": null,
+              "credentialId": 1082486,
+              "delegationCredentialId": null,
+              "domainWideDelegationCredentialId": null
+            }
+          ],
+          "iCalUID": "1ygFdykFEz2FqWFwvL1GSf@Cal.com",
+          "iCalSequence": 0,
+          "requiresConfirmation": false,
+          "oneTimePassword": null,
+          "uid": "1ygFdykFEz2FqWFwvL1GSf",
+          "conferenceData": {
+            "createRequest": {
+              "requestId": "2db644eb-37a5-581a-99fa-ebe6ce513834"
+            }
+          },
+          "videoCallData": {
+            "type": "daily_video",
+            "id": "Du9LcVMWM5OINE2WQvbP",
+            "password": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyIjoiRHU5TGNWTVdNNU9JTkUyV1F2YlAiLCJleHAiOjE3NTE5NTA4MDAsIm8iOnRydWUsImVydWkiOmZhbHNlLCJkIjoiYmJkOThhNzEtMTljOS00YmIxLWE1YzUtY2FmMWVjNWJkMTA1IiwiaWF0IjoxNzUwNTAzMjIzfQ.RmeivQHcoP1RWKyIKKQu5eZG_5KjDrttgum62tyXDBA",
+            "url": "https://meetco.daily.co/Du9LcVMWM5OINE2WQvbP"
+          },
+          "appsStatus": [
+            {
+              "appName": "daily-video",
+              "type": "daily_video",
+              "success": 1,
+              "failures": 0,
+              "errors": []
+            },
+            {
+              "appName": "google-calendar",
+              "type": "google_calendar",
+              "success": 1,
+              "failures": 0,
+              "errors": [],
+              "warnings": []
+            }
+          ],
+          "eventTitle": "30 Min Meeting",
+          "eventDescription": null,
+          "price": 0,
+          "currency": "usd",
+          "length": 30,
+          "bookingId": 8721295,
+          "metadata": {
+            "videoCallUrl": "https://app.cal.com/video/1ygFdykFEz2FqWFwvL1GSf"
+          },
+          "status": "ACCEPTED"
+        }
+      }
+    ],
+    "OpenAI": [
+      {
+        "json": {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": {
+              "Full Name": "Karthikeyan Muthu",
+              "email": "karthikeyan@eideacs.com",
+              "domain": "eideacs.com",
+              "entreprise": "Eideacs"
+            },
+            "refusal": null,
+            "annotations": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Cal.com Trigger": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Lead Enrichment Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Lead Enrichment Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyse Website": {
+      "ai_tool": [
+        [
+          {
+            "node": "Lead Enrichment Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Enrichment Agent": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Lead Enrichment Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "59ff9e33-e4b3-417b-ad99-a8ab2085117c",
+  "meta": {
+    "instanceId": "3acfd83747b23463e29b4731178a780545ac2a704288c04a8b6d09e07a59559f"
+  },
+  "id": "66cubMQrn1bxYusK",
+  "tags": []
+}
