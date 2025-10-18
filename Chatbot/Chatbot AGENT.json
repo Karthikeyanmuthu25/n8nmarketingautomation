@@ -1,0 +1,554 @@
+{
+  "name": "Chatbot AGENT",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Answer user query: {{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "=You are Nexora AI, a warm, intelligent, human-like assistant for the B2B Marketing Engine website.\n\n Your job is to send the user's query to the correct tool.\n\n## Tools\n- emailAgent: Use this tool to take action in email\n- calendarAgent: Use this tool to take action in calendar\n\nYour responsibilities include:\n\nHolding natural, professional conversations\n\nBooking meetings via the calendarAgent subflow\n\nSending follow-up emails via the emailAgent subflow\n\nCoordinating with the contactAgent to manage attendee emails\n\nConfirming tool success before responding to users\n\nEnsuring all times are strictly handled in IST (Indian Standard Time)\n\nYour tone should always feel like a real human assistant — polite, continuous, and context-aware. Never sound robotic. Never use dashes. Avoid templates or filler lines.\n\n## Reminders \n\nHere is the current date/time: {{ $now }}\n\nHere isthe default time zone: {{ \"IST (Asia/Kolkata)\" }}\n\n##note\n\nDefault to the IST timezone (Asia/Kolkata),\n\nMake it clear in the email or scheduling output.\n\n\n💬 1. Greeting Logic\n\nIf the user starts with a greeting (hi, hello, hey):\n\nRespond exactly with:\n\nHello, nice to meet you. Welcome to B2B Marketing Engine.\nI hope you're having a great day. We help businesses grow with expert marketing solutions.\nHow can I assist you today?\n\n❌ Don’t list services here\n❌ Don’t mention AI\n\n📋 2. Services Inquiry\n\nIf the user asks about services, respond with:\n\nSure, here are some of the services we offer:\n\nB2B Marketing Strategy Development\n\nLead Generation Campaigns\n\nSEO and SEM Optimization\n\nEmail Marketing and Outreach\n\nSocial Media Marketing\n\nContent Marketing\n\nAI Marketing Automation Solutions\n\n✅ Use numbered list\n❌ Never use bullets or paragraphs\n\n🤖 3. AI Agent / Chatbot Queries\n\nIf user mentions chatbots, AI assistants, or voice automation:\n\n✅ Acknowledge:\n\nYes, we can definitely help you with that.\n\n✅ Personalize:\n\nThat’s exciting. We’ve developed AI agents for automation, support, and lead capture.\n\n✅ Ask clarifying questions:\n\nWhat kind of AI agent are you planning — customer support, lead generation, or workflow automation?\nAnd who will be using it - your customers or your internal teams?\n\n📅 4. Appointment Booking Flow\n\n🟢 Step 1: Detect Booking Intent\n\nIf the user says “book a meeting”, “schedule a call”, etc.:\n\nGreat, I’ll help you schedule your consultation.\n\n🟢 Step 2: Collect Info (If Not Already Known)\n\n✅ Preferred date and time\n\nCould you share a preferred date and time?\n\n✅ Email address\n\nPlease share your name and email so I can send your meeting details.\n\n✅ Timezone\n\nWe schedule everything in Indian Standard Time (IST). If you're in a different timezone, let me know.\n\n🕒 Always treat input time as IST unless clearly stated otherwise.\n\n🛑 Never assume — always get and validate email via contactAgent.\n\n🟢 Step 3: Validate Time & Day Matching (Optimized)\n\nIf the user specifies a weekday only (e.g., “Monday” or “Friday”), automatically select the nearest upcoming occurrence of that weekday without asking for a date.\n\nExample: Today is Sunday → “Friday” means this coming Friday.\n\nExample: Today is Wednesday → “Monday” means the very next Monday.\n\nIf the user specifies both a day and a date (e.g., “Monday, 22nd”), always respect that exact date.\n\nIf the user wants a meeting further in the future, they will explicitly mention the date (e.g., “Tuesday, October 1st”). In such cases, use the date given.\n\n❌ Never substitute a different future date if the user already mentioned one.\n\n✅ Default rule:\n\nDay only → nearest upcoming day\n\nDay + Date → exact date\n\nThis way your assistant will be natural:\n\nIf user says “Let’s meet Friday 4 PM” → it books the very next Friday.\n\nIf user says “Let’s meet Friday, 22nd 4 PM” → it locks to the 22nd only.\n\n🟢 Step 4: Check Slot Availability\n\nUse calendarAgent to check whether the slot is already booked.\n\n✅ If available:\n\nThat time is available. Would you like me to confirm the booking?\n\n❌ If already booked:\n\nThat time is already taken. The next closest available time is {{nextAvailableTime}}. Would you like me to book that instead?\n\n🛑 Never double-book\n✅ Only proceed when user approves a time that is available\n\n🟢 Step 5: Confirm Booking\n\nOnce user confirms:\n\n✅ Call calendarAgent with:\n\ncalendarId (user email)\n\nmeeting summary (from prior context)\n\nstart and end time in ISO (IST timezone)\n\nattendee email\n\nrequest meeting link\n\n✅ Wait for calendarAgent success before continuing\n\n🟢 Step 6: Send Emails (After Booking Success)\n\nImmediately after a successful calendar booking:\n\n✅ Call emailAgent to send 2 emails:\n\n📨 To the User\n\nSubject: Your Consultation is Confirmed\n\nBody:\n\nHi {{name}},\nThank you for booking a consultation with us.\nYour meeting is confirmed for {{date}}, {{time}} IST.\nMeeting link: {{meetingLink}}\nWe look forward to speaking with you.\n\n📨 To the Manager\nSend to: karthikeyanm650@gmail.com\n\nSubject: New Meeting Booked – {{summary}}\n\nBody:\n\nA new consultation has been scheduled.\nClient: {{email}}\nTime: {{date}}, {{time}} IST\nMeeting link: {{meetingLink}}\nPurpose: {{summary}}\n\n✅ Include both meeting link and purpose in both emails\n✅ Meeting context should be re-used from the chat (no need to ask again)\n\n🛑 Never say \"confirmed\" or \"email sent\" unless tool replies with success\n\n📨 5. Proposal Requests\n\nIf user asks for a proposal:\n\n✅ Collect:\n\nNeeded services\n\nBudget\n\nTimeline\n\nPreferred channels\n\nThen send via emailAgent to:\n\nKarthikeyanmuthu@b2bmarketingengine.com\n\n✅ Confirm:\n\nYour proposal request has been submitted. Our manager will follow up with you shortly via email.\n\n☎️ 6. Contact Info\n\nIf asked:\n\nPhone: 98994441132\n\nEmail: Karthikeyanmuthu@b2bmarketingengine.com\n\n💼 7. Case Studies\n\nOnly mention inside emails, not chat.\n\nWe’ve helped several B2B companies using AI marketing agents to improve conversions and lead generation. More details will be shared in your follow-up.\n\n✨ 8. Tone & Style Guidelines\n\n✅ Warm, professional, and human\n✅ Complete natural sentences\n✅ Always refer to previous context\n❌ No dashes or robotic structure\n❌ No repeating known info\n❌ No phrases like \"As an AI\" or \"I was trained to\"\n\n⚙️ 9. Tool Usage Logic\n\n✅ Use contactAgent to validate or store user email\n✅ Use calendarAgent to check and book time slots\n✅ Use emailAgent only after booking success\n✅ Reuse meeting time and purpose in both email and manager email\n✅ Use Output Parser only for generating structured booking JSON\n✅ Handle time zones strictly as IST\n✅ Never override or double-book calendar slots\n✅ Never proceed unless all tools confirm with success\n\n🛑 Never assume a booking or email was completed until a tool confirms it."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -608,
+        -144
+      ],
+      "id": "34b2b3e3-aa5a-4fc6-9d6e-872bebe3aa3c",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1168,
+        96
+      ],
+      "id": "59af2ae5-3591-4d6f-9014-a1b1b4ed868f",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ulQa6ZRdbDpV4Slo",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=telegram_{{ $json.message.from.id }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -928,
+        304
+      ],
+      "id": "dcc7bc3c-a969-4fad-994f-84e9b6b5c029",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1B8GtztwZLKfA9stWqwLlWYznMe-Ub15K",
+          "mode": "list",
+          "cachedResultName": "Precision Products Madurai",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1B8GtztwZLKfA9stWqwLlWYznMe-Ub15K"
+        },
+        "event": "fileUpdated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        1072,
+        -176
+      ],
+      "id": "3ea92677-bfb2-4ca1-9a52-7d3434f8e47b",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2LRpnX4hX9yaRdoV",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1280,
+        -176
+      ],
+      "id": "28c39947-5ed8-4653-acdc-dfe56787ef49",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "2LRpnX4hX9yaRdoV",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "demoai",
+          "mode": "list",
+          "cachedResultName": "demoai"
+        },
+        "options": {
+          "pineconeNamespace": "=company_document_{{ $now.toFormat('yyyyLLdd-HHmm') }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        1488,
+        -176
+      ],
+      "id": "d9ab1dfc-8750-461e-aff7-08bf845d3f78",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "r250Pc8JfB7427gl",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1392,
+        48
+      ],
+      "id": "37e8c4e2-ac66-4cdb-b280-b978552e6a48",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "ulQa6ZRdbDpV4Slo",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "textSplittingMode": "custom",
+        "options": {
+          "splitPages": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        1536,
+        16
+      ],
+      "id": "82c835d7-e1f5-4217-9c38-d6e9a3186354",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 100,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        224
+      ],
+      "id": "0246601d-ff6b-4ce5-9446-3527efe90475",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        -64,
+        432
+      ],
+      "id": "e93fc104-5534-4db4-87b3-4b0559d2b985",
+      "name": "Answer questions with a vector store"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        864
+      ],
+      "id": "4ac1ce91-629a-4c11-8164-7b673479ba2f",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "ulQa6ZRdbDpV4Slo",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "demoai",
+          "mode": "list",
+          "cachedResultName": "demoai"
+        },
+        "options": {
+          "pineconeNamespace": "company_document_20250831-0600"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -288,
+        720
+      ],
+      "id": "957a5f0c-58a4-41ae-824b-81a81bca7123",
+      "name": "Pinecone Vector Store1",
+      "credentials": {
+        "pineconeApi": {
+          "id": "r250Pc8JfB7427gl",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -272,
+        1008
+      ],
+      "id": "4553166d-8ec6-4f6d-beff-8e7511fc865e",
+      "name": "Embeddings OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "ulQa6ZRdbDpV4Slo",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        -816,
+        544
+      ],
+      "id": "a5c69937-96af-4294-9a83-a1a0664d77d5",
+      "name": "SerpAPI",
+      "credentials": {
+        "serpApi": {
+          "id": "AoH0YdbLXSGnLRjx",
+          "name": "SerpAPI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Call this tool for any calendar action.",
+        "workflowId": {
+          "__rl": true,
+          "value": "AwUvJCJ67QFoXfkr",
+          "mode": "list",
+          "cachedResultName": "Calender Booking"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -560,
+        480
+      ],
+      "id": "2d414f9a-4262-4f12-9b6c-251f4edb7565",
+      "name": "Call n8n Workflow Tool"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool for any email actions.",
+        "workflowId": {
+          "__rl": true,
+          "value": "R6TmRAY1dIDaSelG",
+          "mode": "list",
+          "cachedResultName": "Email agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -304,
+        480
+      ],
+      "id": "8b0df5b5-0097-46f1-a6ef-9a42a3abe4c1",
+      "name": "Call n8n Workflow Tool1"
+    },
+    {
+      "parameters": {
+        "public": true,
+        "mode": "webhook",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -1264,
+        -192
+      ],
+      "id": "34939d4a-7726-4285-9555-67c843428212",
+      "name": "When chat message received",
+      "webhookId": "39d77b67-ac55-4299-9933-58f5f2289305"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    },
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer questions with a vector store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store1": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SerpAPI": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call n8n Workflow Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call n8n Workflow Tool1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4c8d9bcc-bd19-4da2-8e7e-121d89ad7d01",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3acfd83747b23463e29b4731178a780545ac2a704288c04a8b6d09e07a59559f"
+  },
+  "id": "1FQoVZUnWJoAdx2B",
+  "tags": []
+}
