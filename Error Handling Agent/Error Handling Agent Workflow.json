@@ -1,0 +1,164 @@
+{
+  "name": "Error Handling",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1W0lCI_AqIZ8MtqV8ad085x4_RX6fsT7H9QvDQh-q4Qs",
+          "mode": "list",
+          "cachedResultName": "Error Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1W0lCI_AqIZ8MtqV8ad085x4_RX6fsT7H9QvDQh-q4Qs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Slack agent",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1W0lCI_AqIZ8MtqV8ad085x4_RX6fsT7H9QvDQh-q4Qs/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "WORKFLOW": "={{ $json.workflow.name }}",
+            "URL": "={{ $json.execution.url }}",
+            "NODE": "={{ $json.execution.error.node.name }}",
+            "ERROR MESSAGE": "={{ $json.execution.error.message }}",
+            "Timestamp": "={{ $now.format('yyyy-MM-dd') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "WORKFLOW",
+              "displayName": "WORKFLOW",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "NODE",
+              "displayName": "NODE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ERROR MESSAGE",
+              "displayName": "ERROR MESSAGE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        144,
+        -128
+      ],
+      "id": "82cd0aa1-d130-4bf0-9492-1557809bf2da",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lUt4WLbYEcNKFba4",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        -16
+      ],
+      "id": "b61d636c-9208-462c-9533-27ba67969bfb",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "chatId": "7991295449",
+        "text": "Workflow Error ",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        144,
+        80
+      ],
+      "id": "29a27ab8-db87-4cd9-ac7f-5959b662a4eb",
+      "name": "Error Notification",
+      "webhookId": "51fd8e6b-3e8d-456d-815c-6d33535c719d",
+      "credentials": {
+        "telegramApi": {
+          "id": "adClV2Bdyk4cSaXi",
+          "name": "Telegram account -Zeno"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Error Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b8638e75-800a-4629-bb5a-273664214308",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3acfd83747b23463e29b4731178a780545ac2a704288c04a8b6d09e07a59559f"
+  },
+  "id": "tATkxVZ16I1rX07F",
+  "tags": []
+}

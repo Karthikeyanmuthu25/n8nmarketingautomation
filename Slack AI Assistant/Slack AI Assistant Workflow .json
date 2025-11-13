@@ -1,0 +1,646 @@
+{
+  "name": "Slack AI Assistant",
+  "nodes": [
+    {
+      "parameters": {
+        "trigger": [
+          "app_mention"
+        ],
+        "channelId": {
+          "__rl": true,
+          "value": "C09N4A096BA",
+          "mode": "list",
+          "cachedResultName": "slackn8nautomation"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.slackTrigger",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        -32
+      ],
+      "id": "644591ee-9dac-4008-b384-57f7e07a5830",
+      "name": "Slack Trigger",
+      "webhookId": "130d1abb-bad9-4dbd-aa0a-80a537a1b98e",
+      "credentials": {
+        "slackApi": {
+          "id": "44dKrvMb15pY5CpO",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Reply to the user's message with your intelligence : {{ $json.Text }}",
+        "options": {
+          "systemMessage": "=You are an AI workflow assistant integrated inside Slack using n8n.\n\nYour role is to understand the user’s automation needs and translate them into structured intent for workflow design.\n\nWhen the user provides a detailed message with clear intent or examples (even in natural language), assume they want to build or describe a workflow — do not ask unnecessary clarifying questions. Instead, rephrase their intent clearly and confirm understanding if needed.\n\nIf the input is short, ambiguous, or lacks context (for example, just “help me automate Slack” or “create a workflow”), respond politely and ask one specific, guiding question to help gather more detail.\n\nYour tone should be friendly, confident, and natural — avoid repetitive or robotic phrasing.\n\nResponse strategy:\n1. Identify whether the input is **detailed** or **vague**.\n2. If detailed → Summarize the workflow intent in 1-2 lines and transition to build phase.\n3. If vague → Ask a single smart follow-up question to clarify.\n4. Never repeat greetings like “Hello” or “Hi” if the user already greeted first.\n5. Avoid redundant phrases like “how can I help you” — focus on intent understanding.\n\nExample behavior:\n- Input: “I want to create a Telegram assistant that sends reminders and logs meetings in Notion.”\n  → Output: “Got it. You want to build a Telegram automation that handles reminders and syncs meeting logs to Notion. Would you like to include triggers for time or new events?”\n\n- Input: “Hi”, \"Hello\"\n  → Output: “Hi there! Could you tell me what kind of workflow you’d like to automate?”\n\nKeep your tone conversational, natural, and context-aware.\n\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        192
+      ],
+      "id": "43b8ad99-c1ad-48cf-9908-0a4a860a06d5",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        384,
+        480
+      ],
+      "id": "39a665e9-39ba-49bf-8a0e-e706a7a09b75",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ulQa6ZRdbDpV4Slo",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.files[0].id }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "623a8c93-adde-458e-9a5b-0e829c308746"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Voice "
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c8735372-8d11-446a-87d8-f57e10891b26",
+                    "leftValue": "={{ $json.blocks[0].elements[0].elements[1].text }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -352,
+        -32
+      ],
+      "id": "6ecfe0ad-8c58-47fe-b06b-ee5b3f53f981",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        336,
+        -192
+      ],
+      "id": "8ebd5b87-c74e-405c-b565-ae77bea1c863",
+      "name": "Transcribe a recording",
+      "credentials": {
+        "openAiApi": {
+          "id": "ulQa6ZRdbDpV4Slo",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "fileId": "={{ $json.files[0].id }}"
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -96,
+        -192
+      ],
+      "id": "b11b396a-0e22-40f3-a219-771496ebe79a",
+      "name": "Get a file",
+      "webhookId": "438fc408-7ae7-45c4-8c67-9641fe19275e",
+      "credentials": {
+        "slackApi": {
+          "id": "44dKrvMb15pY5CpO",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a5c77096-2c43-46f5-8711-b20b1469b0b8",
+              "name": "Text",
+              "value": "={{ $json.blocks[0].elements[0].elements[1].text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -96,
+        192
+      ],
+      "id": "c3ebeadc-2032-4256-b4f4-2cd0502415a5",
+      "name": "Text message"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e598a0c5-7571-49b8-b307-d520ba98d8d0",
+              "name": "Text",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        528,
+        -192
+      ],
+      "id": "cbb3ac13-2928-4409-a946-27dc1ac5ae05",
+      "name": "Audio to text"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.user || $json.event?.user || $json.channel || $input.first().json.user || $input.first().json.event?.user || \"default-session\" }}\n",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        576,
+        480
+      ],
+      "id": "6ff70946-8357-4bd0-ba45-5c154e4b6cb0",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "jsCode": "// --- Prefer user message if available ---\nconst message =\n  $json.text || // from Text Message node\n  $json.transcription || // from Audio-to-Text node\n  $json.input || // generic input\n  $json.output || // fallback (AI output)\n  \"\";\n\n// Normalize and clean up\nconst lower = message.toLowerCase().trim();\n\n// --- Context keywords (same as before) ---\nconst triggerKeywords = [\n  \"when\", \"if\", \"every day\", \"on\", \"after\", \"trigger\", \"schedule\"\n];\nconst actionKeywords = [\n  \"send\", \"create\", \"post\", \"update\", \"notify\", \"email\", \"generate\"\n];\nconst toolKeywords = [\n  \"slack\", \"gmail\", \"notion\", \"google sheet\", \"drive\", \"jira\", \"openai\", \"hubspot\"\n];\n\n// --- Context detection ---\nconst hasTrigger = triggerKeywords.some(k => lower.includes(k));\nconst hasAction = actionKeywords.some(k => lower.includes(k));\nconst hasTool = toolKeywords.some(k => lower.includes(k));\n\n// --- Decision logic ---\nif (\n  !message || // no text at all\n  message.length < 60 || // too short\n  (!hasTrigger && !hasAction && !hasTool) || // no context clues\n  lower.match(/^(hi|hello|hey|good\\s*morn|good\\s*even)/) // greeting check\n) {\n  // 🟡 Clarify phase\n  return [{\n    phase: \"Clarify\",\n    message,\n    reasoning: \"Short or vague input — asking for more info\"\n  }];\n} else {\n  // 🟢 Build phase\n  return [{\n    phase: \"Build\",\n    message,\n    reasoning: \"User provided enough context (trigger/action/tool)\"\n  }];\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -16
+      ],
+      "id": "0e1f6ae2-232c-4310-95b7-4ffb7b68113e",
+      "name": "Decision Maker"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C09N4A096BA",
+          "mode": "list",
+          "cachedResultName": "slackn8nautomation"
+        },
+        "text": "=Hi, I’m your Slack AI Assistant here to help you build your n8n workflow.\nI just need a little more detail before I can move forward.  \nCould you tell me what kind of automation or workflow you want to build?\n",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        2560,
+        -48
+      ],
+      "id": "6ed087fe-4aab-4f8e-8793-4241e2de9a74",
+      "name": "Ask for Clarification",
+      "webhookId": "004c83e4-1eb4-469c-82b2-e89e1049bf28",
+      "credentials": {
+        "slackApi": {
+          "id": "44dKrvMb15pY5CpO",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C09N4A096BA",
+          "mode": "list",
+          "cachedResultName": "slackn8nautomation"
+        },
+        "text": "={{ $json.content[0].text }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        2560,
+        208
+      ],
+      "id": "774c3d2c-b15d-4d34-8267-65efe8933f08",
+      "name": "Send a message",
+      "webhookId": "404adbb3-2437-4b21-8499-9f038633684b",
+      "credentials": {
+        "slackApi": {
+          "id": "44dKrvMb15pY5CpO",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "=Clarify",
+                    "rightValue": "={{ $json.phase }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "b397148a-0b1a-49cc-b732-e41bb0ab0954"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Clarify"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "9c9a99e4-2258-4439-856b-9beb792e5a48",
+                    "leftValue": "=Build",
+                    "rightValue": "={{ $json.phase }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Build"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        1088,
+        -16
+      ],
+      "id": "f6b91cec-424c-4efb-b575-f6f4b18b009c",
+      "name": "Phase Router"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url_private_download }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer xoxb-8914133906564-9724023168914-15NsjcCN5P0oEWcU96LRiUtq"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        112,
+        -192
+      ],
+      "id": "2db43773-4846-4b83-96e9-42e4cd4d5134",
+      "name": "Download Audio File"
+    },
+    {
+      "parameters": {
+        "content": "## Workflow Mapping\n\n\nSlack Trigger\n↓\nSwitch (Check if Input is Text or Voice)\n  ├─ If Voice → Download File → OpenAI Transcription → Convert to Text\n  └─ If Text → Pass through as message\n↓\nAI Agent (Clarification Assistant – OpenAI)\n↓\nDecision Maker (Code Node → Clarify or Build)\n↓\nPhase Router (Switch Node)\n  ├─ Clarify → Slack “Ask for Clarification”\n  └─ Build → Claude Builder (Anthropic)\n                  ↓\n                  Slack “Send Workflow Instructions”\n",
+        "height": 416,
+        "width": 480
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2768,
+        -192
+      ],
+      "typeVersion": 1,
+      "id": "53924bc3-0f2a-48d5-8b82-f46bc20c38e4",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "claude-sonnet-4-20250514",
+          "mode": "list",
+          "cachedResultName": "claude-sonnet-4-20250514"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=={{ $json.message }}"
+            }
+          ]
+        },
+        "options": {
+          "system": "=You are an expert n8n workflow architect and automation builder, integrated inside a Slack-based AI assistant.  \nYour role is to take a clarified user request and produce a complete workflow specification document that can be directly followed or imported into n8n.\n\nYour response must be structured, clear, and professional — written like a workflow implementation guide for technical users.\n\nDo not use markdown symbols such as *, #, or emojis.  \nUse plain text, consistent spacing, numbered sections, and indentation where necessary.\n\n------------------------------------------------------------\n1. Workflow Name\n------------------------------------------------------------\nProvide a concise, descriptive title for the workflow that clearly represents its purpose.\n\n------------------------------------------------------------\n2. Purpose of the Workflow\n------------------------------------------------------------\nIn 2–3 sentences, explain what problem this workflow solves or what process it automates.\n\n------------------------------------------------------------\n3. Short Summary and Node Mapping\n------------------------------------------------------------\nWrite a short summary (3–5 sentences) describing what the workflow does, how it behaves, and the overall automation flow.  \nThen include a compact node mapping line to show the structure briefly.  \nExample:\nNode Flow Summary: Slack Trigger → IF Node (Condition Check) → HTTP Request → Set Node → Slack Message\n\n------------------------------------------------------------\n4. Step-by-Step Implementation Guide\n------------------------------------------------------------\nProvide a detailed, numbered implementation guide covering every step from start to finish.  \nEach step must include the node name, its function, configuration guidance, and connection details.\n\nStep 1. [First node]\nDescribe what the node does, which n8n node to use, and how to configure it.\n\nStep 2. [Second node]\nDescribe what happens next, how it connects from the previous node, and its configuration.\n\nContinue in this format for all workflow components — including decision nodes, HTTP requests, AI integrations, and output steps.\n\n------------------------------------------------------------\n5. Workflow Example Execution\n------------------------------------------------------------\nExplain a short example of how this workflow would behave during a real run.  \nInclude how data flows from start to end and what output is expected.\n\n------------------------------------------------------------\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.anthropic",
+      "typeVersion": 1,
+      "position": [
+        1584,
+        208
+      ],
+      "id": "4f0ed36f-9390-464b-ac02-2a44930250da",
+      "name": "Workflow Designer",
+      "credentials": {
+        "anthropicApi": {
+          "id": "mkhy2K8CB05KgSj3",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Slack AI Assistant Workflow\n\n## Setup and Execution Guide\n\nStep 1: Connect Your Slack Account\n\nGo to Slack and create or use an existing workspace.\n\nIn n8n, open Connections → Slack API and add your Slack credentials.\n\nGrant permissions for:\n\nReading messages\n\nSending messages\n\nUploading files\n\nPurpose: Enables the workflow to receive user inputs and send automated responses directly inside Slack.\n\nStep 2: Enable Text and Voice Input\n\nSet up the Slack Trigger Node to handle two types of input:\n\nText messages sent directly from users.\n\nVoice messages attached as audio files.\n\nThen connect the trigger to:\n\nHTTP Request Node – downloads the audio file from Slack.\n\nOpenAI Transcription Node – converts the voice recording into text.\n\nPurpose: This ensures that both text and voice inputs are supported seamlessly within the workflow.\n\nStep 3: Configure the Clarification AI (OpenAI)\n\nAdd an AI Agent (OpenAI) node.\nThis node analyzes the user’s message and determines if the request is clear or if more context is needed.\n\nIf unclear, it generates clarifying questions.\n\nIf clear, it passes the message forward for workflow creation.\n\nPurpose: Replicates a natural clarification process before building workflows, ensuring higher accuracy in output.\n\nStep 4: Add Decision Logic\n\nInsert a Code Node (JavaScript) that evaluates the message content and routes it appropriately.\nIt checks for:\n\nMessage length.\n\nPresence of automation-related keywords such as “create,” “connect,” or “build workflow.”\n\nPurpose: This node determines whether the workflow should ask clarifying questions or proceed to build the automation.\n\nStep 5: Route Phases Using Switch Node\n\nUse a Switch Node (Phase Router) to handle logical routing between phases:\n\nClarify Path: Sends a Slack message asking for additional information.\n\nBuild Path: Forwards the message to the Claude Builder node for workflow generation.\n\nPurpose: Keeps the conversation organized by dividing it into two clear functional routes.\n\nStep 6: Implement the Claude Workflow Builder\n\nAdd a Claude Builder (Anthropic) node.\nUse the following system message format:\n\nYou are an expert n8n workflow architect. Generate a complete, valid workflow in a clear, step-by-step format based on the provided user request.\n\nClaude will generate a structured workflow explanation or step guide in natural language.\n\nPurpose: Acts as the workflow-building intelligence that provides detailed implementation steps.\n\nStep 7: Configure Slack Output\n\nAdd a Slack “Send Message” Node to deliver the AI-generated workflow explanation or step-by-step instructions back to the user.\nYou can optionally configure this to post replies within a thread under the original user message.\n\nPurpose: Provides a professional and interactive Slack-based communication channel for results.\n\nStep 8: Add Error Handling and Monitoring\n\nInclude an Error Trigger Node to manage all workflow errors and exceptions.\nConnect it to:\n\nGoogle Sheets Node: Logs each error’s timestamp, workflow name, node name, and message.\n\nTelegram Node: Sends real-time alerts for any failure.\n\nPurpose: Enables full workflow observability. Every error is logged and notified automatically for faster troubleshooting and higher uptime reliability.\n\nStep 9: Test and Optimize\n\nBefore deploying the workflow, conduct a complete test.\n\nSend both text and voice messages via Slack.\n\nValidate AI responses for clarification and workflow generation.\n\nCheck that messages are correctly sent back to Slack.\n\nVerify that error logs are stored in Google Sheets and alerts appear in Telegram.",
+        "height": 2272,
+        "width": 1072
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2112,
+        -608
+      ],
+      "typeVersion": 1,
+      "id": "dd9b24f3-26ad-493e-be15-81071cc26ae3",
+      "name": "Sticky Note1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Slack Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Decision Maker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        [
+          {
+            "node": "Audio to text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Download Audio File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text message": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audio to text": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decision Maker": {
+      "main": [
+        [
+          {
+            "node": "Phase Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ask for Clarification": {
+      "main": [
+        []
+      ]
+    },
+    "Phase Router": {
+      "main": [
+        [
+          {
+            "node": "Ask for Clarification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Workflow Designer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Audio File": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow Designer": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "tATkxVZ16I1rX07F"
+  },
+  "versionId": "fe091fcb-3243-420c-9347-945516b94045",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3acfd83747b23463e29b4731178a780545ac2a704288c04a8b6d09e07a59559f"
+  },
+  "id": "Crcf70UXYTSCzx0L",
+  "tags": []
+}
