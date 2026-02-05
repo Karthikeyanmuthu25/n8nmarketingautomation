@@ -1,0 +1,479 @@
+{
+  "name": "Domain Intelligence Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// ==========================================\n// ADVANCED SCORING ALGORITHM\n// Calculates Quality Score and Difficulty\n// ==========================================\n\nconst allResults = $input.all();\nconst uniqueItems = new Map();\n\n// ==========================================\n// SCORING CONFIGURATION\n// ==========================================\n\n// High-authority domains for AI Infrastructure\nconst AUTHORITY_TIERS = {\n  tier1: ['arxiv.org', 'openai.com', 'anthropic.com', 'deepmind.com', 'nvidia.com', 'google.ai', 'research.google'],\n  tier2: ['huggingface.co', 'pytorch.org', 'tensorflow.org', 'github.com', 'aws.amazon.com', 'cloud.google.com', 'azure.microsoft.com'],\n  tier3: ['towardsdatascience.com', 'medium.com', 'dev.to', 'techcrunch.com', 'venturebeat.com', 'theregister.com'],\n  tier4: ['reddit.com', 'stackoverflow.com', 'news.ycombinator.com']\n};\n\n// Technical terms that indicate difficulty\nconst TECHNICAL_TERMS = {\n  advanced: ['transformer', 'attention mechanism', 'backpropagation', 'gradient descent', 'CUDA', 'kernel', 'tensor', 'eigenvalue', 'jacobian', 'hessian', 'KV cache', 'PagedAttention', 'FlashAttention', 'speculative decoding', 'continuous batching'],\n  intermediate: ['inference', 'latency', 'throughput', 'batch size', 'quantization', 'pruning', 'distillation', 'fine-tuning', 'embedding', 'vector', 'GPU', 'TPU', 'API', 'endpoint', 'containerization', 'kubernetes'],\n  foundational: ['model', 'training', 'prediction', 'accuracy', 'dataset', 'parameter', 'neural network', 'machine learning', 'artificial intelligence', 'deep learning']\n};\n\n// Marketing-relevant terms (boost quality for marketers)\nconst MARKETING_TERMS = ['ROI', 'cost', 'pricing', 'enterprise', 'production', 'scale', 'customer', 'use case', 'case study', 'benchmark', 'comparison', 'versus', 'vs', 'market', 'adoption', 'trend', 'challenge', 'problem', 'solution', 'benefit'];\n\n// ==========================================\n// SCORING FUNCTIONS\n// ==========================================\n\nfunction calculateDifficultyScore(text, title) {\n  if (!text) return 5;\n  \n  const fullText = (title + ' ' + text).toLowerCase();\n  let score = 3; // Base score\n  \n  // Count technical terms by tier\n  let advancedCount = 0;\n  let intermediateCount = 0;\n  let foundationalCount = 0;\n  \n  TECHNICAL_TERMS.advanced.forEach(term => {\n    if (fullText.includes(term.toLowerCase())) advancedCount++;\n  });\n  \n  TECHNICAL_TERMS.intermediate.forEach(term => {\n    if (fullText.includes(term.toLowerCase())) intermediateCount++;\n  });\n  \n  TECHNICAL_TERMS.foundational.forEach(term => {\n    if (fullText.includes(term.toLowerCase())) foundationalCount++;\n  });\n  \n  // Calculate difficulty based on term distribution\n  if (advancedCount >= 3) score += 4;\n  else if (advancedCount >= 1) score += 2;\n  \n  if (intermediateCount >= 5) score += 2;\n  else if (intermediateCount >= 2) score += 1;\n  \n  // Code presence increases difficulty\n  const hasCode = text.includes('```') || text.includes('def ') || text.includes('class ') || text.includes('import ') || text.includes('function ');\n  if (hasCode) score += 2;\n  \n  // Mathematical notation increases difficulty\n  const hasMath = /[∑∏∫√∂∇]|\\\\frac|\\\\sum|O\\(n\\)|O\\(1\\)/i.test(text);\n  if (hasMath) score += 2;\n  \n  // Long sentences with complex structure increase difficulty\n  const avgSentenceLength = text.split(/[.!?]/).reduce((sum, s) => sum + s.split(' ').length, 0) / Math.max(text.split(/[.!?]/).length, 1);\n  if (avgSentenceLength > 25) score += 1;\n  \n  // If mostly foundational terms and few advanced, reduce difficulty\n  if (foundationalCount > advancedCount * 2 && advancedCount < 2) score -= 2;\n  \n  return Math.min(Math.max(score, 1), 10); // Clamp between 1-10\n}\n\nfunction calculateQualityScore(item) {\n  let score = 0;\n  const text = (item.text || '').toLowerCase();\n  const title = (item.title || '').toLowerCase();\n  const url = item.url || '';\n  \n  // ==========================================\n  // 1. SOURCE AUTHORITY (0-3 points)\n  // ==========================================\n  let authorityScore = 1; // Default\n  \n  try {\n    const domain = new URL(url).hostname.replace('www.', '');\n    \n    if (AUTHORITY_TIERS.tier1.some(d => domain.includes(d))) authorityScore = 3;\n    else if (AUTHORITY_TIERS.tier2.some(d => domain.includes(d))) authorityScore = 2.5;\n    else if (AUTHORITY_TIERS.tier3.some(d => domain.includes(d))) authorityScore = 2;\n    else if (AUTHORITY_TIERS.tier4.some(d => domain.includes(d))) authorityScore = 1.5;\n    else if (domain.includes('.edu') || domain.includes('.gov')) authorityScore = 3;\n    else if (domain.includes('.org')) authorityScore = 2;\n  } catch (e) {\n    authorityScore = 1;\n  }\n  \n  score += authorityScore;\n  \n  // ==========================================\n  // 2. CONTENT DEPTH (0-3 points)\n  // ==========================================\n  const wordCount = text.split(/\\s+/).length;\n  let depthScore = 0;\n  \n  if (wordCount > 2000) depthScore = 3;\n  else if (wordCount > 1000) depthScore = 2.5;\n  else if (wordCount > 500) depthScore = 2;\n  else if (wordCount > 300) depthScore = 1.5;\n  else depthScore = 1;\n  \n  // Bonus for structured content\n  const hasHeadings = /#|##|###|<h[1-6]>/i.test(text);\n  const hasBullets = /^[-*•]|\\n[-*•]/m.test(text);\n  const hasNumberedList = /^\\d+\\.|\\n\\d+\\./m.test(text);\n  \n  if (hasHeadings) depthScore += 0.3;\n  if (hasBullets || hasNumberedList) depthScore += 0.2;\n  \n  score += Math.min(depthScore, 3);\n  \n  // ==========================================\n  // 3. MARKETING RELEVANCE (0-2 points)\n  // ==========================================\n  let marketingScore = 0;\n  let marketingTermCount = 0;\n  \n  MARKETING_TERMS.forEach(term => {\n    if (text.includes(term.toLowerCase()) || title.includes(term.toLowerCase())) {\n      marketingTermCount++;\n    }\n  });\n  \n  if (marketingTermCount >= 5) marketingScore = 2;\n  else if (marketingTermCount >= 3) marketingScore = 1.5;\n  else if (marketingTermCount >= 1) marketingScore = 1;\n  else marketingScore = 0.5;\n  \n  score += marketingScore;\n  \n  // ==========================================\n  // 4. RECENCY (0-2 points)\n  // ==========================================\n  let recencyScore = 1; // Default\n  \n  if (item.published_date) {\n    const publishDate = new Date(item.published_date);\n    const daysSincePublished = Math.floor((Date.now() - publishDate) / (1000 * 60 * 60 * 24));\n    \n    if (daysSincePublished <= 7) recencyScore = 2;\n    else if (daysSincePublished <= 14) recencyScore = 1.75;\n    else if (daysSincePublished <= 30) recencyScore = 1.5;\n    else if (daysSincePublished <= 60) recencyScore = 1.25;\n    else recencyScore = 1;\n  }\n  \n  score += recencyScore;\n  \n  // ==========================================\n  // FINAL SCORE (normalize to 1-10)\n  // ==========================================\n  // Max possible: 3 + 3 + 2 + 2 = 10\n  return Math.min(Math.max(Math.round(score * 10) / 10, 1), 10);\n}\n\nfunction determineCategory(difficultyScore, text) {\n  const textLower = (text || '').toLowerCase();\n  \n  // Check for research indicators\n  const isResearch = textLower.includes('arxiv') || \n                     textLower.includes('paper') || \n                     textLower.includes('study shows') ||\n                     textLower.includes('we propose') ||\n                     textLower.includes('abstract');\n  \n  if (isResearch) return 'RESEARCH';\n  if (difficultyScore >= 8) return 'ADVANCED';\n  if (difficultyScore >= 5) return 'INTERMEDIATE';\n  return 'FOUNDATIONAL';\n}\n\n// ==========================================\n// PROCESS RESULTS\n// ==========================================\n\nfor (const item of allResults) {\n  const results = item.json?.results || [];\n  const queryMeta = {\n    keyword: item.json?.keyword || 'AI Infrastructure',\n    learning_type: item.json?.learning_type || 'INTERMEDIATE',\n    learning_goal: item.json?.learning_goal || 'Build domain knowledge'\n  };\n  \n  for (const result of results) {\n    if (!result.url || uniqueItems.has(result.url)) continue;\n    \n    const exaScore = Number(result.score || 0);\n    if (exaScore < 0.15) continue; // Skip low relevance\n    \n    const difficultyScore = calculateDifficultyScore(result.text, result.title);\n    const qualityScore = calculateQualityScore({\n      text: result.text,\n      title: result.title,\n      url: result.url,\n      published_date: result.publishedDate || result.published_date\n    });\n    const category = determineCategory(difficultyScore, result.text);\n    \n    uniqueItems.set(result.url, {\n      title: result.title,\n      url: result.url,\n      summary: result.summary || result.text?.slice(0, 600) || '',\n      text: result.text || '',\n      highlights: result.highlights || [],\n      published_date: result.publishedDate || result.published_date,\n      exa_score: exaScore,\n      difficulty_score: difficultyScore,\n      quality_score: qualityScore,\n      category: category,\n      keyword: queryMeta.keyword,\n      learning_type: queryMeta.learning_type,\n      learning_goal: queryMeta.learning_goal,\n      scoring_breakdown: {\n        difficulty_factors: {\n          technical_terms: 'Counted advanced/intermediate/foundational terms',\n          code_presence: result.text?.includes('```') || result.text?.includes('def '),\n          math_presence: /[∑∏∫√∂∇]/i.test(result.text || '')\n        }\n      }\n    });\n  }\n}\n\n// Sort by quality score\nconst sortedItems = Array.from(uniqueItems.values())\n  .sort((a, b) => b.quality_score - a.quality_score)\n  .slice(0, 10);\n\nconsole.log(`Processed ${sortedItems.length} items with algorithmic scoring`);\n\nif (sortedItems.length === 0) {\n  throw new Error('No results found.');\n}\n\nreturn [{ json: { items: sortedItems, total_count: sortedItems.length } }];"
+      },
+      "id": "fa20856a-152b-48bc-bcf8-6a250c43a1bd",
+      "name": "Aggregate & Score (Algorithm)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -912,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a learning coach for a B2B marketer building AI Infrastructure expertise.\n\nI have {{ $json.total_count }} articles that have been PRE-SCORED algorithmically:\n\n{{ JSON.stringify($json.items.map(i => ({\n  title: i.title,\n  url: i.url,\n  summary: i.summary.slice(0, 300),\n  keyword: i.keyword,\n  pre_calculated_difficulty: i.difficulty_score,\n  pre_calculated_quality: i.quality_score,\n  pre_calculated_category: i.category\n})), null, 2) }}\n\nYour job is to write a helpful LEARNING SUMMARY for each article. The scores are already calculated - DO NOT change them.\n\nFor each article, write:\n- A 8-10 sentence Learning Summary that:\n  1. Explains the key concept in simple terms\n  2. Why this matters for the AI Infrastructure industry\n  3. A marketing-relevant insight (customer pain point, market trend, or competitive angle)\n\n- Prerequisites: What knowledge helps understand this article\n\nReturn ONLY this JSON (keep the pre-calculated scores exactly as provided):\n{\n  \"learning_items\": [\n    {\n      \"title\": \"Article title\",\n      \"url\": \"URL\",\n      \"category\": \"INTERMEDIATE\",\n      \"difficulty\": 6,\n      \"quality_score\": 8,\n      \"learning_summary\": \"Your helpful 2-3 sentence summary here.\",\n      \"prerequisites\": \"Basic knowledge of X, familiarity with Y\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 4000,
+          "temperature": 0.3
+        }
+      },
+      "id": "0b921950-8992-4e09-9337-4ac2def23443",
+      "name": "GPT Write Summaries",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        -672,
+        608
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "ulQa6ZRdbDpV4Slo",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const gptResponse = $input.first().json;\nconst algorithmicData = $('Aggregate & Score (Algorithm)').first().json.items;\nlet learningItems = [];\n\ntry {\n  let content = gptResponse.text || gptResponse.content || '';\n  content = content.replace(/```json\\n?/g, '').replace(/```\\n?/g, '').trim();\n  const parsed = JSON.parse(content);\n  learningItems = parsed.learning_items || [];\n} catch (e) {\n  // Fallback: use algorithmic data with basic summaries\n  learningItems = algorithmicData.map(item => ({\n    title: item.title,\n    url: item.url,\n    category: item.category,\n    difficulty: item.difficulty_score,\n    quality_score: item.quality_score,\n    learning_summary: item.summary?.slice(0, 200) + '...',\n    prerequisites: 'Basic understanding of AI/ML concepts'\n  }));\n}\n\n// Merge GPT summaries with algorithmic scores (algorithmic scores take priority)\nconst finalItems = learningItems.map((gptItem, idx) => {\n  const algoItem = algorithmicData.find(a => a.url === gptItem.url) || algorithmicData[idx];\n  return {\n    title: gptItem.title || algoItem?.title,\n    url: gptItem.url || algoItem?.url,\n    category: algoItem?.category || gptItem.category,\n    difficulty: algoItem?.difficulty_score || gptItem.difficulty,\n    quality_score: algoItem?.quality_score || gptItem.quality_score,\n    learning_summary: gptItem.learning_summary,\n    prerequisites: gptItem.prerequisites\n  };\n});\n\nconst sheetsRows = finalItems.map(item => ({\n  'Date (datetime)': new Date().toISOString(),\n  'Title': (item.title || '').slice(0, 100),\n  'Category (FOUNDATIONAL/INTERMEDIATE/ADVANCED/RESEARCH)': item.category,\n  'Difficulty (1-10)': item.difficulty,\n  'Quality_Score (1-10)': item.quality_score,\n  'Learning Summary': (item.learning_summary || '').slice(0, 500),\n  'Prerequisites': (item.prerequisites || '').slice(0, 200),\n  'URL': item.url\n}));\n\nconst timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', weekday: 'long', month: 'short', day: 'numeric' });\nconst foundational = finalItems.filter(i => i.category === 'FOUNDATIONAL');\nconst intermediate = finalItems.filter(i => i.category === 'INTERMEDIATE');\nconst advanced = finalItems.filter(i => i.category === 'ADVANCED');\nconst research = finalItems.filter(i => i.category === 'RESEARCH');\nconst avgQuality = (finalItems.reduce((s, i) => s + (i.quality_score || 7), 0) / finalItems.length).toFixed(1);\nconst avgDifficulty = (finalItems.reduce((s, i) => s + (i.difficulty || 5), 0) / finalItems.length).toFixed(1);\n\nlet telegram = `🎓 *AI Infrastructure Learning Digest*\\n📅 ${timestamp}\\n\\n`;\ntelegram += `━━━━━━━━━━━━━━━━━━━━━━━━━\\n`;\ntelegram += `📊 *SCORING: ALGORITHMIC*\\n`;\ntelegram += `━━━━━━━━━━━━━━━━━━━━━━━━━\\n\\n`;\ntelegram += `📚 Items: ${finalItems.length}\\n`;\ntelegram += `📈 Avg Quality: ${avgQuality}/10\\n`;\ntelegram += `🎯 Avg Difficulty: ${avgDifficulty}/10\\n`;\ntelegram += `⏱️ Est. Read Time: ~${finalItems.length * 5} mins\\n\\n`;\ntelegram += `*By Level:*\\n`;\nif (foundational.length) telegram += `🟢 Foundational: ${foundational.length}\\n`;\nif (intermediate.length) telegram += `🟡 Intermediate: ${intermediate.length}\\n`;\nif (advanced.length) telegram += `🔴 Advanced: ${advanced.length}\\n`;\nif (research.length) telegram += `🔬 Research: ${research.length}\\n`;\n\ntelegram += `\\n━━━━━━━━━━━━━━━━━━━━━━━━━\\n⭐ *TOP PICK*\\n━━━━━━━━━━━━━━━━━━━━━━━━━\\n\\n`;\n\nconst topPick = finalItems[0];\nif (topPick) {\n  const catEmoji = topPick.category === 'FOUNDATIONAL' ? '🟢' : topPick.category === 'INTERMEDIATE' ? '🟡' : topPick.category === 'ADVANCED' ? '🔴' : '🔬';\n  telegram += `${catEmoji} *${topPick.title}*\\n\\n`;\n  telegram += `📊 ${topPick.category}\\n`;\n  telegram += `🎯 Difficulty: ${topPick.difficulty}/10\\n`;\n  telegram += `⭐ Quality: ${topPick.quality_score}/10\\n\\n`;\n  telegram += `📝 *Summary:*\\n${topPick.learning_summary}\\n\\n`;\n  telegram += `📚 *Prerequisites:* ${topPick.prerequisites}\\n\\n`;\n  telegram += `🔗 [Read Article](${topPick.url})\\n`;\n}\n\ntelegram += `\\n━━━━━━━━━━━━━━━━━━━━━━━━━\\n📰 *MORE TO READ*\\n━━━━━━━━━━━━━━━━━━━━━━━━━\\n\\n`;\n\nfinalItems.slice(1, 7).forEach((item, idx) => {\n  const catEmoji = item.category === 'FOUNDATIONAL' ? '🟢' : item.category === 'INTERMEDIATE' ? '🟡' : item.category === 'ADVANCED' ? '🔴' : '🔬';\n  telegram += `${catEmoji} *${idx + 2}. ${item.title}*\\n`;\n  telegram += `   ${item.category} | Diff: ${item.difficulty}/10 | Quality: ${item.quality_score}/10\\n`;\n  telegram += `   💡 ${item.learning_summary?.slice(0, 100)}...\\n`;\n  telegram += `   🔗 [Read](${item.url})\\n\\n`;\n});\n\ntelegram += `\\n━━━━━━━━━━━━━━━━━━━━━━━━━\\n`;\ntelegram += `📐 *SCORING METHODOLOGY*\\n`;\ntelegram += `━━━━━━━━━━━━━━━━━━━━━━━━━\\n\\n`;\ntelegram += `*Quality Score* (1-10):\\n`;\ntelegram += `• Source Authority: 0-3 pts\\n`;\ntelegram += `• Content Depth: 0-3 pts\\n`;\ntelegram += `• Marketing Relevance: 0-2 pts\\n`;\ntelegram += `• Recency: 0-2 pts\\n\\n`;\ntelegram += `*Difficulty Score* (1-10):\\n`;\ntelegram += `• Technical terms density\\n`;\ntelegram += `• Code/math presence\\n`;\ntelegram += `• Sentence complexity\\n\\n`;\ntelegram += `_Algorithmic scoring for consistency_ 🤖`;\n\nreturn [{ json: { telegram_message: telegram, sheets_rows: sheetsRows } }];"
+      },
+      "id": "dbbed012-f133-45d2-ab86-73f3c0286ee3",
+      "name": "Format Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -432,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst rows = data.sheets_rows || [];\nif (rows.length === 0) return [{ json: { skip: true } }];\nreturn rows.map(row => ({ json: row }));"
+      },
+      "id": "4d5efa41-0848-44b5-a42e-4e0e9bced582",
+      "name": "Split Rows1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -192,
+        448
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Efw3cZe4CaHhcjVwt401KfKtM67FBmU1enzGdY7Q4YA",
+          "mode": "list",
+          "cachedResultName": "Domain market research intelligence"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 453701373,
+          "mode": "list",
+          "cachedResultName": "Node Output",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Efw3cZe4CaHhcjVwt401KfKtM67FBmU1enzGdY7Q4YA/edit#gid=453701373"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date (datetime)": "={{ $json['Date (datetime)'] }}",
+            "Title ": "={{ $json.Title }}",
+            "Category (FOUNDATIONAL/INTERMEDIATE/ADVANCED/RESEARCH)": "={{ $json['Category (FOUNDATIONAL/INTERMEDIATE/ADVANCED/RESEARCH)'] }}",
+            "Difficulty (1-10)": "={{ $json['Difficulty (1-10)'] }}",
+            "Quality_Score (1-10)": "={{ $json['Quality_Score (1-10)'] }}",
+            "Learning Summary ": "={{ $json['Learning Summary'] }}",
+            "Prerequisites": "={{ $json.Prerequisites }}",
+            "URL": "={{ $json.URL }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date (datetime)",
+              "displayName": "Date (datetime)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Title ",
+              "displayName": "Title ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Category (FOUNDATIONAL/INTERMEDIATE/ADVANCED/RESEARCH)",
+              "displayName": "Category (FOUNDATIONAL/INTERMEDIATE/ADVANCED/RESEARCH)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Difficulty (1-10)",
+              "displayName": "Difficulty (1-10)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Quality_Score (1-10)",
+              "displayName": "Quality_Score (1-10)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Learning Summary ",
+              "displayName": "Learning Summary ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Prerequisites",
+              "displayName": "Prerequisites",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status (To Read/Reading/Completed/Archived)",
+              "displayName": "Status (To Read/Reading/Completed/Archived)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "782992e4-e275-4298-8364-56f00c0e9838",
+      "name": "Save to Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        48,
+        448
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lUt4WLbYEcNKFba4",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "7991295449",
+        "text": "={{ $json.telegram_message }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_web_page_preview": true,
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "8798d762-20f7-42a5-a5af-27a0801ad8d8",
+      "name": "Send Telegram1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -192,
+        608
+      ],
+      "webhookId": "bdc2d97f-014e-4ad7-8dea-3813098eca02",
+      "credentials": {
+        "telegramApi": {
+          "id": "adClV2Bdyk4cSaXi",
+          "name": "Telegram account -Zeno"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.exa.ai/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "5f072843-1ecc-48cc-ad06-8e2c0ec55cb3"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"query\": \"{{ $json.query }}\",\n  \"num_results\": 3,\n  \"type\": \"neural\",\n  \"use_autoprompt\": true,\n  \"start_published_date\": \"{{ $today.minus(30, 'days').toFormat('yyyy-MM-dd') }}\",\n  \"contents\": {\n    \"text\": { \"max_characters\": 2500 },\n    \"highlights\": { \"num_sentences\": 4, \"highlights_per_url\": 3 },\n    \"summary\": { \"query\": \"Key concepts for marketers\" }\n  }\n}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 3,
+              "batchInterval": 2000
+            }
+          },
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "id": "f276b0cd-ad2e-46cd-85d8-e221f2beb313",
+      "name": "Exa Search",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1392,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Efw3cZe4CaHhcjVwt401KfKtM67FBmU1enzGdY7Q4YA",
+          "mode": "list",
+          "cachedResultName": "Domain market research intelligence"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1943157974,
+          "mode": "list",
+          "cachedResultName": "Node Input ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Efw3cZe4CaHhcjVwt401KfKtM67FBmU1enzGdY7Q4YA/edit#gid=1943157974"
+        },
+        "options": {}
+      },
+      "id": "c6d457e2-85ef-4005-b4d4-c8628982cfff",
+      "name": "Read Keywords",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1872,
+        608
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lUt4WLbYEcNKFba4",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * *"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2112,
+        608
+      ],
+      "id": "32cc64a2-8074-4806-86ac-9daa1cf951fc",
+      "name": "Daily at 9am"
+    },
+    {
+      "parameters": {
+        "jsCode": "const allItems = $input.all();\n\nconst activeKeywords = allItems\n  .map(item => item.json)\n  .filter(k => k.Keyword && k['Status (Active/Inactive)'] === 'Active')\n  .filter(k => k.Priority === 'High');\n\nif (activeKeywords.length === 0) {\n  throw new Error('No active keywords found.');\n}\n\nconst queryTemplates = [\n  (kw, sub) => ({ query: `what is ${kw} explained simply for beginners`, type: 'FOUNDATIONAL', learning_goal: 'Understand basic concepts' }),\n  (kw, sub) => ({ query: `${kw} market trends enterprise adoption 2024 2025`, type: 'INTERMEDIATE', learning_goal: 'Understand market dynamics' }),\n  (kw, sub) => ({ query: `${kw} challenges problems enterprises face production`, type: 'INTERMEDIATE', learning_goal: 'Identify customer pain points' }),\n  (kw, sub) => ({ query: `${kw} comparison vendors tools platforms ${sub}`, type: 'ADVANCED', learning_goal: 'Map competitive landscape' }),\n  (kw, sub) => ({ query: `${kw} use cases ROI benefits case studies`, type: 'INTERMEDIATE', learning_goal: 'Gather proof points' }),\n  (kw, sub) => ({ query: `${kw} architecture best practices implementation`, type: 'ADVANCED', learning_goal: 'Build technical credibility' }),\n  (kw, sub) => ({ query: `${kw} latest news announcements ${sub}`, type: 'RESEARCH', learning_goal: 'Stay current' })\n];\n\nconst queries = [];\nconst MAX_QUERIES = 10;\n\nfor (let i = 0; i < queryTemplates.length && queries.length < MAX_QUERIES; i++) {\n  for (const kw of activeKeywords) {\n    if (queries.length >= MAX_QUERIES) break;\n    const queryData = queryTemplates[i](kw.Keyword, kw.Sub_Industry || 'AI Infrastructure');\n    queries.push({\n      query: queryData.query,\n      keyword: kw.Keyword,\n      sub_industry: kw.Sub_Industry || 'AI Infrastructure',\n      learning_type: queryData.type,\n      learning_goal: queryData.learning_goal\n    });\n  }\n}\n\nreturn queries.map(q => ({ json: q }));"
+      },
+      "id": "ab6565fd-a816-4bdf-81cf-4e859f20d75a",
+      "name": "Generate Learning Queries",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1632,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "id": "f047bb96-ce2a-402e-b859-bcb85555a9c0",
+      "name": "Wait 2s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1152,
+        608
+      ],
+      "webhookId": "wait-exa"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Aggregate & Score (Algorithm)": {
+      "main": [
+        [
+          {
+            "node": "GPT Write Summaries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GPT Write Summaries": {
+      "main": [
+        [
+          {
+            "node": "Format Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Output": {
+      "main": [
+        [
+          {
+            "node": "Split Rows1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Rows1": {
+      "main": [
+        [
+          {
+            "node": "Save to Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exa Search": {
+      "main": [
+        [
+          {
+            "node": "Wait 2s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Keywords": {
+      "main": [
+        [
+          {
+            "node": "Generate Learning Queries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily at 9am": {
+      "main": [
+        [
+          {
+            "node": "Read Keywords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Learning Queries": {
+      "main": [
+        [
+          {
+            "node": "Exa Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 2s": {
+      "main": [
+        [
+          {
+            "node": "Aggregate & Score (Algorithm)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "695ae61d-9abf-480f-8e0d-5ed169126743",
+  "meta": {
+    "instanceId": "3acfd83747b23463e29b4731178a780545ac2a704288c04a8b6d09e07a59559f"
+  },
+  "id": "jLIpp-Vkxa0FkE5urqwoB",
+  "tags": []
+}
